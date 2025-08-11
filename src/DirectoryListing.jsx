@@ -394,9 +394,26 @@ const DirectoryListing = () => {
 
   const filteredListings = listings.filter(listing => {
     if (!listing.company) return false;
+    
+    // If user selected "Local Contractors" and we have user location, filter by location
+    if (selectedIndustry === "Local Contractors" && userLocation) {
+      // Check if listing has location data and matches user's location
+      if (listing.city && listing.state && listing.country) {
+        const locationMatch = 
+          listing.city.toLowerCase() === userLocation.city.toLowerCase() ||
+          listing.state.toLowerCase() === userLocation.state.toLowerCase() ||
+          listing.country.toLowerCase() === userLocation.country.toLowerCase();
+        
+        if (!locationMatch) return false;
+      } else {
+        // If listing has no location data, don't show it for local search
+        return false;
+      }
+    }
+    
+    // Filter by selected letter
     return listing.company.toUpperCase().startsWith(selectedLetter);
   });
-
   // Debug log for filtered listings
   console.log('Selected letter:', selectedLetter);
   console.log('Total listings:', listings.length);
