@@ -37,6 +37,10 @@ const DirectoryListing = () => {
     industry: '',
     description: '',
     image: null,
+    // Location fields for contractor matching
+    city: '',
+    state: '',
+    country: '',
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -56,6 +60,8 @@ const DirectoryListing = () => {
     if (isLoggedIn) {
       fetchUser();
     }
+    // Auto-detect user location
+    detectUserLocation();
   }, [isLoggedIn]);
 
   useEffect(() => {
@@ -262,6 +268,61 @@ const DirectoryListing = () => {
     setSuccess('');
   };
 
+  const detectUserLocation = async () => {
+    try {
+      // Try to get location from IP using the backend
+      const response = await fetch(`${API_BASE}/api/directory/nearby`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.userLocation && data.userLocation.city !== 'Unknown') {
+          setForm(prev => ({
+            ...prev,
+            city: data.userLocation.city || '',
+            state: data.userLocation.state || '',
+            country: data.userLocation.country || ''
+          }));
+        }
+      }
+    } catch (error) {
+      console.log('Could not auto-detect location:', error);
+      // Fallback: try browser geolocation
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            try {
+              // Use a free reverse geocoding service
+              const { latitude, longitude } = position.coords;
+              const geoResponse = await fetch(
+                `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=YOUR_OPENCAGE_API_KEY`
+              );
+              if (geoResponse.ok) {
+                const geoData = await geoResponse.json();
+                if (geoData.results && geoData.results.length > 0) {
+                  const result = geoData.results[0].components;
+                  setForm(prev => ({
+                    ...prev,
+                    city: result.city || result.town || result.village || '',
+                    state: result.state || '',
+                    country: result.country || ''
+                  }));
+                }
+              }
+            } catch (geoError) {
+              console.log('Geolocation reverse lookup failed:', geoError);
+            }
+          },
+          (error) => {
+            console.log('Browser geolocation failed:', error);
+          }
+        );
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -315,6 +376,9 @@ const DirectoryListing = () => {
         industry: '',
         description: '',
         image: null,
+        city: '',
+        state: '',
+        country: '',
       });
       fetchListings(); // Refresh the listings
     } catch (err) {
@@ -441,6 +505,65 @@ const DirectoryListing = () => {
                             onChange={handleChange}
                             style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
                           />
+                        </div>
+                        
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
+                          <div>
+                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>City *</label>
+                            <input
+                              type="text"
+                              name="city"
+                              value={form.city}
+                              onChange={handleChange}
+                              required
+                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>State/Province *</label>
+                            <input
+                              type="text"
+                              name="state"
+                              value={form.state}
+                              onChange={handleChange}
+                              required
+                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Country *</label>
+                          <input
+                            type="text"
+                            name="country"
+                            value={form.country}
+                            onChange={handleChange}
+                            required
+                            style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                          />
+                        </div>
+                        
+                        <div style={{ marginBottom: 20 }}>
+                          <button
+                            type="button"
+                            onClick={detectUserLocation}
+                            style={{
+                              background: '#2196F3',
+                              color: 'white',
+                              border: 'none',
+                              padding: '8px 16px',
+                              borderRadius: 5,
+                              cursor: 'pointer',
+                              fontSize: 14,
+                              marginRight: 10
+                            }}
+                          >
+                            📍 Auto-detect Location
+                          </button>
+                          <span style={{ fontSize: 12, color: '#666' }}>
+                            Click to automatically detect your city, state, and country
+                          </span>
                         </div>
                         
                         <div>
