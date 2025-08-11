@@ -45,7 +45,8 @@ const DirectoryListing = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [selectedLetter, setSelectedLetter] = useState('A');
-  const { get, post } = useApi();
+  const [selectedIndustry, setSelectedIndustry] = useState("All");
+  const [userLocation, setUserLocation] = useState(null);  const { get, post } = useApi();
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
 
   useEffect(() => {
@@ -279,7 +280,7 @@ const DirectoryListing = () => {
       if (response.ok) {
         const data = await response.json();
         if (data.userLocation && data.userLocation.city !== 'Unknown') {
-          setForm(prev => ({
+          setUserLocation(data.userLocation);          setForm(prev => ({
             ...prev,
             city: data.userLocation.city || '',
             state: data.userLocation.state || '',
@@ -689,7 +690,53 @@ const DirectoryListing = () => {
                       <h2 style={{ textAlign: 'center', marginBottom: 20, color: '#333' }}>Directory Listings</h2>
                       
                       {/* Alphabet Navigation */}
-                      <div className="alphabet-nav">
+                      {/* Industry Filter */}
+                      <div style={{ marginBottom: 20, textAlign: "center" }}>
+                        <label style={{ display: "block", marginBottom: 10, fontWeight: "bold" }}>
+                          Filter by Industry:
+                        </label>
+                        <select
+                          value={selectedIndustry}
+                          onChange={(e) => setSelectedIndustry(e.target.value)}
+                          style={{
+                            padding: "8px 16px",
+                            borderRadius: 5,
+                            border: "1px solid #ddd",
+                            fontSize: 14,
+                            minWidth: 200
+                          }}
+                        >
+                          <option value="All">All Industries</option>
+                          <option value="Local Contractors">Local Contractors</option>
+                          <option value="Construction">Construction</option>
+                          <option value="Plumbing">Plumbing</option>
+                          <option value="Electrical">Electrical</option>
+                          <option value="HVAC">HVAC</option>
+                          <option value="Landscaping">Landscaping</option>
+                          <option value="Retail">Retail</option>
+                          <option value="Wholesaler">Wholesaler</option>
+                          <option value="Broker">Broker</option>
+                        </select>
+                        {selectedIndustry === "Local Contractors" && userLocation && (
+                        <button
+                          onClick={() => setSelectedIndustry("All")}
+                          style={{
+                            background: "#f44336",
+                            color: "white",
+                            border: "none",
+                            padding: "4px 8px",
+                            borderRadius: 3,
+                            cursor: "pointer",
+                            fontSize: 12,
+                            marginLeft: 10
+                          }}
+                        >
+                          Reset Filter
+                        </button>                          <div style={{ marginTop: 10, fontSize: 12, color: "#666" }}>
+                            📍 Showing contractors in: {userLocation.city}, {userLocation.state}, {userLocation.country}
+                          </div>
+                        )}
+                      </div>                      <div className="alphabet-nav">
                         {Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ').map((letter) => (
                           <button
                             key={letter}
