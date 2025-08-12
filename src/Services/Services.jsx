@@ -34,24 +34,7 @@ const Services = () => {
   const bottomCardsRef = useRef(null);
 
   useEffect(() => {
-    // Clear any old hardcoded location data immediately
-    const currentLocation = localStorage.getItem('userLocation');
-    if (currentLocation) {
-      try {
-        const parsedLocation = JSON.parse(currentLocation);
-        if (parsedLocation.city === 'New York' && parsedLocation.state === 'NY' && parsedLocation.country === 'USA') {
-          console.log('Services: AUTO-CLEARING OLD HARDCODED LOCATION ON MOUNT!');
-          localStorage.removeItem('userLocation');
-        }
-      } catch (error) {
-        console.log('Services: Error checking location on mount:', error);
-      }
-    }
-    
-    const savedLang = localStorage.getItem("selectedLanguage");
-    if (savedLang && savedLang !== i18n.language) {
-      i18n.changeLanguage(savedLang);
-    }
+    // Don't auto-clear location - let the backend API detect it properly
     fetchFeaturedImages();
     fetchDirectoryListings();
     fetchCategories();
@@ -306,7 +289,7 @@ const Services = () => {
   const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
   
   // Detect and store user's location
-  const detectUserLocation = () => {
+  const detectUserLocation = async () => {
     console.log('Services: detectUserLocation called');
     
     // Check if we already have location in localStorage
@@ -317,53 +300,84 @@ const Services = () => {
       return;
     }
     
-    console.log('Services: No existing location, attempting to detect...');
+    console.log('Services: No existing location, attempting to detect from backend API...');
     
-    // Try to get location from IP using the backend
-    fetch(`${API_BASE}/api/directory/nearby`, {
-      method: 'GET',
-      credentials: 'include',
-    })
-    .then(response => {
+    try {
+      // Call the same backend API that Directory page uses
+      const response = await fetch(`${API_BASE}/api/directory/nearby`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      
       console.log('Services: Backend location response status:', response.status);
-      return response.json();
-    })
-    .then(data => {
-      console.log('Services: Backend location data:', data);
-      if (data.userLocation && data.userLocation.city !== 'Unknown') {
-        const locationData = {
-          city: data.userLocation.city || '',
-          state: data.userLocation.state || '',
-          country: data.userLocation.country || ''
-        };
-        console.log('Services: Setting location from backend:', locationData);
-        localStorage.setItem('userLocation', JSON.stringify(locationData));
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Services: Backend location data:', data);
+        
+        if (data.userLocation && data.userLocation.city !== 'Unknown') {
+          const locationData = {
+            city: data.userLocation.city || '',
+            state: data.userLocation.state || '',
+            country: data.userLocation.country || ''
+          };
+          console.log('Services: Setting location from backend API:', locationData);
+          localStorage.setItem('userLocation', JSON.stringify(locationData));
+        } else {
+          console.log('Services: Backend API returned unknown location, trying browser geolocation');
+          // Try browser geolocation as fallback
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                console.log('Services: Browser geolocation success:', position.coords);
+                // Don't set hardcoded location - let user set manually if needed
+                console.log('Services: Browser geolocation available but no reverse geocoding - location not set');
+              },
+              (error) => {
+                console.log('Services: Browser geolocation failed:', error);
+                console.log('Services: No location detected - user will need to set manually');
+              }
+            );
+          } else {
+            console.log('Services: Browser geolocation not available - no location set');
+          }
+        }
       } else {
-        console.log('Services: Backend location not available, trying browser geolocation');
-        // Fallback to browser geolocation
+        console.log('Services: Backend API failed with status:', response.status);
+        // Try browser geolocation as fallback
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
               console.log('Services: Browser geolocation success:', position.coords);
-              // Don't set hardcoded location - let user set manually if needed
               console.log('Services: Browser geolocation available but no reverse geocoding - location not set');
             },
             (error) => {
               console.log('Services: Browser geolocation failed:', error);
-              // Don't set hardcoded location - let user set manually if needed
-              console.log('Services: Browser geolocation failed - no location set');
+              console.log('Services: No location detected - user will need to set manually');
             }
           );
         } else {
           console.log('Services: Browser geolocation not available - no location set');
         }
       }
-    })
-    .catch(error => {
-      console.log('Services: Backend location fetch failed:', error);
-      // Don't set hardcoded location - let user set manually if needed
-      console.log('Services: Backend location fetch failed - no location set');
-    });
+    } catch (error) {
+      console.log('Services: Backend API fetch failed:', error);
+      // Try browser geolocation as fallback
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            console.log('Services: Browser geolocation success:', position.coords);
+            console.log('Services: Browser geolocation available but no reverse geocoding - location not set');
+          },
+          (error) => {
+            console.log('Services: Browser geolocation failed:', error);
+            console.log('Services: No location detected - user will need to set manually');
+          }
+        );
+      } else {
+        console.log('Services: Browser geolocation not available - no location set');
+      }
+    }
   };
   
   // Force clear any old location data and refresh
@@ -383,14 +397,6 @@ const Services = () => {
       try {
         const parsedLocation = JSON.parse(currentLocation);
         console.log('Services: Parsed location data:', parsedLocation);
-        
-        // Check if this is the old hardcoded New York location
-        if (parsedLocation.city === 'New York' && parsedLocation.state === 'NY' && parsedLocation.country === 'USA') {
-          console.log('Services: DETECTED OLD HARDCODED LOCATION! Clearing it...');
-          localStorage.removeItem('userLocation');
-          return null;
-        }
-        
         return parsedLocation;
       } catch (error) {
         console.log('Services: Error parsing location data:', error);
