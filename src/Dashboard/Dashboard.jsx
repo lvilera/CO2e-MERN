@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
-import Header from '../Home/Header';
+import DynamicHeader from '../components/DynamicHeader';
 import Footer2 from '../Home/Footer2';
 import { API_BASE_URL } from '../config';
 
@@ -83,7 +83,7 @@ const Dashboard = () => {
   return (
     <>
     <div id="dashf">
-<Header/>
+<DynamicHeader/>
       <h2 id="dh">Add New Card</h2>
       
       {/* Message Display */}

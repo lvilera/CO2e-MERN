@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Header2 from './Home/Header2';
+import DynamicHeader from './components/DynamicHeader';
 import { API_BASE_URL } from './config';
 import axios from 'axios';
 
@@ -59,7 +59,7 @@ const AdminAddInstructor = () => {
 
   return (
     <div>
-      <Header2 />
+      <DynamicHeader />
       <div id="TTw"style={{ maxWidth: 500, margin: '10rem auto', padding: 20, background: '#fff', borderRadius: 8,boxShadow: '0 2px 8px #eee' }}>
         <h2>Add Instructor</h2>
         <form onSubmit={handleSubmit}>

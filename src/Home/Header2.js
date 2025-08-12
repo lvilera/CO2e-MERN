@@ -26,7 +26,7 @@ const Header2= () => {
       <header id="wqeq" className="header">
         <div className="container">
           <h1>
-            <a href="#" className="logo"><img id="logoo" src="./Logo.png"></img></a>
+            <a href="#" className="logo"><img id="logoo" src="/Logo.png"></img></a>
           </h1>
 
 

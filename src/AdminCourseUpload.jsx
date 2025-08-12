@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Header from './Home/Header';
+import DynamicHeader from './components/DynamicHeader';
 import Footer2 from './Home/Footer2';
 import { API_BASE } from './config';
 
@@ -87,7 +87,7 @@ const AdminCourseUpload = () => {
 
   return (
     <>
-      <Header />
+      <DynamicHeader />
       <div style={{ maxWidth: 700, margin: '340px auto', background: '#fff', borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.08)', padding: 32 }}>
         <h2 style={{ textAlign: 'center', marginBottom: 24 }}>Admin: Upload Course Videos & Drive Links</h2>
         

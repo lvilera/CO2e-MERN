@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import Header from '../Home/Header';
-// import Header2 from '../Home/Header2';
+import Header2 from '../Home/Header2';
 import Footer2 from '../Home/Footer2';
 import { API_BASE_URL } from '../config';
 
@@ -77,7 +76,7 @@ const BlogDashboard = () => {
 
   return (
     <>
-      <Header />
+      <Header2 />
       <div id="yytr" className="dashboard">
         <h2 id="hd1">Post Blog</h2>
         <form id="fdn1" onSubmit={handleSubmit} encType="multipart/form-data">

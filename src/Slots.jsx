@@ -26,6 +26,7 @@ const Slots = () => {
   const [location, setLocation] = useState('');
   const instructorId = localStorage.getItem('userId');
   const [assignedBookings, setAssignedBookings] = useState([]);
+  const [acceptingBookingId, setAcceptingBookingId] = useState(null); // Track which booking is being accepted
 
 
   // Get instructor email from localStorage (set on login)
@@ -206,6 +207,9 @@ const Slots = () => {
       setAcceptMessage('Instructor ID not found.');
       return;
     }
+    
+    setAcceptingBookingId(bookingId); // Start loading for this specific booking
+    
     try {
       const res = await axios.post(`${API_BASE_URL}/api/bookings/${bookingId}/accept`, { instructorId });
       setAcceptMessage(res.data.message || 'Booking accepted!');
@@ -214,6 +218,8 @@ const Slots = () => {
       fetchBookings(); // Refresh confirmed bookings
     } catch (err) {
       setAcceptMessage(err.response?.data?.message || 'Failed to accept booking.');
+    } finally {
+      setAcceptingBookingId(null); // Stop loading regardless of success/failure
     }
   };
 
@@ -244,6 +250,14 @@ const Slots = () => {
         background: '#91bf55',
         padding: '120px 20px 60px 20px'
       }}>
+        <style>
+          {`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}
+        </style>
         <div style={{ 
           maxWidth: 1200, 
           margin: '0 auto',
@@ -1127,18 +1141,40 @@ const Slots = () => {
                                 await handleAcceptBooking(b._id);
                                 window.location.reload();
                               }}
+                              disabled={acceptingBookingId === b._id}
                               style={{
-                                background: '#27ae60',
+                                background: acceptingBookingId === b._id ? '#95a5a6' : '#27ae60',
                                 color: '#fff',
                                 border: 'none',
                                 borderRadius: '6px',
                                 padding: '8px 16px',
                                 fontSize: '0.8rem',
-                                cursor: 'pointer',
-                                transition: 'all 0.3s ease'
+                                cursor: acceptingBookingId === b._id ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.3s ease',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                minWidth: '80px',
+                                justifyContent: 'center'
                               }}
                             >
-                              ✅ {t('slots.accept')}
+                              {acceptingBookingId === b._id ? (
+                                <>
+                                  <div style={{
+                                    width: '12px',
+                                    height: '12px',
+                                    border: '2px solid #ffffff',
+                                    borderTop: '2px solid transparent',
+                                    borderRadius: '50%',
+                                    animation: 'spin 1s linear infinite'
+                                  }}></div>
+                                  Processing...
+                                </>
+                              ) : (
+                                <>
+                                  ✅ {t('slots.accept')}
+                                </>
+                              )}
                             </button>
                           </td>
                         </tr>

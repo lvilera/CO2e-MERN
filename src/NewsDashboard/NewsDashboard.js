@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './NewsDashoard.css';
-import Header from '../Home/Header';
-// import Header2 from '../Home/Header2';
+import Header2 from '../Home/Header2';
 import Footer2 from '../Home/Footer2';
 import { API_BASE_URL } from '../config';
 
@@ -77,7 +76,7 @@ const NewsDashboard = () => {
 
   return (
     <>
-      <Header />
+      <Header2 />
       <div id="lkkk1">
         <div id="yytr" className="dashboard">
           <h2 id="hd1">Post News</h2>
