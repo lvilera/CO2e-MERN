@@ -34,6 +34,20 @@ const Services = () => {
   const bottomCardsRef = useRef(null);
 
   useEffect(() => {
+    // Clear any old hardcoded location data immediately
+    const currentLocation = localStorage.getItem('userLocation');
+    if (currentLocation) {
+      try {
+        const parsedLocation = JSON.parse(currentLocation);
+        if (parsedLocation.city === 'New York' && parsedLocation.state === 'NY' && parsedLocation.country === 'USA') {
+          console.log('Services: AUTO-CLEARING OLD HARDCODED LOCATION ON MOUNT!');
+          localStorage.removeItem('userLocation');
+        }
+      } catch (error) {
+        console.log('Services: Error checking location on mount:', error);
+      }
+    }
+    
     const savedLang = localStorage.getItem("selectedLanguage");
     if (savedLang && savedLang !== i18n.language) {
       i18n.changeLanguage(savedLang);
@@ -352,6 +366,14 @@ const Services = () => {
     });
   };
   
+  // Force clear any old location data and refresh
+  const forceLocationRefresh = () => {
+    console.log('Services: Force clearing old location data');
+    localStorage.removeItem('userLocation');
+    console.log('Services: Old location cleared, reloading page for fresh detection');
+    window.location.reload();
+  };
+
   // Sync location data from other pages
   const syncLocationData = () => {
     const currentLocation = localStorage.getItem('userLocation');
@@ -361,6 +383,14 @@ const Services = () => {
       try {
         const parsedLocation = JSON.parse(currentLocation);
         console.log('Services: Parsed location data:', parsedLocation);
+        
+        // Check if this is the old hardcoded New York location
+        if (parsedLocation.city === 'New York' && parsedLocation.state === 'NY' && parsedLocation.country === 'USA') {
+          console.log('Services: DETECTED OLD HARDCODED LOCATION! Clearing it...');
+          localStorage.removeItem('userLocation');
+          return null;
+        }
+        
         return parsedLocation;
       } catch (error) {
         console.log('Services: Error parsing location data:', error);
@@ -731,6 +761,43 @@ const Services = () => {
                     }}
                   >
                     Clear Location
+                  </button>
+                  <button
+                    onClick={forceLocationRefresh}
+                    style={{
+                      padding: '4px 12px',
+                      background: '#ffd700',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Force Refresh Location
+                  </button>
+                  <button
+                    onClick={() => {
+                      const pakistanLocation = {
+                        city: 'Lahore',
+                        state: 'PB',
+                        country: 'PK'
+                      };
+                      localStorage.setItem('userLocation', JSON.stringify(pakistanLocation));
+                      console.log('Services: Pakistan location set manually:', pakistanLocation);
+                      window.location.reload();
+                    }}
+                    style={{
+                      padding: '4px 12px',
+                      background: '#28a745',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Set Pakistan Location
                   </button>
                 </div>
               </div>
