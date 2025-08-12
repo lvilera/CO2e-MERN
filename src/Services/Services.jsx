@@ -293,57 +293,85 @@ const Services = () => {
   
   // Detect and store user's location
   const detectUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          try {
-            // Use reverse geocoding to get city/state/country
-            const response = await fetch(
-              `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=YOUR_OPENCAGE_API_KEY`
-            );
-            const data = await response.json();
-            
-            if (data.results && data.results.length > 0) {
-              const result = data.results[0].components;
-              const userLocation = {
-                city: result.city || result.town || result.village || 'New York',
-                state: result.state || 'NY',
-                country: result.country || 'USA'
+    console.log('Services: detectUserLocation called');
+    
+    // Check if we already have location in localStorage
+    const existingLocation = localStorage.getItem('userLocation');
+    if (existingLocation) {
+      console.log('Services: Found existing location in localStorage:', existingLocation);
+      return;
+    }
+    
+    console.log('Services: No existing location, attempting to detect...');
+    
+    // Try to get location from IP using the backend
+    fetch(`${API_BASE}/api/directory/nearby`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+    .then(response => {
+      console.log('Services: Backend location response status:', response.status);
+      return response.json();
+    })
+    .then(data => {
+      console.log('Services: Backend location data:', data);
+      if (data.userLocation && data.userLocation.city !== 'Unknown') {
+        const locationData = {
+          city: data.userLocation.city || '',
+          state: data.userLocation.state || '',
+          country: data.userLocation.country || ''
+        };
+        console.log('Services: Setting location from backend:', locationData);
+        localStorage.setItem('userLocation', JSON.stringify(locationData));
+      } else {
+        console.log('Services: Backend location not available, trying browser geolocation');
+        // Fallback to browser geolocation
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              console.log('Services: Browser geolocation success:', position.coords);
+              // Use a simple fallback location for now
+              const fallbackLocation = {
+                city: 'New York',
+                state: 'New York',
+                country: 'USA'
               };
-              localStorage.setItem('userLocation', JSON.stringify(userLocation));
+              console.log('Services: Setting fallback location:', fallbackLocation);
+              localStorage.setItem('userLocation', JSON.stringify(fallbackLocation));
+            },
+            (error) => {
+              console.log('Services: Browser geolocation failed:', error);
+              // Set a default location
+              const defaultLocation = {
+                city: 'New York',
+                state: 'New York',
+                country: 'USA'
+              };
+              console.log('Services: Setting default location:', defaultLocation);
+              localStorage.setItem('userLocation', JSON.stringify(defaultLocation));
             }
-          } catch (error) {
-            console.log('Using default location');
-            // Use default location if geocoding fails
-            const defaultLocation = {
-              city: 'New York',
-              state: 'NY',
-              country: 'USA'
-            };
-            localStorage.setItem('userLocation', JSON.stringify(defaultLocation));
-          }
-        },
-        (error) => {
-          console.log('Location access denied, using default');
-          // Use default location if user denies access
+          );
+        } else {
+          console.log('Services: Browser geolocation not available, setting default');
           const defaultLocation = {
             city: 'New York',
-            state: 'NY',
+            state: 'New York',
             country: 'USA'
           };
           localStorage.setItem('userLocation', JSON.stringify(defaultLocation));
         }
-      );
-    } else {
-      // Fallback for browsers without geolocation
+      }
+    })
+    .catch(error => {
+      console.log('Services: Backend location fetch failed:', error);
+      // Set a default location
       const defaultLocation = {
         city: 'New York',
-        state: 'NY',
+        state: 'New York',
         country: 'USA'
       };
       localStorage.setItem('userLocation', JSON.stringify(defaultLocation));
-    }
+    });
   };
   
   // Determine filtered listings based on view mode
@@ -354,18 +382,24 @@ const Services = () => {
         if (selectedCategory === 'Local Contractors') {
           // Get user's actual location from localStorage
           const userLocation = JSON.parse(localStorage.getItem('userLocation'));
+          console.log('User location from localStorage:', userLocation);
           
           if (userLocation && userLocation.city && userLocation.state && userLocation.country) {
-            return directoryListings.filter(l => 
-              l.industry === selectedCategory &&
-              l.city && l.state && l.country && // Ensure location data exists
-              (
-                l.city.toLowerCase() === userLocation.city.toLowerCase() ||
-                l.state.toLowerCase() === userLocation.state.toLowerCase() ||
-                l.country.toLowerCase() === userLocation.country.toLowerCase()
-              )
-            );
+            // More flexible location matching - show contractors from same state/country
+            return directoryListings.filter(l => {
+              if (l.industry !== selectedCategory) return false;
+              if (!l.city || !l.state || !l.country) return false;
+              
+              // Check if contractor is in the same state or country as user
+              const sameState = l.state.toLowerCase() === userLocation.state.toLowerCase();
+              const sameCountry = l.country.toLowerCase() === userLocation.country.toLowerCase();
+              const sameCity = l.city.toLowerCase() === userLocation.city.toLowerCase();
+              
+              // Show contractors from same city, state, or country
+              return sameCity || sameState || sameCountry;
+            });
           } else {
+            console.log('No user location found, showing all Local Contractors');
             // If no user location, show all Local Contractors
             return directoryListings.filter(l => l.industry === selectedCategory);
           }
@@ -385,13 +419,16 @@ const Services = () => {
         // If it's a Local Contractor and we have user location, apply location filtering
         if (l.industry === 'Local Contractors' && userLocation && userLocation.city && userLocation.state && userLocation.country) {
           const hasLocationData = l.city && l.state && l.country;
-          const matchesLocation = hasLocationData && (
-            l.city.toLowerCase() === userLocation.city.toLowerCase() ||
-            l.state.toLowerCase() === userLocation.state.toLowerCase() ||
-            l.country.toLowerCase() === userLocation.country.toLowerCase()
-          );
+          if (!hasLocationData) return false;
           
-          return matchesLetter && hasLocationData && matchesLocation;
+          // More flexible location matching
+          const sameState = l.state.toLowerCase() === userLocation.state.toLowerCase();
+          const sameCountry = l.country.toLowerCase() === userLocation.country.toLowerCase();
+          const sameCity = l.city.toLowerCase() === userLocation.city.toLowerCase();
+          
+          const matchesLocation = sameCity || sameState || sameCountry;
+          
+          return matchesLetter && matchesLocation;
         }
         
         // For non-Local Contractors or when no location data, just filter by letter
@@ -618,6 +655,30 @@ const Services = () => {
                 }
                 return null;
               })()}
+
+              {/* Debug section to show location data */}
+              {process.env.NODE_ENV === 'development' && (
+                <div style={{
+                  marginTop: '16px',
+                  padding: '12px 20px',
+                  background: '#fff3cd',
+                  borderRadius: '8px',
+                  border: '1px solid #ffeaa7',
+                  fontSize: '12px',
+                  color: '#856404',
+                  textAlign: 'left'
+                }}>
+                  <strong>Debug Info:</strong><br/>
+                  User Location: {JSON.stringify(JSON.parse(localStorage.getItem('userLocation') || 'Not set'))}<br/>
+                  View Mode: {viewMode}<br/>
+                  Selected Category: {selectedCategory || 'None'}<br/>
+                  Selected Letter: {selectedLetter || 'None'}<br/>
+                  Total Listings: {directoryListings.length}<br/>
+                  Filtered Listings: {filteredListings.length}<br/>
+                  Local Contractors Count: {directoryListings.filter(l => l.industry === 'Local Contractors').length}<br/>
+                  Filtered Local Contractors: {filteredListings.filter(l => l.industry === 'Local Contractors').length}
+                </div>
+              )}
 
               {/* Directory Table */}
   
