@@ -93,10 +93,22 @@
   },
   "services": {
     "directoryListing": {
-      "title": "Liste d'annuaire",
+      "title": "Liste des Répertoires",
       "letters": "A, B, C, D, E, F, G, H, I, J, K, L, …"
     },
-    "featuredListing": "Annonce en vedette",
+    "sortByAlphabet": "Trier par Alphabet",
+    "sortByCategory": "Trier par Catégorie",
+    "allCategories": "TOUTES",
+    "categories": {
+      "broker": "COURTIER",
+      "exchange": "ÉCHANGE",
+      "hvac": "CVC",
+      "landscaping": "AMÉNAGEMENT PAYSAGER",
+      "localcontractors": "ENTREPRENEURS LOCAUX",
+      "retail": "DÉTAIL",
+      "wholesaler": "GROSSISTE"
+    },
+    "featuredListing": "Liste en Vedette",
     "description": "Succès durable grâce à la sensibilisation aux émissions de carbone et à l’impact climatique dans votre organisation...",
     "courseButton": "Formation des employés en entreprise",
     "professor": "Professeur",

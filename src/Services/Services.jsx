@@ -380,14 +380,6 @@ const Services = () => {
     }
   };
   
-  // Force clear any old location data and refresh
-  const forceLocationRefresh = () => {
-    console.log('Services: Force clearing old location data');
-    localStorage.removeItem('userLocation');
-    console.log('Services: Old location cleared, reloading page for fresh detection');
-    window.location.reload();
-  };
-
   // Sync location data from other pages
   const syncLocationData = () => {
     const currentLocation = localStorage.getItem('userLocation');
@@ -517,7 +509,7 @@ const Services = () => {
                     fontSize: '16px'
                   }}
                 >
-                  Sort by Alphabet
+                  {t("services.sortByAlphabet")}
                 </button>
                 <button
                   onClick={() => {
@@ -536,7 +528,7 @@ const Services = () => {
                     fontSize: '16px'
                   }}
                 >
-                  Sort by Category
+                  {t("services.sortByCategory")}
                 </button>
               </div>
 
@@ -583,7 +575,7 @@ const Services = () => {
                           minWidth: 'fit-content'
                         }}
                       >
-                        ALL
+                        {t("services.allCategories")}
                       </span>
                       {categories.map((category, idx) => (
                         <React.Fragment key={category}>
@@ -607,37 +599,14 @@ const Services = () => {
                           minWidth: 'fit-content'
                             }}
                           >
-                            {category.toUpperCase()}
+                            {t(`services.categories.${category.toLowerCase().replace(/\s+/g, '')}`)}
                           </span>
                         </React.Fragment>
                       ))}
                     </div>
                   </div>
                   
-                  {/* Location indicator for Local Contractors */}
-                  {selectedCategory === 'Local Contractors' && (
-                    <div style={{
-                      marginTop: '16px',
-                      padding: '12px 20px',
-                      background: '#f0f8ff',
-                      borderRadius: '8px',
-                      border: '1px solid #90be55',
-                      fontSize: '14px',
-                      color: '#333',
-                      textAlign: 'center'
-                    }}>
-                      📍 Showing Local Contractors in: {
-                        (() => {
-                          const userLocation = syncLocationData();
-                          if (userLocation && userLocation.city && userLocation.state && userLocation.country) {
-                            return `${userLocation.city}, ${userLocation.state}, ${userLocation.country}`;
-                          } else {
-                            return 'All locations (no user location detected)';
-                          }
-                        })()
-                      }
-                    </div>
-                  )}
+                  {/* Location indicator for Local Contractors - REMOVED */}
                 </div>
               )}
 
@@ -669,168 +638,7 @@ const Services = () => {
               </div>
               )}
               
-              {/* Location indicator for alphabetical view when Local Contractors are filtered */}
-              {viewMode === 'alphabetical' && (() => {
-                const userLocation = syncLocationData();
-                const hasLocalContractors = filteredListings.some(l => l.industry === 'Local Contractors');
-                
-                if (hasLocalContractors && userLocation && userLocation.city && userLocation.state && userLocation.country) {
-                  return (
-                    <div style={{
-                      marginTop: '16px',
-                      padding: '12px 20px',
-                      background: '#f0f8ff',
-                      borderRadius: '8px',
-                      border: '1px solid #90be55',
-                      fontSize: '14px',
-                      color: '#333',
-                      textAlign: 'center'
-                    }}>
-                      📍 Local Contractors in alphabetical view are filtered by your location: {userLocation.city}, {userLocation.state}, {userLocation.country}
-                    </div>
-                  );
-                }
-                return null;
-              })()}
-
-              {/* Manual location override for testing */}
-              <div style={{
-                marginTop: '16px',
-                padding: '16px 20px',
-                background: '#e8f5e8',
-                borderRadius: '8px',
-                border: '1px solid #90be55',
-                fontSize: '14px',
-                color: '#2d5a2d'
-              }}>
-                <strong>📍 Manual Location Override (for testing):</strong><br/>
-                <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-                  <input
-                    type="text"
-                    placeholder="City"
-                    id="manualCity"
-                    style={{ padding: '4px 8px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '12px' }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="State"
-                    id="manualState"
-                    style={{ padding: '4px 8px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '12px' }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Country"
-                    id="manualCountry"
-                    style={{ padding: '4px 8px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '12px' }}
-                  />
-                  <button
-                    onClick={() => {
-                      const city = document.getElementById('manualCity').value;
-                      const state = document.getElementById('manualState').value;
-                      const country = document.getElementById('manualCountry').value;
-                      if (city && state && country) {
-                        const locationData = { city, state, country };
-                        localStorage.setItem('userLocation', JSON.stringify(locationData));
-                        console.log('Manual location set:', locationData);
-                        // Force re-render
-                        window.location.reload();
-                      } else {
-                        alert('Please fill in all location fields');
-                      }
-                    }}
-                    style={{
-                      padding: '4px 12px',
-                      background: '#90be55',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Set Location
-                  </button>
-                  <button
-                    onClick={() => {
-                      localStorage.removeItem('userLocation');
-                      console.log('Location cleared');
-                      window.location.reload();
-                    }}
-                    style={{
-                      padding: '4px 12px',
-                      background: '#ff6b57',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Clear Location
-                  </button>
-                  <button
-                    onClick={forceLocationRefresh}
-                    style={{
-                      padding: '4px 12px',
-                      background: '#ffd700',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Force Refresh Location
-                  </button>
-                  <button
-                    onClick={() => {
-                      const pakistanLocation = {
-                        city: 'Lahore',
-                        state: 'PB',
-                        country: 'PK'
-                      };
-                      localStorage.setItem('userLocation', JSON.stringify(pakistanLocation));
-                      console.log('Services: Pakistan location set manually:', pakistanLocation);
-                      window.location.reload();
-                    }}
-                    style={{
-                      padding: '4px 12px',
-                      background: '#28a745',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Set Pakistan Location
-                  </button>
-                </div>
-              </div>
-
-              {/* Debug section to show location data */}
-              {process.env.NODE_ENV === 'development' && (
-                <div style={{
-                  marginTop: '16px',
-                  padding: '12px 20px',
-                  background: '#fff3cd',
-                  borderRadius: '8px',
-                  border: '1px solid #ffeaa7',
-                  fontSize: '12px',
-                  color: '#856404',
-                  textAlign: 'left'
-                }}>
-                  <strong>Debug Info:</strong><br/>
-                  User Location: {JSON.stringify(syncLocationData() || 'Not set')}<br/>
-                  View Mode: {viewMode}<br/>
-                  Selected Category: {selectedCategory || 'None'}<br/>
-                  Selected Letter: {selectedLetter || 'None'}<br/>
-                  Total Listings: {directoryListings.length}<br/>
-                  Filtered Listings: {filteredListings.length}<br/>
-                  Local Contractors Count: {directoryListings.filter(l => l.industry === 'Local Contractors').length}<br/>
-                  Filtered Local Contractors: {filteredListings.filter(l => l.industry === 'Local Contractors').length}
-                </div>
-              )}
+              {/* Location indicator for alphabetical view when Local Contractors are filtered - REMOVED */}
 
               {/* Directory Table */}
   
@@ -887,6 +695,7 @@ const Services = () => {
                           let style = { fontWeight: 400, color: '#222', textAlign: 'center', background: i % 2 === 0 ? '#fff' : '#fafbfc' };
                           if (effectivePackage === 'pro') style = { ...style, fontWeight: 700, color: '#27ae60' };
                           if (effectivePackage === 'premium') style = { ...style, fontWeight: 700, color: '#ff6b57' };
+                          if (!effectivePackage || effectivePackage === 'free') style = { ...style, fontWeight: 400, color: '#000000' };
                           return (
                             <tr key={i}>
                               <td style={{ ...style, padding: '14px 12px', border: 'none', wordBreak: 'break-word' }}>{l.company}</td>
@@ -897,14 +706,14 @@ const Services = () => {
                                       <button id="tb" style={{ 
                                         padding: '4px 14px', 
                                         borderRadius: 8, 
-                                        background: effectivePackage === 'free' ? 'transparent' : 'transparent', 
-                                        color: effectivePackage === 'free' ? '#666' : '#ff6b57', 
-                                        border: `2px solid ${effectivePackage === 'free' ? '#ccc' : '#ff6b57'}`, 
-                                        fontWeight: effectivePackage === 'free' ? 400 : 700, 
+                                        background: 'transparent', 
+                                        color: style.color, 
+                                        border: `2px solid ${style.color}`, 
+                                        fontWeight: style.fontWeight, 
                                         fontSize: 16, 
                                         cursor: 'pointer', 
                                         textTransform: 'capitalize',
-                                        opacity: effectivePackage === 'free' ? 0.7 : 1
+                                        opacity: 1
                                       }}>{l.socialType}</button>
                                     </a>
                                   </>

@@ -96,6 +96,18 @@
       "title": "Directory Listing",
       "letters": "A, B, C, D, E, F, G, H, I, J, K, L, …"
     },
+    "sortByAlphabet": "Sort by Alphabet",
+    "sortByCategory": "Sort by Category",
+    "allCategories": "ALL",
+    "categories": {
+      "broker": "BROKER",
+      "exchange": "EXCHANGE",
+      "hvac": "HVAC",
+      "landscaping": "LANDSCAPING",
+      "localcontractors": "LOCAL CONTRACTORS",
+      "retail": "RETAIL",
+      "wholesaler": "WHOLESALER"
+    },
     "featuredListing": "Featured Listing",
     "description": "Sustainable Success through Carbon Emissions awareness and Climate impact in your organization...",
     "courseButton": "Corporative Employee Training Course",

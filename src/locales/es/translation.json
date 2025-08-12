@@ -93,10 +93,22 @@
   },
   "services": {
     "directoryListing": {
-      "title": "Listado de directorio",
+      "title": "Listado de Directorio",
       "letters": "A, B, C, D, E, F, G, H, I, J, K, L, …"
     },
-    "featuredListing": "Listado destacado",
+    "sortByAlphabet": "Ordenar por Alfabeto",
+    "sortByCategory": "Ordenar por Categoría",
+    "allCategories": "TODAS",
+    "categories": {
+      "broker": "CORREDOR",
+      "exchange": "INTERCAMBIO",
+      "hvac": "HVAC",
+      "landscaping": "PAISAJISMO",
+      "localcontractors": "CONTRATISTAS LOCALES",
+      "retail": "MINORISTA",
+      "wholesaler": "MAYORISTA"
+    },
+    "featuredListing": "Listado Destacado",
     "description": "Éxito sostenible a través de la conciencia de emisiones de carbono y el impacto climático en su organización...",
     "courseButton": "Curso Corporativo de Capacitación para Empleados",
     "professor": "Profesor",

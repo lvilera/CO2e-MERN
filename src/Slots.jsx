@@ -237,144 +237,963 @@ const Slots = () => {
   };
 
   return (
-
     <>
-    <Header/>
-    <div id="insp"style={{ maxWidth: 700, margin: '12rem auto', padding: 20, background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #eee' }}>
-      <h2>{t('slots.instructor_profile')}</h2>
-      {profile && (
-        <div style={{ marginBottom: 20 }}>
-          <div><b>{t('slots.full_name')}:</b> {profile.firstName} {profile.lastName}</div>
-          <div><b>{t('slots.email')}:</b> {profile.email}</div>
-          <div style={{ marginTop: 10 }}>
-            <b>{t('slots.city')}:</b> <input value={city} onChange={e => setCity(e.target.value)} placeholder={t('slots.city')} style={{ marginRight: 10 }} />
-            <b>{t('slots.location')}:</b> <input value={location} onChange={e => setLocation(e.target.value)} placeholder={t('slots.location')} style={{ marginRight: 10 }} />
-            <button id="isave"onClick={handleSaveCityLocation}>{t('slots.save')}</button>
+      <Header />
+      <div style={{ 
+        minHeight: '100vh', 
+        background: '#91bf55',
+        padding: '120px 20px 60px 20px'
+      }}>
+        <div style={{ 
+          maxWidth: 1200, 
+          margin: '0 auto',
+          background: 'rgba(255, 255, 255, 0.95)',
+          borderRadius: 24,
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)',
+          backdropFilter: 'blur(10px)',
+          overflow: 'hidden'
+        }}>
+          
+          {/* Header Section */}
+          <div style={{
+
+            padding: '40px 40px 30px 40px',
+            color: 'white',
+            textAlign: 'center'
+          }}>
+            <h1 style={{
+              fontSize: '2.5rem',
+              fontWeight: '700',
+              margin: '0 0 10px 0',
+              textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            }}>
+              {t('slots.instructor_profile')}
+            </h1>
+            <p style={{
+              fontSize: '1.1rem',
+              opacity: 0.9,
+              margin: 0
+            }}>
+              Manage your availability, bookings, and profile information
+            </p>
+          </div>
+
+          <div style={{ padding: '40px' }}>
+            {/* Profile Section */}
+            {profile && (
+              <div style={{
+                background: '#fff',
+                borderRadius: 16,
+                padding: '30px',
+                marginBottom: '30px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                border: '1px solid #f0f0f0'
+              }}>
+                <h2 style={{
+                  fontSize: '1.5rem',
+                  color: '#2c3e50',
+                  margin: '0 0 20px 0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <span style={{
+                    background: '#91bf55',
+                    color: 'white',
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    fontSize: '1rem'
+                  }}>
+                    👤
+                  </span>
+                  Profile Information
+                </h2>
+                
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                  gap: '20px',
+                  marginBottom: '25px'
+                }}>
+                  <div style={{
+                    background: '#f8f9fa',
+                    padding: '20px',
+                    borderRadius: '12px',
+                    border: '1px solid #e9ecef'
+                  }}>
+                    <div style={{ color: '#6c757d', fontSize: '0.9rem', marginBottom: '5px' }}>
+                      {t('slots.full_name')}
+                    </div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: '600', color: '#2c3e50' }}>
+                      {profile.firstName} {profile.lastName}
+                    </div>
+                  </div>
+                  
+                  <div style={{
+                    background: '#f8f9fa',
+                    padding: '20px',
+                    borderRadius: '12px',
+                    border: '1px solid #e9ecef'
+                  }}>
+                    <div style={{ color: '#6c757d', fontSize: '0.9rem', marginBottom: '5px' }}>
+                      {t('slots.email')}
+                    </div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: '600', color: '#2c3e50' }}>
+                      {profile.email}
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{
+                  background: '#f8f9fa',
+                  padding: '25px',
+                  borderRadius: '12px',
+                  border: '1px solid #e9ecef'
+                }}>
+                  <h3 style={{
+                    fontSize: '1.2rem',
+                    color: '#2c3e50',
+                    margin: '0 0 15px 0'
+                  }}>
+                    📍 Location Details
+                  </h3>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: '15px',
+                    marginBottom: '20px'
+                  }}>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        color: '#6c757d',
+                        fontSize: '0.9rem',
+                        marginBottom: '8px'
+                      }}>
+                        {t('slots.city')}
+                      </label>
+                                              <input
+                          value={city}
+                          onChange={e => setCity(e.target.value)}
+                          placeholder={t('slots.city')}
+                          style={{
+                            width: '100%',
+                            padding: '12px 16px',
+                            border: '2px solid #e9ecef',
+                            borderRadius: '8px',
+                            fontSize: '1rem',
+                            transition: 'border-color 0.3s ease'
+                          }}
+                        />
+                    </div>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        color: '#6c757d',
+                        fontSize: '0.9rem',
+                        marginBottom: '8px'
+                      }}>
+                        {t('slots.location')}
+                      </label>
+                                              <input
+                          value={location}
+                          onChange={e => setLocation(e.target.value)}
+                          placeholder={t('slots.location')}
+                          style={{
+                            width: '100%',
+                            padding: '12px 16px',
+                            border: '2px solid #e9ecef',
+                            borderRadius: '8px',
+                            fontSize: '1rem',
+                            transition: 'border-color 0.3s ease'
+                          }}
+                        />
+                    </div>
+                  </div>
+                  <button
+                    id="isave"
+                    onClick={handleSaveCityLocation}
+                    style={{
+                      background: '#91bf55]',
+                      color: 'white',
+                      border: 'none',
+                      padding: '12px 24px',
+                      borderRadius: '8px',
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 4px 12px rgba(145, 191, 85, 0.3)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 6px 20px rgba(145, 191, 85, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(145, 191, 85, 0.3)';
+                    }}
+                  >
+                    💾 {t('slots.save')}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Regions Section */}
+            <div style={{
+              background: '#fff',
+              borderRadius: 16,
+              padding: '30px',
+              marginBottom: '30px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              border: '1px solid #f0f0f0'
+            }}>
+              <h3 style={{
+                fontSize: '1.5rem',
+                color: '#2c3e50',
+                margin: '0 0 20px 0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <span style={{
+                  background: '#3498db',
+                  color: 'white',
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  fontSize: '1rem'
+                }}>
+                  🌍
+                </span>
+                {t('slots.assigned_regions')}
+              </h3>
+              
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '10px',
+                marginBottom: '20px'
+              }}>
+                {regions.map((r, i) => (
+                  <span key={i} style={{
+                    background: '#e3f2fd',
+                    color: '#1976d2',
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    border: '1px solid #bbdefb'
+                  }}>
+                    {r}
+                  </span>
+                ))}
+              </div>
+              
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                alignItems: 'flex-end'
+              }}>
+                <input
+                  value={regionInput}
+                  onChange={e => setRegionInput(e.target.value)}
+                  placeholder={t('slots.add_region')}
+                  style={{
+                    flex: 1,
+                    padding: '12px 16px',
+                    border: '2px solid #e9ecef',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    transition: 'border-color 0.3s ease'
+                  }}
+                />
+                <button
+                  id="isave"
+                  onClick={handleAddRegion}
+                  style={{
+                    background: '#3498db',
+                    color: 'white',
+                    border: 'none',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  ➕ {t('slots.add')}
+                </button>
+              </div>
+            </div>
+
+            {/* Subjects Section */}
+            <div style={{
+              background: '#fff',
+              borderRadius: 16,
+              padding: '30px',
+              marginBottom: '30px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              border: '1px solid #f0f0f0'
+            }}>
+              <h3 style={{
+                fontSize: '1.5rem',
+                color: '#2c3e50',
+                margin: '0 0 20px 0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <span style={{
+                  background: '#9c27b0',
+                  color: 'white',
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  fontSize: '1rem'
+                }}>
+                  📚
+                </span>
+                {t('slots.subjects_courses')}
+              </h3>
+              
+              <div style={{
+                display: 'grid',
+                gap: '15px',
+                marginBottom: '25px'
+              }}>
+                {subjects.map((s, i) => (
+                  <div key={i} style={{
+                    background: '#f8f9fa',
+                    padding: '20px',
+                    borderRadius: '12px',
+                    border: '1px solid #e9ecef',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <div>
+                      <div style={{
+                        fontSize: '1.1rem',
+                        fontWeight: '600',
+                        color: '#2c3e50',
+                        marginBottom: '5px'
+                      }}>
+                        {s.name}
+                      </div>
+                      <div style={{
+                        color: '#6c757d',
+                        fontSize: '0.9rem'
+                      }}>
+                        {t('slots.duration')}: {s.durationWeeks} {t('slots.weeks')}
+                      </div>
+                    </div>
+                    <button
+                      id="idel"
+                      onClick={() => handleDeleteSubject(i)}
+                      style={{
+                        background: '#e74c3c',
+                        color: 'white',
+                        border: 'none',
+                        padding: '8px 16px',
+                        borderRadius: '8px',
+                        fontSize: '0.9rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease'
+                      }}
+                    >
+                      🗑️ {t('slots.delete')}
+                    </button>
+                  </div>
+                ))}
+              </div>
+              
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '2fr 1fr auto',
+                gap: '12px',
+                alignItems: 'flex-end'
+              }}>
+                <input
+                  value={subjectName}
+                  onChange={e => setSubjectName(e.target.value)}
+                  placeholder={t('slots.add_subject_course')}
+                  style={{
+                    padding: '12px 16px',
+                    border: '2px solid #e9ecef',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    transition: 'border-color 0.3s ease'
+                  }}
+                />
+                <input
+                  type="number"
+                  min={1}
+                  value={subjectDuration}
+                  onChange={e => setSubjectDuration(e.target.value)}
+                  placeholder={t('slots.duration_weeks')}
+                  style={{
+                    padding: '12px 16px',
+                    border: '2px solid #e9ecef',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    transition: 'border-color 0.3s ease'
+                  }}
+                />
+                <button
+                  id="isave"
+                  onClick={handleAddSubject}
+                  style={{
+                    background: '#9c27b0',
+                    color: 'white',
+                    border: 'none',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  ➕ {t('slots.add')}
+                </button>
+              </div>
+            </div>
+
+            {/* Availability Section */}
+            <div style={{
+              background: '#fff',
+              borderRadius: 16,
+              padding: '30px',
+              marginBottom: '30px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              border: '1px solid #f0f0f0'
+            }}>
+              <h3 style={{
+                fontSize: '1.5rem',
+                color: '#2c3e50',
+                margin: '0 0 20px 0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <span style={{
+                  background: '#ff9800',
+                  color: 'white',
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  fontSize: '1rem'
+                }}>
+                  ⏰
+                </span>
+                {t('slots.set_available_hours')}
+              </h3>
+              
+              <div style={{
+                display: 'grid',
+                gap: '20px'
+              }}>
+                {DAYS.map(day => (
+                  <div key={day} style={{
+                    background: '#f8f9fa',
+                    padding: '20px',
+                    borderRadius: '12px',
+                    border: '1px solid #e9ecef'
+                  }}>
+                    <div style={{
+                      fontSize: '1.1rem',
+                      fontWeight: '600',
+                      color: '#2c3e50',
+                      marginBottom: '15px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px'
+                    }}>
+                      <span style={{
+                        background: '#ff9800',
+                        color: 'white',
+                        padding: '4px 12px',
+                        borderRadius: '12px',
+                        fontSize: '0.8rem'
+                      }}>
+                        {t(`slots.days.${day.toLowerCase()}`)}
+                      </span>
+                    </div>
+                    
+                    <div style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '10px',
+                      marginBottom: '15px'
+                    }}>
+                      {(availability[day] || []).map((slot, idx) => (
+                        <div key={idx} style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          background: 'white',
+                          padding: '12px',
+                          borderRadius: '8px',
+                          border: '1px solid #e9ecef'
+                        }}>
+                          <input
+                            type="time"
+                            value={slot.start || ''}
+                            onChange={e => handleAvailabilityChange(day, idx, 'start', e.target.value)}
+                            style={{
+                              padding: '8px 12px',
+                              border: '1px solid #e9ecef',
+                              borderRadius: '6px',
+                              fontSize: '0.9rem'
+                            }}
+                          />
+                          <span style={{ color: '#6c757d' }}>-</span>
+                          <input
+                            type="time"
+                            value={slot.end || ''}
+                            onChange={e => handleAvailabilityChange(day, idx, 'end', e.target.value)}
+                            style={{
+                              padding: '8px 12px',
+                              border: '1px solid #e9ecef',
+                              borderRadius: '6px',
+                              fontSize: '0.9rem'
+                            }}
+                          />
+                          <button
+                            id="idel"
+                            onClick={() => handleDeleteSlot(day, idx)}
+                            style={{
+                              background: '#e74c3c',
+                              color: 'white',
+                              border: 'none',
+                              padding: '6px 10px',
+                              borderRadius: '6px',
+                              fontSize: '0.8rem',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <button
+                      onClick={() => handleAddSlot(day)}
+                      style={{
+                        background: '#ff9800',
+                        color: 'white',
+                        border: 'none',
+                        padding: '8px 16px',
+                        borderRadius: '8px',
+                        fontSize: '0.9rem',
+                        cursor: 'pointer',
+                        marginBottom: '15px'
+                      }}
+                    >
+                      ➕ {t('slots.add_slot')}
+                    </button>
+                    
+                    <div style={{
+                      background: '#e8f5e8',
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      border: '1px solid #c8e6c9'
+                    }}>
+                      <div style={{
+                        color: '#2e7d32',
+                        fontSize: '0.9rem',
+                        fontWeight: '500'
+                      }}>
+                        🆓 {t('slots.free_slots')}: {getFreeSlots(day).map((slot, i) => `${slot.start} - ${slot.end}`).join(', ') || t('slots.none')}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <button
+                onClick={handleSaveAvailability}
+                style={{
+                  background: '#ff9800',
+                  color: 'white',
+                  border: 'none',
+                  padding: '14px 28px',
+                  borderRadius: '8px',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  marginTop: '20px',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                💾 {t('slots.save_availability')}
+              </button>
+            </div>
+
+            {/* Bookings Sections */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
+              gap: '30px'
+            }}>
+              {/* Confirmed Bookings */}
+              <div style={{
+                background: '#fff',
+                borderRadius: 16,
+                padding: '30px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                border: '1px solid #f0f0f0'
+              }}>
+                <h3 style={{
+                  fontSize: '1.5rem',
+                  color: '#2c3e50',
+                  margin: '0 0 20px 0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <span style={{
+                    background: '#27ae60',
+                    color: 'white',
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    fontSize: '1rem'
+                  }}>
+                    ✅
+                  </span>
+                  {t('slots.my_confirmed_bookings')}
+                </h3>
+                
+                <div style={{
+                  background: '#f8f9fa',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  border: '1px solid #e9ecef'
+                }}>
+                  <table style={{
+                    width: '100%',
+                    borderCollapse: 'collapse'
+                  }}>
+                    <thead>
+                      <tr style={{
+                        background: '#27ae60',
+                        color: 'white'
+                      }}>
+                        <th style={{
+                          padding: '16px 12px',
+                          textAlign: 'left',
+                          fontSize: '0.9rem',
+                          fontWeight: '600'
+                        }}>
+                          {t('slots.date')}
+                        </th>
+                        <th style={{
+                          padding: '16px 12px',
+                          textAlign: 'left',
+                          fontSize: '0.9rem',
+                          fontWeight: '600'
+                        }}>
+                          {t('slots.time')}
+                        </th>
+                        <th style={{
+                          padding: '16px 12px',
+                          textAlign: 'left',
+                          fontSize: '0.9rem',
+                          fontWeight: '600'
+                        }}>
+                          {t('slots.location')}
+                        </th>
+                        <th style={{
+                          padding: '16px 12px',
+                          textAlign: 'left',
+                          fontSize: '0.9rem',
+                          fontWeight: '600'
+                        }}>
+                          {t('slots.course')}
+                        </th>
+                        <th style={{
+                          padding: '16px 12px',
+                          textAlign: 'left',
+                          fontSize: '0.9rem',
+                          fontWeight: '600'
+                        }}>
+                          {t('slots.action')}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {assignedBookings.map((b, i) => (
+                        <tr id="dids" key={i} style={{
+                          borderBottom: '1px solid #e9ecef',
+                          background: i % 2 === 0 ? 'white' : '#f8f9fa'
+                        }}>
+                          <td style={{
+                            padding: '16px 12px',
+                            fontSize: '0.9rem',
+                            color: '#2c3e50'
+                          }}>
+                            {b.date}
+                          </td>
+                          <td style={{
+                            padding: '16px 12px',
+                            fontSize: '0.9rem',
+                            color: '#2c3e50'
+                          }}>
+                            {b.start || '-'} - {b.end || '-'}
+                          </td>
+                          <td style={{
+                            padding: '16px 12px',
+                            fontSize: '0.9rem',
+                            color: '#2c3e50'
+                          }}>
+                            {b.city}, {b.area}
+                          </td>
+                          <td style={{
+                            padding: '16px 12px',
+                            fontSize: '0.9rem',
+                            color: '#2c3e50'
+                          }}>
+                            {b.courseName}
+                          </td>
+                          <td style={{
+                            padding: '16px 12px'
+                          }}>
+                            <button
+                              id="dids"
+                              onClick={async () => {
+                                await axios.delete(`${API_BASE_URL}/api/bookings/${b._id}`);
+                                setAssignedBookings(assignedBookings.filter(x => x._id !== b._id));
+                              }}
+                              style={{
+                                background: '#e74c3c',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '6px',
+                                padding: '8px 16px',
+                                fontSize: '0.8rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease'
+                              }}
+                            >
+                              🗑️ {t('slots.delete')}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                      {assignedBookings.length === 0 && (
+                        <tr>
+                          <td colSpan={5} style={{
+                            textAlign: 'center',
+                            padding: '40px 20px',
+                            color: '#6c757d',
+                            fontSize: '1rem'
+                          }}>
+                            📭 {t('slots.no_confirmed_bookings')}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Pending Bookings */}
+              <div style={{
+                background: '#fff',
+                borderRadius: 16,
+                padding: '30px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                border: '1px solid #f0f0f0'
+              }}>
+                <h3 style={{
+                  fontSize: '1.5rem',
+                  color: '#2c3e50',
+                  margin: '0 0 20px 0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <span style={{
+                    background: '#f39c12',
+                    color: 'white',
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    fontSize: '1rem'
+                  }}>
+                    ⏳
+                  </span>
+                  {t('slots.pending_bookings')}
+                </h3>
+                
+                <div style={{
+                  background: '#f8f9fa',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  border: '1px solid #e9ecef'
+                }}>
+                  <table style={{
+                    width: '100%',
+                    borderCollapse: 'collapse'
+                  }}>
+                    <thead>
+                      <tr style={{
+                        background: '#f39c12',
+                        color: 'white'
+                      }}>
+                        <th style={{
+                          padding: '16px 12px',
+                          textAlign: 'left',
+                          fontSize: '0.9rem',
+                          fontWeight: '600'
+                        }}>
+                          {t('slots.date')}
+                        </th>
+                        <th style={{
+                          padding: '16px 12px',
+                          textAlign: 'left',
+                          fontSize: '0.9rem',
+                          fontWeight: '600'
+                        }}>
+                          {t('slots.time')}
+                        </th>
+                        <th style={{
+                          padding: '16px 12px',
+                          textAlign: 'left',
+                          fontSize: '0.9rem',
+                          fontWeight: '600'
+                        }}>
+                          {t('slots.location')}
+                        </th>
+                        <th style={{
+                          padding: '16px 12px',
+                          textAlign: 'left',
+                          fontSize: '0.9rem',
+                          fontWeight: '600'
+                        }}>
+                          {t('slots.course')}
+                        </th>
+                        <th style={{
+                          padding: '16px 12px',
+                          textAlign: 'left',
+                          fontSize: '0.9rem',
+                          fontWeight: '600'
+                        }}>
+                          {t('slots.action')}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pendingBookings.map((b, i) => (
+                        <tr key={i} style={{
+                          borderBottom: '1px solid #e9ecef',
+                          background: i % 2 === 0 ? 'white' : '#f8f9fa'
+                        }}>
+                          <td style={{
+                            padding: '16px 12px',
+                            fontSize: '0.9rem',
+                            color: '#2c3e50'
+                          }}>
+                            {b.date}
+                          </td>
+                          <td style={{
+                            padding: '16px 12px',
+                            fontSize: '0.9rem',
+                            color: '#2c3e50'
+                          }}>
+                            {b.start || '-'} - {b.end || '-'}
+                          </td>
+                          <td style={{
+                            padding: '16px 12px',
+                            fontSize: '0.9rem',
+                            color: '#2c3e50'
+                          }}>
+                            {b.city}, {b.area}
+                          </td>
+                          <td style={{
+                            padding: '16px 12px',
+                            fontSize: '0.9rem',
+                            color: '#2c3e50'
+                          }}>
+                            {b.courseName}
+                          </td>
+                          <td style={{
+                            padding: '16px 12px'
+                          }}>
+                            <button
+                              onClick={async () => {
+                                await handleAcceptBooking(b._id);
+                                window.location.reload();
+                              }}
+                              style={{
+                                background: '#27ae60',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '6px',
+                                padding: '8px 16px',
+                                fontSize: '0.8rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease'
+                              }}
+                            >
+                              ✅ {t('slots.accept')}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                      {pendingBookings.length === 0 && (
+                        <tr>
+                          <td colSpan={5} style={{
+                            textAlign: 'center',
+                            padding: '40px 20px',
+                            color: '#6c757d',
+                            fontSize: '1rem'
+                          }}>
+                            📭 {t('slots.no_pending_bookings')}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                
+                {acceptMessage && (
+                  <div style={{
+                    background: '#d4edda',
+                    color: '#155724',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    marginTop: '15px',
+                    border: '1px solid #c3e6cb',
+                    fontSize: '0.9rem'
+                  }}>
+                    ✅ {acceptMessage}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Messages */}
+            {message && (
+              <div style={{
+                background: '#d4edda',
+                color: '#155724',
+                padding: '16px 20px',
+                borderRadius: '12px',
+                marginTop: '20px',
+                border: '1px solid #c3e6cb',
+                fontSize: '1rem',
+                textAlign: 'center'
+              }}>
+                💚 {message}
+              </div>
+            )}
           </div>
         </div>
-      )}
-      <div style={{ marginBottom: 20 }}>
-        <h3>{t('slots.assigned_regions')}</h3>
-        <ul>{regions.map((r, i) => <li key={i}>{r}</li>)}</ul>
-        <input value={regionInput} onChange={e => setRegionInput(e.target.value)} placeholder={t('slots.add_region')} />
-        <button id="isave" onClick={handleAddRegion}>{t('slots.add')}</button>
       </div>
-      <div style={{ marginBottom: 20 }}>
-        <h3>{t('slots.subjects_courses')}</h3>
-        <ul>
-          {subjects.map((s, i) => (
-            <li key={i}>
-              {s.name} ({t('slots.duration')}: {s.durationWeeks} {t('slots.weeks')})
-              <button id="idel"onClick={() => handleDeleteSubject(i)} style={{ marginLeft: 10, color: 'red' }}>{t('slots.delete')}</button>
-            </li>
-          ))}
-        </ul>
-        <input value={subjectName} onChange={e => setSubjectName(e.target.value)} placeholder={t('slots.add_subject_course')} style={{ marginRight: 8 }} />
-        <input type="number" min={1} value={subjectDuration} onChange={e => setSubjectDuration(e.target.value)} placeholder={t('slots.duration_weeks')} style={{ width: 120, marginRight: 8 }} />
-        <button id="isave" onClick={handleAddSubject}>{t('slots.add')}</button>
-      </div>
-      <div style={{ marginBottom: 20 }}>
-        <h3>{t('slots.set_available_hours')}</h3>
-        {DAYS.map(day => (
-          <div key={day} style={{ marginBottom: 10 }}>
-            <b>{t(`slots.days.${day.toLowerCase()}`)}:</b>
-            {(availability[day] || []).map((slot, idx) => (
-              <span key={idx} style={{ marginLeft: 10 }}>
-                <input
-                  type="time"
-                  value={slot.start || ''}
-                  onChange={e => handleAvailabilityChange(day, idx, 'start', e.target.value)}
-                  style={{ width: 90 }}
-                />
-                -
-                <input
-                  type="time"
-                  value={slot.end || ''}
-                  onChange={e => handleAvailabilityChange(day, idx, 'end', e.target.value)}
-                  style={{ width: 90 }}
-                />
-                <button id="idel"onClick={() => handleDeleteSlot(day, idx)} style={{ marginLeft: 5, color: 'red' }}>{t('slots.delete')}</button>
-              </span>
-            ))}
-            <button onClick={() => handleAddSlot(day)} style={{ marginLeft: 10 }}>{t('slots.add_slot')}</button>
-            <div style={{ marginLeft: 20, color: '#888', fontSize: 13 }}>
-              {t('slots.free_slots')}: {getFreeSlots(day).map((slot, i) => `${slot.start} - ${slot.end}`).join(', ') || t('slots.none')}
-            </div>
-          </div>
-        ))}
-        <button onClick={handleSaveAvailability}>{t('slots.save_availability')}</button>
-      </div>
-    
-      <div style={{ marginBottom: 20 }}>
-        <h3>{t('slots.my_confirmed_bookings')}</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ background: '#f5f5f5' }}>
-              <th>{t('slots.date')}</th>
-              <th>{t('slots.time')}</th>
-              <th>{t('slots.location')}</th>
-              <th>{t('slots.course')}</th>
-              <th>{t('slots.action')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {assignedBookings.map((b, i) => (
-              <tr id="dids" key={i}>
-                <td>{b.date}</td>
-                <td>{b.start || '-'} - {b.end || '-'}</td>
-                <td>{b.city}, {b.area}</td>
-                <td>{b.courseName}</td>
-                <td>
-                  <button id="dids" onClick={async () => {
-                    await axios.delete(`${API_BASE_URL}/api/bookings/${b._id}`);
-                    setAssignedBookings(assignedBookings.filter(x => x._id !== b._id));
-                  }} style={{ background: '#e74c3c', color: '#fff', border: 'none', borderRadius: 4, padding: '6px 12px' }}>{t('slots.delete')}</button>
-                </td>
-              </tr>
-            ))}
-            {assignedBookings.length === 0 && (
-              <tr><td colSpan={5} style={{ textAlign: 'center', padding: 20 }}>{t('slots.no_confirmed_bookings')}</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      <div style={{ marginBottom: 20 }}>
-        <h3>{t('slots.pending_bookings')}</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ background: '#f5f5f5' }}>
-              <th>{t('slots.date')}</th>
-              <th>{t('slots.time')}</th>
-              <th>{t('slots.location')}</th>
-              <th>{t('slots.course')}</th>
-              <th>{t('slots.action')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pendingBookings.map((b, i) => (
-              <tr key={i}>
-                <td>{b.date}</td>
-                <td>{b.start || '-'} - {b.end || '-'}</td>
-                <td>{b.city}, {b.area}</td>
-                <td>{b.courseName}</td>
-                <td>
-                  <button onClick={async () => {
-                    await handleAcceptBooking(b._id);
-                    window.location.reload(); // Reload the page after accepting
-                  }} style={{ background: '#27ae60', color: '#fff', border: 'none', borderRadius: 4, padding: '6px 12px' }}>{t('slots.accept')}</button>
-                </td>
-              </tr>
-            ))}
-            {pendingBookings.length === 0 && (
-              <tr><td colSpan={5} style={{ textAlign: 'center', padding: 20 }}>{t('slots.no_pending_bookings')}</td></tr>
-            )}
-          </tbody>
-        </table>
-        {acceptMessage && <div style={{ color: 'green', marginTop: 10 }}>{acceptMessage}</div>}
-      </div>
-      {message && <div style={{ color: 'green', marginTop: 10 }}>{message}</div>}
-    </div>
-    <Footer2/>
+      <Footer2 />
     </>
   );
 };
