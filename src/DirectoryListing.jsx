@@ -54,6 +54,8 @@ const DirectoryListing = () => {
     if (isLoggedIn) {
       fetchUser();
     }
+    // Auto-detect user location
+    detectUserLocation();
   }, [isLoggedIn]);
 
   useEffect(() => {
@@ -254,7 +256,85 @@ const DirectoryListing = () => {
     }
   };
 
-  // detectUserLocation function and its useEffect - REMOVED
+  // Add back the detectUserLocation function
+  const detectUserLocation = async () => {
+    try {
+      // Try to get location from IP using the backend
+      const response = await fetch(`${API_BASE}/api/directory/nearby`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.userLocation && data.userLocation.city !== 'Unknown') {
+          setForm(prev => ({
+            ...prev,
+            city: data.userLocation.city || '',
+            state: data.userLocation.state || '',
+            country: data.userLocation.country || ''
+          }));
+          return;
+        }
+      }
+    } catch (error) {
+      console.log('Could not auto-detect location from backend:', error);
+    }
+
+    // Fallback: try browser geolocation
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            // Use a free reverse geocoding service
+            const { latitude, longitude } = position.coords;
+            const geoResponse = await fetch(
+              `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=YOUR_OPENCAGE_API_KEY`
+            );
+            if (geoResponse.ok) {
+              const geoData = await geoResponse.json();
+              if (geoData.results && geoData.results.length > 0) {
+                const result = geoData.results[0].components;
+                setForm(prev => ({
+                  ...prev,
+                  city: result.city || result.town || result.village || '',
+                  state: result.state || '',
+                  country: result.country || ''
+                }));
+              }
+            }
+          } catch (geoError) {
+            console.log('Geolocation reverse lookup failed:', geoError);
+            // Use a simple fallback
+            setForm(prev => ({
+              ...prev,
+              city: 'New York',
+              state: 'New York',
+              country: 'USA'
+            }));
+          }
+        },
+        (error) => {
+          console.log('Browser geolocation failed:', error);
+          // Use a simple fallback
+          setForm(prev => ({
+            ...prev,
+            city: 'New York',
+            state: 'New York',
+            country: 'USA'
+          }));
+        }
+      );
+    } else {
+      // Fallback for browsers without geolocation
+      setForm(prev => ({
+        ...prev,
+        city: 'New York',
+        state: 'New York',
+        country: 'USA'
+      }));
+    }
+  };
 
   // filteredListings, selectedLetter, getRowStyle - REMOVED
 
@@ -401,7 +481,7 @@ const DirectoryListing = () => {
                         <div style={{ marginBottom: 20 }}>
                           <button
                             type="button"
-                            onClick={() => alert('Location auto-detection feature is available on the Services page')}
+                            onClick={detectUserLocation}
                             style={{
                               background: '#2196F3',
                               color: 'white',

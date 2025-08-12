@@ -352,29 +352,51 @@ const Services = () => {
       if (selectedCategory) {
         // Special handling for Local Contractors - always filter by location
         if (selectedCategory === 'Local Contractors') {
-          // Get user's location from localStorage or use default
-          const userLocation = JSON.parse(localStorage.getItem('userLocation')) || {
-            city: 'New York',
-            state: 'NY',
-            country: 'USA'
-          };
+          // Get user's actual location from localStorage
+          const userLocation = JSON.parse(localStorage.getItem('userLocation'));
           
-          return directoryListings.filter(l => 
-            l.industry === selectedCategory &&
-            l.city && l.state && l.country && // Ensure location data exists
-            (
-              l.city.toLowerCase() === userLocation.city.toLowerCase() ||
-              l.state.toLowerCase() === userLocation.state.toLowerCase() ||
-              l.country.toLowerCase() === userLocation.country.toLowerCase()
-            )
-          );
+          if (userLocation && userLocation.city && userLocation.state && userLocation.country) {
+            return directoryListings.filter(l => 
+              l.industry === selectedCategory &&
+              l.city && l.state && l.country && // Ensure location data exists
+              (
+                l.city.toLowerCase() === userLocation.city.toLowerCase() ||
+                l.state.toLowerCase() === userLocation.state.toLowerCase() ||
+                l.country.toLowerCase() === userLocation.country.toLowerCase()
+              )
+            );
+          } else {
+            // If no user location, show all Local Contractors
+            return directoryListings.filter(l => l.industry === selectedCategory);
+          }
         }
         return directoryListings.filter(l => l.industry === selectedCategory);
       } else {
         return directoryListings; // Show all listings when no category is selected
       }
     } else {
-      return directoryListings.filter(l => (l.company || '').toUpperCase().startsWith(selectedLetter));
+      // In alphabetical view, show all listings that start with selected letter
+      // But for Local Contractors, also apply location filtering if user location exists
+      const userLocation = JSON.parse(localStorage.getItem('userLocation'));
+      
+      return directoryListings.filter(l => {
+        const matchesLetter = (l.company || '').toUpperCase().startsWith(selectedLetter);
+        
+        // If it's a Local Contractor and we have user location, apply location filtering
+        if (l.industry === 'Local Contractors' && userLocation && userLocation.city && userLocation.state && userLocation.country) {
+          const hasLocationData = l.city && l.state && l.country;
+          const matchesLocation = hasLocationData && (
+            l.city.toLowerCase() === userLocation.city.toLowerCase() ||
+            l.state.toLowerCase() === userLocation.state.toLowerCase() ||
+            l.country.toLowerCase() === userLocation.country.toLowerCase()
+          );
+          
+          return matchesLetter && hasLocationData && matchesLocation;
+        }
+        
+        // For non-Local Contractors or when no location data, just filter by letter
+        return matchesLetter;
+      });
     }
   };
   
@@ -532,12 +554,12 @@ const Services = () => {
                     }}>
                       📍 Showing Local Contractors in: {
                         (() => {
-                          const userLocation = JSON.parse(localStorage.getItem('userLocation')) || {
-                            city: 'New York',
-                            state: 'NY',
-                            country: 'USA'
-                          };
-                          return `${userLocation.city}, ${userLocation.state}, ${userLocation.country}`;
+                          const userLocation = JSON.parse(localStorage.getItem('userLocation'));
+                          if (userLocation && userLocation.city && userLocation.state && userLocation.country) {
+                            return `${userLocation.city}, ${userLocation.state}, ${userLocation.country}`;
+                          } else {
+                            return 'All locations (no user location detected)';
+                          }
                         })()
                       }
                     </div>
@@ -572,6 +594,31 @@ const Services = () => {
               </div>
               </div>
               )}
+              
+              {/* Location indicator for alphabetical view when Local Contractors are filtered */}
+              {viewMode === 'alphabetical' && (() => {
+                const userLocation = JSON.parse(localStorage.getItem('userLocation'));
+                const hasLocalContractors = filteredListings.some(l => l.industry === 'Local Contractors');
+                
+                if (hasLocalContractors && userLocation && userLocation.city && userLocation.state && userLocation.country) {
+                  return (
+                    <div style={{
+                      marginTop: '16px',
+                      padding: '12px 20px',
+                      background: '#f0f8ff',
+                      borderRadius: '8px',
+                      border: '1px solid #90be55',
+                      fontSize: '14px',
+                      color: '#333',
+                      textAlign: 'center'
+                    }}>
+                      📍 Local Contractors in alphabetical view are filtered by your location: {userLocation.city}, {userLocation.state}, {userLocation.country}
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+
               {/* Directory Table */}
   
               <div id="ttable" ref={tableRef} style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
