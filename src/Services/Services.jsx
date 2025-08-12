@@ -656,6 +656,84 @@ const Services = () => {
                 return null;
               })()}
 
+              {/* Manual location override for testing */}
+              <div style={{
+                marginTop: '16px',
+                padding: '16px 20px',
+                background: '#e8f5e8',
+                borderRadius: '8px',
+                border: '1px solid #90be55',
+                fontSize: '14px',
+                color: '#2d5a2d'
+              }}>
+                <strong>📍 Manual Location Override (for testing):</strong><br/>
+                <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                  <input
+                    type="text"
+                    placeholder="City"
+                    id="manualCity"
+                    style={{ padding: '4px 8px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '12px' }}
+                  />
+                  <input
+                    type="text"
+                    placeholder="State"
+                    id="manualState"
+                    style={{ padding: '4px 8px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '12px' }}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Country"
+                    id="manualCountry"
+                    style={{ padding: '4px 8px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '12px' }}
+                  />
+                  <button
+                    onClick={() => {
+                      const city = document.getElementById('manualCity').value;
+                      const state = document.getElementById('manualState').value;
+                      const country = document.getElementById('manualCountry').value;
+                      if (city && state && country) {
+                        const locationData = { city, state, country };
+                        localStorage.setItem('userLocation', JSON.stringify(locationData));
+                        console.log('Manual location set:', locationData);
+                        // Force re-render
+                        window.location.reload();
+                      } else {
+                        alert('Please fill in all location fields');
+                      }
+                    }}
+                    style={{
+                      padding: '4px 12px',
+                      background: '#90be55',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Set Location
+                  </button>
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem('userLocation');
+                      console.log('Location cleared');
+                      window.location.reload();
+                    }}
+                    style={{
+                      padding: '4px 12px',
+                      background: '#ff6b57',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Clear Location
+                  </button>
+                </div>
+              </div>
+
               {/* Debug section to show location data */}
               {process.env.NODE_ENV === 'development' && (
                 <div style={{
