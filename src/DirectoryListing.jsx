@@ -15,17 +15,32 @@ gsap.registerPlugin(ScrollTrigger);
 const DirectoryListing = () => {
   const { t } = useTranslation();
   const [user, setUser] = useState(null); // { package: 'free'|'pro'|'premium', ... }
-  const [listings, setListings] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [apiError, setApiError] = useState(false);
   
   // Refs for animations
   const titleRef = useRef(null);
+  const formRef = useRef(null);
+  const submitButtonRef = useRef(null);
+  const errorRef = useRef(null);
+  const successRef = useRef(null);
   const iphoneMsgRef = useRef(null);
   
-  const [selectedLetter, setSelectedLetter] = useState('A');
-  const [selectedIndustry, setSelectedIndustry] = useState("All");
-  const [userLocation, setUserLocation] = useState(null);
+  const [form, setForm] = useState({
+    company: '',
+    email: '',
+    phone: '',
+    address: '',
+    socialType: '', // new for dropdown
+    socialLink: '', // new for input
+    industry: '',
+    description: '',
+    image: null,
+    // Location fields for contractor matching
+    city: '',
+    state: '',
+    country: '',
+  });
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const { get, post } = useApi();
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
 
@@ -35,20 +50,16 @@ const DirectoryListing = () => {
     if (isIPhoneSafari() && iphoneMsgRef.current) {
       gsap.fromTo(iphoneMsgRef.current, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' });
     }
-    // Always fetch listings regardless of login status
-    fetchListings();
     // Only fetch user info if logged in
     if (isLoggedIn) {
       fetchUser();
     }
-    // Auto-detect user location
-    detectUserLocation();
   }, [isLoggedIn]);
 
   useEffect(() => {
     // Initialize animations
     initializeAnimations();
-  }, [user, listings]);
+  }, [user]);
 
   const initializeAnimations = () => {
     // Title animation
@@ -68,6 +79,70 @@ const DirectoryListing = () => {
         }
       );
     }
+
+    // Form animation
+    if (formRef.current) {
+      gsap.fromTo(formRef.current,
+        { opacity: 0, x: -50 },
+        { 
+          opacity: 1, 
+          x: 0, 
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: formRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+    }
+
+    // Submit button animation
+    if (submitButtonRef.current) {
+      gsap.fromTo(submitButtonRef.current,
+        { opacity: 0, scale: 0.8 },
+        { 
+          opacity: 1, 
+          scale: 1, 
+          duration: 0.6,
+          ease: "back.out(1.7)",
+          scrollTrigger: {
+            trigger: submitButtonRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+    }
+
+    // Error message animation
+    if (errorRef.current) {
+      gsap.fromTo(errorRef.current,
+        { opacity: 0, scale: 0.8, y: -20 },
+        { 
+          opacity: 1, 
+          scale: 1, 
+          y: 0, 
+          duration: 0.5, 
+          ease: "back.out(1.7)" 
+        }
+      );
+    }
+
+    // Success message animation
+    if (successRef.current) {
+      gsap.fromTo(successRef.current,
+        { opacity: 0, scale: 0.8, y: -20 },
+        { 
+          opacity: 1, 
+          scale: 1, 
+          y: 0, 
+          duration: 0.5, 
+          ease: "back.out(1.7)" 
+        }
+      );
+    }
   };
 
   const fetchUser = async () => {
@@ -79,167 +154,109 @@ const DirectoryListing = () => {
     }
   };
 
-  const fetchListings = async () => {
-    try {
-      setIsLoading(true);
-      setApiError(false);
-      console.log('Starting fetchListings...');
-      console.log('API_BASE:', API_BASE);
-      console.log('isLoggedIn:', isLoggedIn);
-      
-      let data;
-      
-      // For iPhone Safari, try the special endpoint first
-      if (isIPhoneSafari()) {
-        console.log('iPhone Safari detected, trying special endpoint...');
-        try {
-          const response = await fetch(`${API_BASE}/api/directory/iphone-access`, {
-            credentials: 'include',
-            headers: getAuthHeaders(),
-          });
-          
-          console.log('iPhone endpoint response status:', response.status);
-          
-          if (response.ok) {
-            const result = await response.json();
-            data = result.listings;
-            console.log('iPhone endpoint success, data:', data);
-          } else {
-            throw new Error(`iPhone endpoint failed with status: ${response.status}`);
-          }
-        } catch (iphoneError) {
-          console.log('iPhone endpoint failed, trying regular endpoint:', iphoneError);
-          // Try direct fetch without authentication for public access
-          const response = await fetch(`${API_BASE}/api/directory`);
-          console.log('Direct fetch response status:', response.status);
-          
-          if (response.ok) {
-            data = await response.json();
-            console.log('Direct fetch success, data:', data);
-          } else {
-            throw new Error(`Regular endpoint failed with status: ${response.status}`);
-          }
-        }
-      } else {
-        console.log('Regular browser, trying direct fetch...');
-        // Try direct fetch without authentication for public access
-        try {
-          const response = await fetch(`${API_BASE}/api/directory`);
-          console.log('Direct fetch response status:', response.status);
-          
-          if (response.ok) {
-            data = await response.json();
-            console.log('Direct fetch success, data:', data);
-          } else {
-            console.log('Direct fetch failed, trying useApi fallback...');
-            // Fallback to useApi if direct fetch fails
-            data = await get(`${API_BASE}/api/directory`, 'Loading directory listings...');
-          }
-        } catch (directError) {
-          console.log('Direct fetch failed, trying useApi:', directError);
-          data = await get(`${API_BASE}/api/directory`, 'Loading directory listings...');
-        }
-      }
-      
-      console.log('Final fetched listings:', data); // Debug log
-      setListings(data || []);
-    } catch (err) {
-      console.error('Listings fetch error:', err);
-      console.error('Error details:', {
-        message: err.message,
-        stack: err.stack,
-        API_BASE: API_BASE
-      });
-      setListings([]);
-      setApiError(true);
-    } finally {
-      setIsLoading(false);
+  const socialOptions = [
+    { value: '', label: 'Select Platform' },
+    { value: 'Facebook', label: 'Facebook' },
+    { value: 'LinkedIn', label: 'Linkedin' },
+    { value: 'Twitter', label: 'X(Twitter)' },
+    { value: 'Instagram', label: 'Instagram' },
+  ];
+  
+  const industryOptions = [
+    { value: '', label: 'Select Industry' },
+    { value: 'Broker', label: 'Broker' },
+    { value: 'Exchange', label: 'Exchange' },
+    { value: 'Local Contractors', label: 'Local Contractors' },
+    { value: 'Project', label: 'Project' },
+    { value: 'Retail', label: 'Retail' },
+    { value: 'Wholesaler', label: 'Wholesaler' },
+  ];
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === 'image') {
+      setForm(f => ({ ...f, image: files[0] }));
+    } else {
+      setForm(f => ({ ...f, [name]: value }));
     }
+    setError('');
+    setSuccess('');
   };
 
-  const detectUserLocation = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    // For iPhone Safari, show a message to use desktop for submissions
+    if (isIPhoneSafari()) {
+      setError('Please use a desktop computer to submit listings. Directory viewing is available on mobile.');
+      return;
+    }
+
+    if (!user) {
+      setError('Please log in to submit a listing');
+      return;
+    }
+
+    if (user.package === 'free') {
+      setError('Premium membership required to submit listings');
+      return;
+    }
+
     try {
-      // Try to get location from IP using the backend
-      const response = await fetch(`${API_BASE}/api/directory/nearby`, {
-        method: 'GET',
+      console.log("📝 Form data before submission:", form);
+      const formData = new FormData();
+      Object.keys(form).forEach(key => {
+        if (key === "city" || key === "state" || key === "country") {
+          formData.append(key, form[key] || "");
+        } else if (form[key] !== null) {
+          formData.append(key, form[key]);
+        }
+      });
+      // Add userPackage to the form data
+      formData.append('userPackage', user.package);
+
+      console.log("📋 FormData contents:");
+      for (let [key, value] of formData.entries()) {
+        console.log(`  ${key}: ${value}`);
+      }
+
+      const response = await fetch(`${API_BASE}/api/directory`, {
+        method: 'POST',
         credentials: 'include',
+        body: formData,
       });
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.userLocation && data.userLocation.city !== 'Unknown') {
-          setUserLocation(data.userLocation);
-        }
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit listing');
       }
-    } catch (error) {
-      console.log('Could not auto-detect location:', error);
-      // Fallback: try browser geolocation
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            try {
-              // Use a free reverse geocoding service
-              const { latitude, longitude } = position.coords;
-              const geoResponse = await fetch(
-                `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=YOUR_OPENCAGE_API_KEY`
-              );
-              if (geoResponse.ok) {
-                const geoData = await geoResponse.json();
-                if (geoData.results && geoData.results.length > 0) {
-                  const result = geoData.results[0].components;
-                  setUserLocation({
-                    city: result.city || result.town || result.village || '',
-                    state: result.state || '',
-                    country: result.country || ''
-                  });
-                }
-              }
-            } catch (geoError) {
-              console.log('Geolocation reverse lookup failed:', geoError);
-            }
-          },
-          (error) => {
-            console.log('Browser geolocation failed:', error);
-          }
-        );
-      }
+
+      setSuccess('Listing submitted successfully!');
+      setForm({
+        company: '',
+        email: '',
+        phone: '',
+        address: '',
+        socialType: '',
+        socialLink: '',
+        industry: '',
+        description: '',
+        image: null,
+        city: '',
+        state: '',
+        country: '',
+      });
+      // fetchListings(); // Refresh the listings - REMOVED
+    } catch (err) {
+      setError(err.message || 'Failed to submit listing');
     }
   };
 
-  const filteredListings = listings.filter(listing => {
-    if (!listing.company) return false;
-    
-    // If user selected "Local Contractors" and we have user location, filter by location
-    if (selectedIndustry === "Local Contractors" && userLocation) {
-      // Check if listing has location data and matches user's location
-      if (listing.city && listing.state && listing.country) {
-        const locationMatch = 
-          listing.city.toLowerCase() === userLocation.city.toLowerCase() ||
-          listing.state.toLowerCase() === userLocation.state.toLowerCase() ||
-          listing.country.toLowerCase() === userLocation.country.toLowerCase();
-        
-        if (!locationMatch) return false;
-      } else {
-        // If listing has no location data, don't show it for local search
-        return false;
-      }
-    }
-    
-    // Filter by selected letter
-    return listing.company.toUpperCase().startsWith(selectedLetter);
-  });
-  // Debug log for filtered listings
-  console.log('Selected letter:', selectedLetter);
-  console.log('Total listings:', listings.length);
-  console.log('Filtered listings:', filteredListings.length);
-  console.log('Filtered listings data:', filteredListings);
+  // detectUserLocation function and its useEffect - REMOVED
 
-  const getRowStyle = (userPackage) => {
-    if (userPackage === 'free') return {};
-    if (userPackage === 'pro') return { fontWeight: 'bold', color: '#4CAF50' };
-    if (userPackage === 'premium') return { fontWeight: 'bold', color: '#2196F3' };
-    return {};
-  };
+  // filteredListings, selectedLetter, getRowStyle - REMOVED
 
   return (
     <>
@@ -290,131 +307,211 @@ const DirectoryListing = () => {
                 </div>
               ) : (
                 <>
-                  {isLoading ? (
-                    <div style={{ marginTop: 40, textAlign: 'center' }}>
-                      <div style={{ padding: '40px', color: '#666', fontSize: '18px' }}>
-                        Loading directory listings...
-                      </div>
-                    </div>
-                  ) : apiError ? (
-                    <div style={{ marginTop: 40, textAlign: 'center' }}>
-                      <div style={{ 
-                        padding: '40px', 
-                        color: '#e74c3c', 
-                        fontSize: '18px',
-                        background: '#fdf2f2',
-                        borderRadius: '10px',
-                        border: '1px solid #fecaca'
-                      }}>
-                        Unable to load directory listings. Please check your connection and try again.
-                        <br />
-                        <small style={{ color: '#666', marginTop: '10px', display: 'block' }}>
-                          API Base: {API_BASE}
-                        </small>
-                      </div>
-                    </div>
-                  ) : listings.length > 0 ? (
-                    <div style={{ marginTop: 40 }}>
-                      <h2 style={{ textAlign: 'center', marginBottom: 20, color: '#333' }}>Directory Listings</h2>
-                      
-                      {/* Industry Filter */}
-                      <div style={{ marginBottom: 20, textAlign: "center" }}>
-                        <label style={{ display: "block", marginBottom: 10, fontWeight: "bold" }}>
-                          Filter by Industry:
-                        </label>
-                        <select
-                          value={selectedIndustry}
-                          onChange={(e) => setSelectedIndustry(e.target.value)}
+                  {error && <div ref={errorRef} style={{ color: 'red', textAlign: 'center', marginBottom: 20 }}>{error}</div>}
+                  {success && <div ref={successRef} style={{ color: 'green', textAlign: 'center', marginBottom: 20 }}>{success}</div>}
+
+                  {user && user.package !== 'free' ? (
+                    <div ref={formRef} style={{ background: '#f9f9f9', padding: 30, borderRadius: 10, marginBottom: 40 }}>
+                      <h2 style={{ marginBottom: 20, color: '#333' }}>Submit Your Company</h2>
+                      <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 15 }}>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Company Name *</label>
+                          <input
+                            type="text"
+                            name="company"
+                            value={form.company}
+                            onChange={handleChange}
+                            required
+                            style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                          />
+                        </div>
+                        
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
+                          <div>
+                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Email *</label>
+                            <input
+                              type="email"
+                              name="email"
+                              value={form.email}
+                              onChange={handleChange}
+                              required
+                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Phone</label>
+                            <input
+                              type="tel"
+                              name="phone"
+                              value={form.phone}
+                              onChange={handleChange}
+                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Address</label>
+                          <input
+                            type="text"
+                            name="address"
+                            value={form.address}
+                            onChange={handleChange}
+                            style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                          />
+                        </div>
+                        
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
+                          <div>
+                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>City *</label>
+                            <input
+                              type="text"
+                              name="city"
+                              value={form.city}
+                              onChange={handleChange}
+                              required
+                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>State/Province *</label>
+                            <input
+                              type="text"
+                              name="state"
+                              value={form.state}
+                              onChange={handleChange}
+                              required
+                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Country *</label>
+                          <input
+                            type="text"
+                            name="country"
+                            value={form.country}
+                            onChange={handleChange}
+                            required
+                            style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                          />
+                        </div>
+                        
+                        <div style={{ marginBottom: 20 }}>
+                          <button
+                            type="button"
+                            onClick={() => alert('Location auto-detection feature is available on the Services page')}
+                            style={{
+                              background: '#2196F3',
+                              color: 'white',
+                              border: 'none',
+                              padding: '8px 16px',
+                              borderRadius: 5,
+                              cursor: 'pointer',
+                              fontSize: 14,
+                              marginRight: 10
+                            }}
+                          >
+                            📍 Auto-detect Location
+                          </button>
+                          <span style={{ fontSize: 12, color: '#666' }}>
+                            Click to automatically detect your city, state, and country
+                          </span>
+                        </div>
+                        
+                        <div>
+                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Website/Social Links</label>
+                          <div style={{ display: 'flex', gap: 10 }}>
+                            <select
+                              name="socialType"
+                              value={form.socialType}
+                              onChange={handleChange}
+                              style={{ padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                              required
+                            >
+                              {socialOptions.map(opt => (
+                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                              ))}
+                            </select>
+                            <input
+                              type="url"
+                              name="socialLink"
+                              value={form.socialLink}
+                              onChange={handleChange}
+                              placeholder="https://example.com"
+                              style={{ flex: 1, padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                              required={!!form.socialType}
+                              disabled={!form.socialType}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Industry/Category</label>
+                          <select
+                            name="industry"
+                            value={form.industry}
+                            onChange={handleChange}
+                            style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                            required
+                          >
+                            {industryOptions.map(opt => (
+                              <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                        
+                        <div>
+                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Short Description</label>
+                          <textarea
+                            name="description"
+                            value={form.description}
+                            onChange={handleChange}
+                            rows="4"
+                            style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5, resize: 'vertical' }}
+                          />
+                        </div>
+                        
+                        {user.package === 'premium' && (
+                          <div>
+                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Logo/Image</label>
+                            <input
+                              type="file"
+                              name="image"
+                              onChange={handleChange}
+                              accept="image/*"
+                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                            />
+                          </div>
+                        )}
+                        
+                        <button
+                          ref={submitButtonRef}
+                          type="submit"
                           style={{
-                            padding: "8px 16px",
+                            background: '#90be55',
+                            color: 'white',
+                            border: 'none',
+                            padding: '12px 24px',
                             borderRadius: 5,
-                            border: "1px solid #ddd",
-                            fontSize: 14,
-                            minWidth: 200
+                            cursor: 'pointer',
+                            fontSize: 16,
+                            fontWeight: 'bold'
                           }}
                         >
-                          <option value="All">All Industries</option>
-                          <option value="Local Contractors">Local Contractors</option>
-                          <option value="Construction">Construction</option>
-                          <option value="Plumbing">Plumbing</option>
-                          <option value="Electrical">Electrical</option>
-                          <option value="HVAC">HVAC</option>
-                          <option value="Landscaping">Landscaping</option>
-                          <option value="Retail">Retail</option>
-                          <option value="Wholesaler">Wholesaler</option>
-                          <option value="Broker">Broker</option>
-                        </select>
-                        {selectedIndustry === "Local Contractors" && userLocation && (
-                          <>
-                            <button
-                              onClick={() => setSelectedIndustry("All")}
-                              style={{
-                                background: "#f44336",
-                                color: "white",
-                                border: "none",
-                                padding: "4px 8px",
-                                borderRadius: 3,
-                                cursor: "pointer",
-                                fontSize: 12,
-                                marginLeft: 10
-                              }}
-                            >
-                              Reset Filter
-                            </button>
-                            <div style={{ marginTop: 10, fontSize: 12, color: "#666" }}>
-                              📍 Showing contractors in: {userLocation.city}, {userLocation.state}, {userLocation.country}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      
-                      {/* Alphabet Navigation */}
-                      <div className="alphabet-nav">
-                        {Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ').map((letter) => (
-                          <button
-                            key={letter}
-                            onClick={() => setSelectedLetter(letter)}
-                            className={selectedLetter === letter ? 'active' : ''}
-                          >
-                            {letter}
-                          </button>
-                        ))}
-                      </div>
-
-                      {/* Show message when no listings for selected letter */}
-                      {filteredListings.length === 0 && (
-                        <div className="no-listings-message">
-                          No companies in the directory starting with "{selectedLetter}" yet.
-                        </div>
-                      )}
-
-                      {/* Listings Grid */}
-                      {filteredListings.length > 0 && (
-                        <div style={{ display: 'grid', gap: 15 }}>
-                          {filteredListings.map((listing, index) => (
-                            <div key={index} style={{ ...getRowStyle(listing.package), padding: '15px', border: '1px solid #eee', borderRadius: 8, background: '#f9f9f9' }}>
-                              <p style={{ margin: 0, fontWeight: 'bold' }}>{listing.company}</p>
-                              <p style={{ margin: 0, color: '#555' }}>{listing.email}</p>
-                              <p style={{ margin: 0, color: '#555' }}>{listing.phone}</p>
-                              <p style={{ margin: 0, color: '#555' }}>{listing.address}</p>
-                              <p style={{ margin: 0, color: '#555' }}>{listing.socialType && listing.socialLink ? `${listing.socialType}: ${listing.socialLink}` : ''}</p>
-                              <p style={{ margin: 0, color: '#555' }}>{listing.industry}</p>
-                              <p style={{ margin: 0, color: '#555' }}>{listing.description}</p>
-                              {listing.image && (
-                                <img src={listing.image} alt="Company Logo" style={{ maxWidth: '100px', height: 'auto', marginTop: 10 }} />
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                          Submit Listing
+                        </button>
+                      </form>
                     </div>
                   ) : (
-                    <div style={{ marginTop: 40 }}>
-                      <div className="no-listings-message">
-                        No companies in the directory yet.
-                      </div>
+                    <div style={{ textAlign: 'center', marginBottom: 40 }}>
+                      <p style={{ color: '#666', fontSize: 18 }}>
+                        {!user ? 'Please log in to submit a listing.' : 'Premium membership required to submit listings.'}
+                      </p>
                     </div>
                   )}
+
                 </>
               )}
             </>
