@@ -735,25 +735,29 @@ const DirectoryListing = () => {
                           <option value="Broker">Broker</option>
                         </select>
                         {selectedIndustry === "Local Contractors" && userLocation && (
-                        <button
-                          onClick={() => setSelectedIndustry("All")}
-                          style={{
-                            background: "#f44336",
-                            color: "white",
-                            border: "none",
-                            padding: "4px 8px",
-                            borderRadius: 3,
-                            cursor: "pointer",
-                            fontSize: 12,
-                            marginLeft: 10
-                          }}
-                        >
-                          Reset Filter
-                        </button>                          <div style={{ marginTop: 10, fontSize: 12, color: "#666" }}>
-                            📍 Showing contractors in: {userLocation.city}, {userLocation.state}, {userLocation.country}
-                          </div>
+                          <>
+                            <button
+                              onClick={() => setSelectedIndustry("All")}
+                              style={{
+                                background: "#f44336",
+                                color: "white",
+                                border: "none",
+                                padding: "4px 8px",
+                                borderRadius: 3,
+                                cursor: "pointer",
+                                fontSize: 12,
+                                marginLeft: 10
+                              }}
+                            >
+                              Reset Filter
+                            </button>
+                            <div style={{ marginTop: 10, fontSize: 12, color: "#666" }}>
+                              📍 Showing contractors in: {userLocation.city}, {userLocation.state}, {userLocation.country}
+                            </div>
+                          </>
                         )}
-                      </div>                      <div className="alphabet-nav">
+                      </div>
+                      <div className="alphabet-nav">
                         {Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ').map((letter) => (
                           <button
                             key={letter}
