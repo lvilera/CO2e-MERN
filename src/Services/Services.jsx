@@ -42,6 +42,7 @@ const Services = () => {
     fetchDirectoryListings();
     fetchCategories();
     fetchUser();
+    detectUserLocation();
   }, [i18n]);
 
   useEffect(() => {
@@ -290,10 +291,84 @@ const Services = () => {
 
   const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
   
+  // Detect and store user's location
+  const detectUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          try {
+            // Use reverse geocoding to get city/state/country
+            const response = await fetch(
+              `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=YOUR_OPENCAGE_API_KEY`
+            );
+            const data = await response.json();
+            
+            if (data.results && data.results.length > 0) {
+              const result = data.results[0].components;
+              const userLocation = {
+                city: result.city || result.town || result.village || 'New York',
+                state: result.state || 'NY',
+                country: result.country || 'USA'
+              };
+              localStorage.setItem('userLocation', JSON.stringify(userLocation));
+            }
+          } catch (error) {
+            console.log('Using default location');
+            // Use default location if geocoding fails
+            const defaultLocation = {
+              city: 'New York',
+              state: 'NY',
+              country: 'USA'
+            };
+            localStorage.setItem('userLocation', JSON.stringify(defaultLocation));
+          }
+        },
+        (error) => {
+          console.log('Location access denied, using default');
+          // Use default location if user denies access
+          const defaultLocation = {
+            city: 'New York',
+            state: 'NY',
+            country: 'USA'
+          };
+          localStorage.setItem('userLocation', JSON.stringify(defaultLocation));
+        }
+      );
+    } else {
+      // Fallback for browsers without geolocation
+      const defaultLocation = {
+        city: 'New York',
+        state: 'NY',
+        country: 'USA'
+      };
+      localStorage.setItem('userLocation', JSON.stringify(defaultLocation));
+    }
+  };
+  
   // Determine filtered listings based on view mode
   const getFilteredListings = () => {
     if (viewMode === 'category') {
       if (selectedCategory) {
+        // Special handling for Local Contractors - always filter by location
+        if (selectedCategory === 'Local Contractors') {
+          // Get user's location from localStorage or use default
+          const userLocation = JSON.parse(localStorage.getItem('userLocation')) || {
+            city: 'New York',
+            state: 'NY',
+            country: 'USA'
+          };
+          
+          return directoryListings.filter(l => 
+            l.industry === selectedCategory &&
+            l.city && l.state && l.country && // Ensure location data exists
+            (
+              l.city.toLowerCase() === userLocation.city.toLowerCase() ||
+              l.state.toLowerCase() === userLocation.state.toLowerCase() ||
+              l.country.toLowerCase() === userLocation.country.toLowerCase()
+            )
+          );
+        }
         return directoryListings.filter(l => l.industry === selectedCategory);
       } else {
         return directoryListings; // Show all listings when no category is selected
@@ -369,14 +444,16 @@ const Services = () => {
                 </button>
               </div>
 
-              {/* Category Filter Row - Only show when in category mode */}
+                            {/* Category Filter Row - Only show when in category mode */}
               {viewMode === 'category' && (
                 <div className="category-filter-container" style={{ 
                   margin: '24px 0', 
                   width: '100%', 
                   padding: '0 20px',
                   display: 'flex',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  flexDirection: 'column',
+                  alignItems: 'center'
                 }}>
                   <div className="category-scroll-wrapper" style={{
                     overflowX: 'auto',
@@ -431,7 +508,7 @@ const Services = () => {
                               padding: '4px 8px',
                               borderRadius: '4px',
                               whiteSpace: 'nowrap',
-                              minWidth: 'fit-content'
+                          minWidth: 'fit-content'
                             }}
                           >
                             {category.toUpperCase()}
@@ -440,6 +517,31 @@ const Services = () => {
                       ))}
                     </div>
                   </div>
+                  
+                  {/* Location indicator for Local Contractors */}
+                  {selectedCategory === 'Local Contractors' && (
+                    <div style={{
+                      marginTop: '16px',
+                      padding: '12px 20px',
+                      background: '#f0f8ff',
+                      borderRadius: '8px',
+                      border: '1px solid #90be55',
+                      fontSize: '14px',
+                      color: '#333',
+                      textAlign: 'center'
+                    }}>
+                      📍 Showing Local Contractors in: {
+                        (() => {
+                          const userLocation = JSON.parse(localStorage.getItem('userLocation')) || {
+                            city: 'New York',
+                            state: 'NY',
+                            country: 'USA'
+                          };
+                          return `${userLocation.city}, ${userLocation.state}, ${userLocation.country}`;
+                        })()
+                      }
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -491,7 +593,7 @@ const Services = () => {
                       borderCollapse: 'separate', 
                       borderSpacing: 0, 
                       fontSize: 16,
-                      minWidth: '800px' // Ensure minimum width for readability
+                      minWidth: selectedCategory === 'Local Contractors' ? '920px' : '800px' // Ensure minimum width for readability
                     }}>
                       <thead>
                         <tr style={{ background: '#f7f7f7', fontWeight: 800 }}>
@@ -500,12 +602,15 @@ const Services = () => {
                           <th style={{ padding: '16px 12px', border: 'none', textAlign: 'center', letterSpacing: 1, minWidth: '180px' }}>EMAIL</th>
                           <th style={{ padding: '16px 12px', border: 'none', textAlign: 'center', letterSpacing: 1, minWidth: '140px' }}>PHONE NUMBER</th>
                           <th style={{ padding: '16px 12px', border: 'none', textAlign: 'center', letterSpacing: 1, minWidth: '120px' }}>CATEGORY</th>
+                          {selectedCategory === 'Local Contractors' && (
+                            <th style={{ padding: '16px 12px', border: 'none', textAlign: 'center', letterSpacing: 1, minWidth: '120px' }}>LOCATION</th>
+                          )}
                         </tr>
                       </thead>
                       <tbody>
                         {filteredListings.length === 0 && (
                           <tr>
-                            <td colSpan={5} style={{ textAlign: 'center', color: '#888', padding: 24 }}>
+                            <td colSpan={selectedCategory === 'Local Contractors' ? 6 : 5} style={{ textAlign: 'center', color: '#888', padding: 24 }}>
                               {viewMode === 'category' 
                                 ? (selectedCategory ? `No listings for category "${selectedCategory}".` : 'No listings in the directory yet.')
                                 : `No listings for letter "${selectedLetter}".`
@@ -529,7 +634,18 @@ const Services = () => {
                                 {l.socialType && l.socialLink ? (
                                   <>
                                     <a href={l.socialLink} target="_blank" rel="noopener noreferrer">
-                                      <button id="tb" style={{ padding: '4px 14px', borderRadius: 8, background: 'transparent', color: '#ff6b57', border: '2px solid #ff6b57', fontWeight: 700, fontSize: 16, cursor: 'pointer', textTransform: 'capitalize' }}>{l.socialType}</button>
+                                      <button id="tb" style={{ 
+                                        padding: '4px 14px', 
+                                        borderRadius: 8, 
+                                        background: effectivePackage === 'free' ? 'transparent' : 'transparent', 
+                                        color: effectivePackage === 'free' ? '#666' : '#ff6b57', 
+                                        border: `2px solid ${effectivePackage === 'free' ? '#ccc' : '#ff6b57'}`, 
+                                        fontWeight: effectivePackage === 'free' ? 400 : 700, 
+                                        fontSize: 16, 
+                                        cursor: 'pointer', 
+                                        textTransform: 'capitalize',
+                                        opacity: effectivePackage === 'free' ? 0.7 : 1
+                                      }}>{l.socialType}</button>
                                     </a>
                                   </>
                                 ) : ''}
@@ -537,6 +653,11 @@ const Services = () => {
                               <td style={{ ...style, padding: '14px 12px', border: 'none', wordBreak: 'break-all' }}>{l.email}</td>
                               <td style={{ ...style, padding: '14px 12px', border: 'none', wordBreak: 'break-word' }}>{l.phone}</td>
                               <td style={{ ...style, padding: '14px 12px', border: 'none', wordBreak: 'break-word' }}>{l.industry}</td>
+                              {selectedCategory === 'Local Contractors' && (
+                                <td style={{ ...style, padding: '14px 12px', border: 'none', wordBreak: 'break-word' }}>
+                                  {l.city && l.state && l.country ? `${l.city}, ${l.state}, ${l.country}` : 'Location not specified'}
+                                </td>
+                              )}
                             </tr>
                           );
                         })}

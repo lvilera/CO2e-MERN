@@ -21,32 +21,12 @@ const DirectoryListing = () => {
   
   // Refs for animations
   const titleRef = useRef(null);
-  const formRef = useRef(null);
-  const submitButtonRef = useRef(null);
-  const errorRef = useRef(null);
-  const successRef = useRef(null);
   const iphoneMsgRef = useRef(null);
   
-  const [form, setForm] = useState({
-    company: '',
-    email: '',
-    phone: '',
-    address: '',
-    socialType: '', // new for dropdown
-    socialLink: '', // new for input
-    industry: '',
-    description: '',
-    image: null,
-    // Location fields for contractor matching
-    city: '',
-    state: '',
-    country: '',
-  });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [selectedLetter, setSelectedLetter] = useState('A');
   const [selectedIndustry, setSelectedIndustry] = useState("All");
-  const [userLocation, setUserLocation] = useState(null);  const { get, post } = useApi();
+  const [userLocation, setUserLocation] = useState(null);
+  const { get, post } = useApi();
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
 
   useEffect(() => {
@@ -85,70 +65,6 @@ const DirectoryListing = () => {
             start: "top 80%",
             toggleActions: "play none none reverse"
           }
-        }
-      );
-    }
-
-    // Form animation
-    if (formRef.current) {
-      gsap.fromTo(formRef.current,
-        { opacity: 0, x: -50 },
-        { 
-          opacity: 1, 
-          x: 0, 
-          duration: 0.8,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: formRef.current,
-            start: "top 80%",
-            toggleActions: "play none none reverse"
-          }
-        }
-      );
-    }
-
-    // Submit button animation
-    if (submitButtonRef.current) {
-      gsap.fromTo(submitButtonRef.current,
-        { opacity: 0, scale: 0.8 },
-        { 
-          opacity: 1, 
-          scale: 1, 
-          duration: 0.6,
-          ease: "back.out(1.7)",
-          scrollTrigger: {
-            trigger: submitButtonRef.current,
-            start: "top 80%",
-            toggleActions: "play none none reverse"
-          }
-        }
-      );
-    }
-
-    // Error message animation
-    if (errorRef.current) {
-      gsap.fromTo(errorRef.current,
-        { opacity: 0, scale: 0.8, y: -20 },
-        { 
-          opacity: 1, 
-          scale: 1, 
-          y: 0, 
-          duration: 0.5, 
-          ease: "back.out(1.7)" 
-        }
-      );
-    }
-
-    // Success message animation
-    if (successRef.current) {
-      gsap.fromTo(successRef.current,
-        { opacity: 0, scale: 0.8, y: -20 },
-        { 
-          opacity: 1, 
-          scale: 1, 
-          y: 0, 
-          duration: 0.5, 
-          ease: "back.out(1.7)" 
         }
       );
     }
@@ -241,34 +157,6 @@ const DirectoryListing = () => {
     }
   };
 
-  const socialOptions = [
-    { value: '', label: 'Select Platform' },
-    { value: 'Facebook', label: 'Facebook' },
-    { value: 'LinkedIn', label: 'Linkedin' },
-    { value: 'Twitter', label: 'X(Twitter)' },
-    { value: 'Instagram', label: 'Instagram' },
-  ];
-  const industryOptions = [
-    { value: '', label: 'Select Industry' },
-    { value: 'Broker', label: 'Broker' },
-    { value: 'Exchange', label: 'Exchange' },
-    { value: 'Local Contractors', label: 'Local Contractors' },
-    { value: 'Project', label: 'Project' },
-    { value: 'Retail', label: 'Retail' },
-    { value: 'Wholesaler', label: 'Wholesaler' },
-  ];
-
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'image') {
-      setForm(f => ({ ...f, image: files[0] }));
-    } else {
-      setForm(f => ({ ...f, [name]: value }));
-    }
-    setError('');
-    setSuccess('');
-  };
-
   const detectUserLocation = async () => {
     try {
       // Try to get location from IP using the backend
@@ -280,12 +168,7 @@ const DirectoryListing = () => {
       if (response.ok) {
         const data = await response.json();
         if (data.userLocation && data.userLocation.city !== 'Unknown') {
-          setUserLocation(data.userLocation);          setForm(prev => ({
-            ...prev,
-            city: data.userLocation.city || '',
-            state: data.userLocation.state || '',
-            country: data.userLocation.country || ''
-          }));
+          setUserLocation(data.userLocation);
         }
       }
     } catch (error) {
@@ -304,12 +187,11 @@ const DirectoryListing = () => {
                 const geoData = await geoResponse.json();
                 if (geoData.results && geoData.results.length > 0) {
                   const result = geoData.results[0].components;
-                  setForm(prev => ({
-                    ...prev,
+                  setUserLocation({
                     city: result.city || result.town || result.village || '',
                     state: result.state || '',
                     country: result.country || ''
-                  }));
+                  });
                 }
               }
             } catch (geoError) {
@@ -321,74 +203,6 @@ const DirectoryListing = () => {
           }
         );
       }
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    // For iPhone Safari, show a message to use desktop for submissions
-    if (isIPhoneSafari()) {
-      setError('Please use a desktop computer to submit listings. Directory viewing is available on mobile.');
-      return;
-    }
-
-    if (!user) {
-      setError('Please log in to submit a listing');
-      return;
-    }
-
-    if (user.package === 'free') {
-      setError('Premium membership required to submit listings');
-      return;
-    }
-
-    try {
-      console.log("📝 Form data before submission:", form);      const formData = new FormData();
-      Object.keys(form).forEach(key => {
-        if (key === "city" || key === "state" || key === "country") {
-          formData.append(key, form[key] || "");
-        } else if (form[key] !== null) {
-          formData.append(key, form[key]);
-        }
-      });
-      // Add userPackage to the form data
-      formData.append('userPackage', user.package);
-
-      console.log("📋 FormData contents:");
-      for (let [key, value] of formData.entries()) {
-        console.log(`  ${key}: ${value}`);
-      }      const response = await fetch(`${API_BASE}/api/directory`, {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit listing');
-      }
-
-      setSuccess('Listing submitted successfully!');
-      setForm({
-        company: '',
-        email: '',
-        phone: '',
-        address: '',
-        socialType: '',
-        socialLink: '',
-        industry: '',
-        description: '',
-        image: null,
-        city: '',
-        state: '',
-        country: '',
-      });
-      fetchListings(); // Refresh the listings
-    } catch (err) {
-      setError(err.message || 'Failed to submit listing');
     }
   };
 
@@ -468,9 +282,6 @@ const DirectoryListing = () => {
                 </div>
               )}
               
-              {error && <div ref={errorRef} style={{ color: 'red', textAlign: 'center', marginBottom: 20 }}>{error}</div>}
-              {success && <div ref={successRef} style={{ color: 'green', textAlign: 'center', marginBottom: 20 }}>{success}</div>}
-
               {!isLoggedIn ? (
                 <div style={{ textAlign: 'center', marginBottom: 40 }}>
                   <p style={{ color: '#666', fontSize: 18 }}>
@@ -479,206 +290,6 @@ const DirectoryListing = () => {
                 </div>
               ) : (
                 <>
-                  {user && user.package !== 'free' ? (
-                    <div ref={formRef} style={{ background: '#f9f9f9', padding: 30, borderRadius: 10, marginBottom: 40 }}>
-                      <h2 style={{ marginBottom: 20, color: '#333' }}>Submit Your Company</h2>
-                      <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 15 }}>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Company Name *</label>
-                          <input
-                            type="text"
-                            name="company"
-                            value={form.company}
-                            onChange={handleChange}
-                            required
-                            style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
-                          />
-                        </div>
-                        
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
-                          <div>
-                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Email *</label>
-                            <input
-                              type="email"
-                              name="email"
-                              value={form.email}
-                              onChange={handleChange}
-                              required
-                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
-                            />
-                          </div>
-                          <div>
-                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Phone</label>
-                            <input
-                              type="tel"
-                              name="phone"
-                              value={form.phone}
-                              onChange={handleChange}
-                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
-                            />
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Address</label>
-                          <input
-                            type="text"
-                            name="address"
-                            value={form.address}
-                            onChange={handleChange}
-                            style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
-                          />
-                        </div>
-                        
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
-                          <div>
-                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>City *</label>
-                            <input
-                              type="text"
-                              name="city"
-                              value={form.city}
-                              onChange={handleChange}
-                              required
-                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
-                            />
-                          </div>
-                          <div>
-                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>State/Province *</label>
-                            <input
-                              type="text"
-                              name="state"
-                              value={form.state}
-                              onChange={handleChange}
-                              required
-                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
-                            />
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Country *</label>
-                          <input
-                            type="text"
-                            name="country"
-                            value={form.country}
-                            onChange={handleChange}
-                            required
-                            style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
-                          />
-                        </div>
-                        
-                        <div style={{ marginBottom: 20 }}>
-                          <button
-                            type="button"
-                            onClick={detectUserLocation}
-                            style={{
-                              background: '#2196F3',
-                              color: 'white',
-                              border: 'none',
-                              padding: '8px 16px',
-                              borderRadius: 5,
-                              cursor: 'pointer',
-                              fontSize: 14,
-                              marginRight: 10
-                            }}
-                          >
-                            📍 Auto-detect Location
-                          </button>
-                          <span style={{ fontSize: 12, color: '#666' }}>
-                            Click to automatically detect your city, state, and country
-                          </span>
-                        </div>
-                        
-                        <div>
-                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Website/Social Links</label>
-                          <div style={{ display: 'flex', gap: 10 }}>
-                            <select
-                              name="socialType"
-                              value={form.socialType}
-                              onChange={handleChange}
-                              style={{ padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
-                              required
-                            >
-                              {socialOptions.map(opt => (
-                                <option key={opt.value} value={opt.value}>{opt.label}</option>
-                              ))}
-                            </select>
-                            <input
-                              type="url"
-                              name="socialLink"
-                              value={form.socialLink}
-                              onChange={handleChange}
-                              placeholder="https://example.com"
-                              style={{ flex: 1, padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
-                              required={!!form.socialType}
-                              disabled={!form.socialType}
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Industry/Category</label>
-                          <select
-                            name="industry"
-                            value={form.industry}
-                            onChange={handleChange}
-                            style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
-                            required
-                          >
-                            {industryOptions.map(opt => (
-                              <option key={opt.value} value={opt.value}>{opt.label}</option>
-                            ))}
-                          </select>
-                        </div>
-                        
-                        <div>
-                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Short Description</label>
-                          <textarea
-                            name="description"
-                            value={form.description}
-                            onChange={handleChange}
-                            rows="4"
-                            style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5, resize: 'vertical' }}
-                          />
-                        </div>
-                        
-                        {user.package === 'premium' && (
-                          <div>
-                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Logo/Image</label>
-                            <input
-                              type="file"
-                              name="image"
-                              onChange={handleChange}
-                              accept="image/*"
-                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
-                            />
-                          </div>
-                        )}
-                        
-                        <button
-                          ref={submitButtonRef}
-                          type="submit"
-                          style={{
-                            background: '#90be55',
-                            color: 'white',
-                            border: 'none',
-                            padding: '12px 24px',
-                            borderRadius: 5,
-                            cursor: 'pointer',
-                            fontSize: 16,
-                            fontWeight: 'bold'
-                          }}
-                        >
-                          Submit Listing
-                        </button>
-                      </form>
-                    </div>
-                  ) : (
-                    <div style={{ textAlign: 'center', marginBottom: 40 }}>
-                      <p style={{ color: '#666', fontSize: 18 }}>
-                        {!user ? 'Please log in to submit a listing.' : 'Premium membership required to submit listings.'}
-                      </p>
-                    </div>
-                  )}
                   {isLoading ? (
                     <div style={{ marginTop: 40, textAlign: 'center' }}>
                       <div style={{ padding: '40px', color: '#666', fontSize: '18px' }}>
@@ -706,7 +317,6 @@ const DirectoryListing = () => {
                     <div style={{ marginTop: 40 }}>
                       <h2 style={{ textAlign: 'center', marginBottom: 20, color: '#333' }}>Directory Listings</h2>
                       
-                      {/* Alphabet Navigation */}
                       {/* Industry Filter */}
                       <div style={{ marginBottom: 20, textAlign: "center" }}>
                         <label style={{ display: "block", marginBottom: 10, fontWeight: "bold" }}>
@@ -757,6 +367,8 @@ const DirectoryListing = () => {
                           </>
                         )}
                       </div>
+                      
+                      {/* Alphabet Navigation */}
                       <div className="alphabet-nav">
                         {Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ').map((letter) => (
                           <button
