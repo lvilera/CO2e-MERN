@@ -659,27 +659,9 @@ const Services = () => {
                       <div className="sub-categories-list" style={{
                         display: 'flex',
                         flexWrap: 'wrap',
-                        justifyContent: 'flex-start',
+                        justifyContent: 'center',
                         gap: '8px'
                       }}>
-                        <span
-                          onClick={() => setSelectedCategory('Local Contractors')}
-                          style={{
-                            cursor: 'pointer',
-                            fontWeight: selectedCategory === 'Local Contractors' ? 700 : 400,
-                            color: selectedCategory === 'Local Contractors' ? '#90be55' : '#666',
-                            textDecoration: selectedCategory === 'Local Contractors' ? 'underline' : 'none',
-                            fontSize: 'clamp(12px, 2.5vw, 16px)',
-                            transition: 'all 0.2s ease',
-                            padding: '6px 12px',
-                            borderRadius: '20px',
-                            border: selectedCategory === 'Local Contractors' ? '2px solid #90be55' : '1px solid #ddd',
-                            background: selectedCategory === 'Local Contractors' ? '#f0f8f0' : 'white',
-                            whiteSpace: 'nowrap'
-                          }}
-                        >
-                          ALL
-                        </span>
                         {subCategories.map((subCat, idx) => (
                           <span
                             key={subCat}

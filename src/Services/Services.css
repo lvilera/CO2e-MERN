@@ -74,6 +74,15 @@
     }
 }
 
+/* Ensure sub-categories are always centered */
+.sub-categories-list {
+    justify-content: center !important;
+}
+
+#sider .sub-categories-instruction {
+    text-align: center !important;
+}
+
 @media screen and (max-width: 480px) {
     .category-filter-container {
         padding: 0 15px !important;
