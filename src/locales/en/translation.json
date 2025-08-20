@@ -281,7 +281,10 @@
   "membership_perks": "Why Join CO2e Portal? Membership Benefits:",
   "perk1": "DecarbXchange P2P Marketplace & Fractional Investment Hub @ Pre-Launch discounted Plan.",
   "perk2": "Verified Carbon Credit listings.",
-  "month": "Month"
+  "month": "Month",
+  "courses_description": "Access our comprehensive library of corporate training courses designed to enhance your team's knowledge and skills in sustainability and carbon management.",
+  "note": "Note",
+  "courses_access_note": "You need to buy a Pro or Premium plan to access our courses."
 },
 "signup": {
       "title": "Sign Up",

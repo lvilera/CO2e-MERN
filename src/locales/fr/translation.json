@@ -282,7 +282,10 @@
   "membership_perks": "Pourquoi rejoindre le Portail CO2e ? Avantages de l'adhésion :",
   "perk1": "Marché P2P DecarbXchange et Hub d'investissement fractionné à prix de lancement.",
   "perk2": "Listes vérifiées de crédits carbone.",
-  "month": "Mois"
+  "month": "Mois",
+  "courses_description": "Accédez à notre bibliothèque complète de cours de formation d'entreprise conçus pour améliorer les connaissances et compétences de votre équipe en matière de durabilité et de gestion du carbone.",
+  "note": "Note",
+  "courses_access_note": "Vous devez acheter un plan Pro ou Premium pour accéder à nos cours."
 },
 "signup": {
   "title": "S'inscrire",

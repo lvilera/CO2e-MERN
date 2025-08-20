@@ -52,6 +52,35 @@ const Trading = () => {
     };
   }, []);
 
+  // Handle anchor navigation when page loads
+  useEffect(() => {
+    if (window.location.hash) {
+      const anchorId = window.location.hash.substring(1);
+      console.log('Trading: Navigating to anchor:', anchorId);
+
+      const scrollWithHeaderOffset = () => {
+        const anchor = document.getElementById(anchorId);
+        console.log('Trading: Found anchor element:', anchor);
+        if (anchor) {
+          const headerEl = document.querySelector('#hhw') || document.querySelector('header.header');
+          const headerOffset = headerEl ? headerEl.offsetHeight : 0;
+          const rect = anchor.getBoundingClientRect();
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const targetPosition = scrollTop + rect.top - (headerOffset + 10);
+          console.log('Trading: Scrolling to position:', targetPosition, 'with headerOffset:', headerOffset);
+          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+        } else {
+          console.log('Trading: Anchor element not found:', anchorId);
+        }
+      };
+
+      scrollWithHeaderOffset();
+      setTimeout(scrollWithHeaderOffset, 100);
+      setTimeout(scrollWithHeaderOffset, 500);
+      setTimeout(scrollWithHeaderOffset, 1000);
+    }
+  }, []);
+
   useEffect(() => {
     // Initialize animations
     initializeAnimations();
@@ -216,14 +245,21 @@ const Trading = () => {
       </div>
       <div id='logo2b'>
         {/* DecarbXchange Logo and Coming Soon Button - Keep unchanged */}
-        <div id="logp2a">
-          <img src="./Logo2.webp" alt="Logo" ref={logoRef} />
-          <button ref={comingSoonRef}>{t("trading.coming_soon")}</button>
+        <div id="logp2a" style={{ position: 'relative', padding: '40px 20px', minHeight: '200px' }}>
+          {/* Anchor div for navbar navigation - ensures section appears from start */}
+          <div id="logp2a-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
+          
+          <img src="./Logo2.webp" alt="Logo" ref={logoRef} style={{ maxWidth: '100%', height: 'auto' }} />
+          <button id="ttr4" ref={comingSoonRef}>{t("trading.coming_soon")}</button>
         </div>
         
         {/* Carbon Offsetting Guides Section */}
-        <div id="carbon-guides-section">
-          <h1 ref={guidesTitleRef}>{t("trading.carbon_guides_title")}</h1>
+        <div id="carbon-guides-section" style={{ position: 'relative' }}>
+          <h1 ref={guidesTitleRef} style={{ position: 'relative' }}>
+            {/* Anchor div for navbar navigation - ensures heading appears from start */}
+            <div id="carbon-guides-section-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
+            {t("trading.carbon_guides_title")}
+          </h1>
           <div id="guides-container" ref={guidesContainerRef}>
             {cards.map((card, idx) => (
               <div className="guide-card" key={idx} onClick={() => window.open(card.link, "_blank")}>
@@ -240,7 +276,11 @@ const Trading = () => {
         {/* CO2 Emissions Calculator and Democratizing Section */}
         <div id="calculator-democratizing-container">
           <div id="calculator-section">
-            <h1 ref={calculatorTitleRef}>{t("trading.calculator_title")}</h1>
+            <h1 ref={calculatorTitleRef} style={{ position: 'relative' }}>
+              {/* Anchor div for navbar navigation - ensures heading appears from start */}
+              <div id="calculator-section-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
+              {t("trading.calculator_title")}
+            </h1>
             <div id="calculator-container" ref={calculatorContainerRef}>
               <iframe 
                 style={{ height: '730px', width: '100%' }} 
@@ -260,8 +300,12 @@ const Trading = () => {
         </div>
 
         {/* Partners Section */}
-        <div id="partners-section">
-          <h1 ref={partnersTitleRef}>{t("trading.partners_title")}</h1>
+        <div id="partners-section" style={{ position: 'relative' }}>
+          <h1 ref={partnersTitleRef} style={{ position: 'relative' }}>
+            {/* Anchor div for navbar navigation - ensures heading appears from start */}
+            <div id="partners-section-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
+            {t("trading.partners_title")}
+          </h1>
           <div id="partners-logos" ref={partnersLogosRef}>
             <div className="partner-logo">
               <img src="./pi1.webp" alt="Fragile Impact" />

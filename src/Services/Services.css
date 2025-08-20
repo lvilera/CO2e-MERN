@@ -18,6 +18,72 @@
 #Listingg p{
     font-size: 20px;
 }
+
+/* Category section positioning and styling */
+#slider1 {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#sider {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Ensure the category section appears below the heading */
+.category-filter-container {
+    margin-top: 0 !important;
+    margin-bottom: 30px !important;
+}
+
+/* Responsive design for small devices */
+@media screen and (max-width: 768px) {
+    .category-filter-container {
+        padding: 0 20px !important;
+        text-align: center !important;
+    }
+    
+    .category-filter-container .category-scroll-wrapper {
+        text-align: center !important;
+    }
+    
+    .category-filter-container .category-list {
+        justify-content: center !important;
+        text-align: center !important;
+    }
+    
+    .category-filter-container .category-list span {
+        text-align: center !important;
+    }
+    
+    #sider {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    #sider .sub-categories-container {
+        text-align: center;
+    }
+    
+    #sider .sub-categories-list {
+        justify-content: center !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .category-filter-container {
+        padding: 0 15px !important;
+    }
+    
+    #sider {
+        max-width: 95%;
+    }
+}
+
 #i1 img{
 height: 160px;
 border-radius: 20px;
@@ -1066,3 +1132,8 @@ margin-left: -10px !important;
                                 }
                         
                     
+
+                                #slider1{
+width: 100%;
+margin-left: -10px;
+                                }

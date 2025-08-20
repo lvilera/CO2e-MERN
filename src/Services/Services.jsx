@@ -21,7 +21,9 @@ const Services = () => {
   const [uploadError, setUploadError] = useState('');
   const [viewMode, setViewMode] = useState('alphabetical'); // 'alphabetical' or 'category'
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null); // null = ALL, 'Local Contractors' = main category, others = sub-categories
+  const [showSubCategories, setShowSubCategories] = useState(false);
+  const [subCategories, setSubCategories] = useState([]);
   const { get } = useApi();
 
   // Refs for animations
@@ -46,6 +48,17 @@ const Services = () => {
     // Initialize animations
     initializeAnimations();
   }, [featuredImages, directoryListings]);
+
+  // Debug useEffect for alphabetical filtering
+  useEffect(() => {
+    console.log('Services: State changed - viewMode:', viewMode, 'selectedLetter:', selectedLetter, 'selectedCategory:', selectedCategory);
+    console.log('Services: Directory listings count:', directoryListings.length);
+    if (viewMode === 'alphabetical') {
+      console.log('Services: In alphabetical mode, filtering by letter:', selectedLetter);
+      const filtered = getFilteredListings();
+      console.log('Services: Filtered results count:', filtered.length);
+    }
+  }, [viewMode, selectedLetter, selectedCategory, directoryListings]);
 
   const initializeAnimations = () => {
     // Title animation
@@ -247,7 +260,13 @@ const Services = () => {
         if (response.ok) {
           const data = await response.json();
           console.log('Services: Categories fetched successfully via direct fetch:', data);
-          setCategories(data);
+          
+          // Separate main categories from sub-categories
+          const mainCategories = ['Local Contractors'];
+          const subCats = data.filter(cat => cat !== 'Local Contractors');
+          
+          setCategories(mainCategories);
+          setSubCategories(subCats);
           return;
         }
       } catch (directError) {
@@ -257,11 +276,18 @@ const Services = () => {
       // Fallback to useApi
       const data = await get(`${API_BASE}/api/directory/categories`, 'Loading categories...');
       console.log('Services: Categories fetched successfully via useApi:', data);
-      setCategories(data);
+      
+      // Separate main categories from sub-categories
+      const mainCategories = ['Local Contractors'];
+      const subCats = data.filter(cat => cat !== 'Local Contractors');
+      
+      setCategories(mainCategories);
+      setSubCategories(subCats);
     } catch (err) {
       console.error('Services: Failed to fetch categories:', err);
       console.error('Services: API_BASE:', API_BASE);
-      setCategories([]);
+      setCategories(['Local Contractors']);
+      setSubCategories([]);
     }
   };
 
@@ -440,15 +466,23 @@ const Services = () => {
     } else {
       // In alphabetical view, show all listings that start with selected letter
       // But for Local Contractors, also apply location filtering if user location exists
-      console.log('Services: Alphabetical view filtering with location:', userLocation);
+      console.log('Services: Alphabetical view filtering with letter:', selectedLetter, 'and location:', userLocation);
+      console.log('Services: Total directory listings:', directoryListings.length);
       
       return directoryListings.filter(l => {
-        const matchesLetter = (l.company || '').toUpperCase().startsWith(selectedLetter);
+        // Ensure company name exists and filter by first letter
+        const companyName = l.company || l.Company || '';
+        const matchesLetter = companyName.toUpperCase().startsWith(selectedLetter);
+        
+        console.log('Services: Checking listing:', companyName, 'starts with', selectedLetter, '=', matchesLetter);
         
         // If it's a Local Contractor and we have user location, apply location filtering
         if (l.industry === 'Local Contractors' && userLocation && userLocation.city && userLocation.state && userLocation.country) {
           const hasLocationData = l.city && l.state && l.country;
-          if (!hasLocationData) return false;
+          if (!hasLocationData) {
+            console.log('Services: Local Contractor missing location data:', l.company);
+            return false;
+          }
           
           // More flexible location matching
           const sameState = l.state.toLowerCase() === userLocation.state.toLowerCase();
@@ -457,6 +491,7 @@ const Services = () => {
           
           const matchesLocation = sameCity || sameState || sameCountry;
           
+          console.log('Services: Local Contractor location match:', matchesLocation, 'for', l.company);
           return matchesLetter && matchesLocation;
         }
         
@@ -478,15 +513,19 @@ const Services = () => {
 
           <div id="directory-listing">
             <div id="Listingg">
-              <h1 ref={titleRef}>{t("services.directoryListing.title")}</h1>
+              <h1 ref={titleRef} style={{ position: 'relative' }}>
+                {/* Anchor div for navbar navigation - ensures heading appears from start */}
+                <div id="directory-listing-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
+                {t("services.directoryListing.title")}
+              </h1>
               
-              {/* Sorting Buttons - Positioned right below the heading */}
+              {/* Sorting Buttons - Positioned above the category section */}
               <div id="barea1" style={{ 
                 display: 'flex', 
                 justifyContent: 'center', 
                 alignItems: 'center', 
                 gap: '16px', 
-                margin: '8px 220px 32px 20px',
+                margin: '20px 220px 20px 220px',
                 flexWrap: 'wrap',
                 overflowX: 'auto !important',
                 whiteSpace: 'nowrap !important',
@@ -494,8 +533,11 @@ const Services = () => {
               }}>
                 <button
                   onClick={() => {
+                    console.log('Services: Switching to alphabetical mode, selectedLetter:', selectedLetter);
                     setViewMode('alphabetical');
+                    setSelectedLetter('A');
                     setSelectedCategory(null);
+                    console.log('Services: After switching - viewMode: alphabetical, selectedLetter: A');
                   }}
                   style={{
                     padding: '12px 24px',
@@ -531,17 +573,18 @@ const Services = () => {
                   {t("services.sortByCategory")}
                 </button>
               </div>
-
-                            {/* Category Filter Row - Only show when in category mode */}
+              
+              {/* Category Filter Row - Only show when in category mode - MOVED HERE */}
               {viewMode === 'category' && (
                 <div className="category-filter-container" style={{ 
-                  margin: '24px 0', 
+                  margin: '20px 0 30px 0', 
                   width: '100%', 
-                  padding: '0 20px',
+                  padding: '0 220px 0 220px',
                   display: 'flex',
-                  justifyContent: 'center',
+                  justifyContent: 'flex-start',
                   flexDirection: 'column',
-                  alignItems: 'center'
+                  alignItems: 'flex-start',
+                  textAlign: 'left'
                 }}>
                   <div className="category-scroll-wrapper" style={{
                     overflowX: 'auto',
@@ -551,65 +594,121 @@ const Services = () => {
                     scrollbarWidth: 'thin',
                     scrollbarColor: '#90be55 #f0f0f0',
                     WebkitOverflowScrolling: 'touch',
-                    padding: '10px 0'
+                    padding: '10px 0',
+                    textAlign: 'left'
                   }}>
                     <div className="category-list" style={{
-                      display: 'inline-flex',
+                      display: 'flex',
                       alignItems: 'center',
+                      justifyContent: 'flex-start',
                       gap: '8px',
                       fontSize: 'clamp(14px, 3vw, 24px)',
-                      fontWeight: '500'
+                      fontWeight: '500',
+                      width: '100%',
+                      textAlign: 'left'
                     }}>
-                      <span
-                        onClick={() => setSelectedCategory(null)}
-                        style={{
-                          cursor: 'pointer',
-                          fontWeight: selectedCategory === null ? 700 : 400,
-                          color: selectedCategory === null ? '#90be55' : '#222',
-                          textDecoration: selectedCategory === null ? 'underline' : 'none',
-                          fontSize: 'clamp(14px, 3vw, 24px)',
-                          transition: 'all 0.2s ease',
-                          padding: '4px 8px',
-                          borderRadius: '4px',
-                          whiteSpace: 'nowrap',
-                          minWidth: 'fit-content'
-                        }}
-                      >
-                        {t("services.allCategories")}
-                      </span>
                       {categories.map((category, idx) => (
-                        <React.Fragment key={category}>
-                          <span style={{ 
-                            color: '#666', 
+                        <span id="slider1" className="category-item"
+                          key={category}
+                          onClick={() => {
+                            if (category === 'Local Contractors') {
+                              setSelectedCategory(category);
+                            } else {
+                              setSelectedCategory(category);
+                            }
+                          }}
+                          style={{
+                            cursor: 'pointer',
+                            fontWeight: selectedCategory === category ? 700 : 400,
+                            color: selectedCategory === category ? '#90be55' : '#222',
+                            textDecoration: selectedCategory === category ? 'underline' : 'none',
                             fontSize: 'clamp(14px, 3vw, 24px)',
-                            whiteSpace: 'nowrap'
-                          }}>,</span>
-                          <span
-                            onClick={() => setSelectedCategory(category)}
-                            style={{
-                              cursor: 'pointer',
-                              fontWeight: selectedCategory === category ? 700 : 400,
-                              color: selectedCategory === category ? '#90be55' : '#222',
-                              textDecoration: selectedCategory === category ? 'underline' : 'none',
-                              fontSize: 'clamp(14px, 3vw, 24px)',
-                              transition: 'all 0.2s ease',
-                              padding: '4px 8px',
-                              borderRadius: '4px',
-                              whiteSpace: 'nowrap',
-                          minWidth: 'fit-content'
-                            }}
-                          >
-                            {t(`services.categories.${category.toLowerCase().replace(/\s+/g, '')}`)}
-                          </span>
-                        </React.Fragment>
+                            transition: 'all 0.2s ease',
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                            whiteSpace: 'nowrap',
+                            minWidth: 'fit-content',
+                            textAlign: 'left'
+                          }}
+                        >
+                          {t(`services.categories.${category.toLowerCase().replace(/\s+/g, '')}`)}
+                        </span>
                       ))}
                     </div>
                   </div>
                   
+                  {/* Sub-categories - Show when Local Contractors is selected OR when any sub-category is selected */}
+                  {(selectedCategory === 'Local Contractors' || (selectedCategory && selectedCategory !== 'Local Contractors')) && (
+                    <div id="sider" className="sub-categories-container" style={{
+                      marginTop: '16px',
+                      padding: '16px',
+                      background: '#f8f9fa',
+                      borderRadius: '8px',
+                      border: '1px solid #e9ecef',
+                      width: '100%',
+                      maxWidth: '800px'
+                    }}>
+                      <div className="sub-categories-instruction" style={{
+                        fontSize: 'clamp(12px, 2.5vw, 18px)',
+                        color: '#666',
+                        marginBottom: '12px',
+                        textAlign: 'left'
+                      }}>
+                        Select a specific service type:
+                      </div>
+                      <div className="sub-categories-list" style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        justifyContent: 'flex-start',
+                        gap: '8px'
+                      }}>
+                        <span
+                          onClick={() => setSelectedCategory('Local Contractors')}
+                          style={{
+                            cursor: 'pointer',
+                            fontWeight: selectedCategory === 'Local Contractors' ? 700 : 400,
+                            color: selectedCategory === 'Local Contractors' ? '#90be55' : '#666',
+                            textDecoration: selectedCategory === 'Local Contractors' ? 'underline' : 'none',
+                            fontSize: 'clamp(12px, 2.5vw, 16px)',
+                            transition: 'all 0.2s ease',
+                            padding: '6px 12px',
+                            borderRadius: '20px',
+                            border: selectedCategory === 'Local Contractors' ? '2px solid #90be55' : '1px solid #ddd',
+                            background: selectedCategory === 'Local Contractors' ? '#f0f8f0' : 'white',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          ALL
+                        </span>
+                        {subCategories.map((subCat, idx) => (
+                          <span
+                            key={subCat}
+                            onClick={() => setSelectedCategory(subCat)}
+                            style={{
+                              cursor: 'pointer',
+                              fontWeight: selectedCategory === subCat ? 700 : 400,
+                              color: selectedCategory === subCat ? '#90be55' : '#666',
+                              textDecoration: selectedCategory === subCat ? 'underline' : 'none',
+                              fontSize: 'clamp(12px, 2.5vw, 16px)',
+                              transition: 'all 0.2s ease',
+                              padding: '6px 12px',
+                              borderRadius: '20px',
+                              border: selectedCategory === subCat ? '2px solid #90be55' : '1px solid #ddd',
+                              background: selectedCategory === subCat ? '#f0f8f0' : 'white',
+                              whiteSpace: 'nowrap'
+                            }}
+                          >
+                            {t(`services.categories.${subCat.toLowerCase().replace(/\s+/g, '')}`)}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
                   {/* Location indicator for Local Contractors - REMOVED */}
                 </div>
               )}
-
+              
               {/* Directory A-Z Filter Row - Only show when in alphabetical mode */}
               {viewMode === 'alphabetical' && (
                 <div id="uppa">
@@ -618,7 +717,11 @@ const Services = () => {
                 {alphabet.map((letter, idx) => (
                   <span id="iparent" key={letter}>
                     <span
-                      onClick={() => setSelectedLetter(letter)}
+                      onClick={() => {
+                        console.log('Services: Letter clicked:', letter, 'current selectedLetter:', selectedLetter);
+                        setSelectedLetter(letter);
+                        console.log('Services: After setting selectedLetter to:', letter);
+                      }}
                       style={{
                         cursor: 'pointer',
                         fontWeight: selectedLetter === letter ? 700 : 400,
@@ -761,13 +864,10 @@ const Services = () => {
             </div>
           </div>
 
-          <div id="ufcourse">
-            <div id="fcourse" ref={courseButtonRef}>
-              <button>{t("services.courseButton")}</button>
-            </div>
-          </div>
-
-          <div id="utotalscard" ref={serviceCardsRef}>
+          {/* Course Cards Section - Anchor for Corporate Training Courses navigation */}
+          <div id="utotalscard" ref={serviceCardsRef} style={{ position: 'relative' }}>
+            {/* Anchor div for navbar navigation - ensures course cards appear from start */}
+            <div id="fcourse-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
             <div id="totalscard">
               {[1, 2, 3, 4].map((_, i) => (
                 <div id="scard" key={i}>

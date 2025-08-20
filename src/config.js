@@ -1,10 +1,8 @@
 // API Configuration
-export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://e-back-bice.vercel.app';
+export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5001';
 
-
-//https://e-back-bice.vercel.app
-
-//https://e-back-bice.vercel.app
+// For production, use: https://e-back-bice.vercel.app
+// For local development, use: http://localhost:5001
 
 // Export for backward compatibility
 export const API_BASE = API_BASE_URL; 

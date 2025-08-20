@@ -75,7 +75,10 @@ const BlogPage = () => {
     </div>
 
     <div id="rrew" className="p-6 max-w-3xl mx-auto">
-      <h1 id="bloger" className="text-3xl font-bold mb-6 text-center">News</h1>
+      <h1 id="bloger" className="text-3xl font-bold mb-6 text-center" style={{ position: 'relative' }}>
+        <div id="blog-heading-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: 0, width: 0 }}></div>
+        News
+      </h1>
       {blogData.map((blog) => (
         <div id="uut" key={blog.id} className="mb-4 border rounded shadow-sm">
           <button

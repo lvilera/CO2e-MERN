@@ -47,7 +47,8 @@ const RecentPosts = () => {
       <section className="section recent" aria-label="recent post">
         <div className="container">
           <div className="title-wrapper">
-            <h2 className="h2 section-title">
+            <h2 className="h2 section-title" style={{ position: 'relative' }}>
+              <div id="blog-heading-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: 0, width: 0 }}></div>
               {t('recent.seeWhat')} <strong className="strong">{t('recent.blogs')}</strong>
             </h2>
 
@@ -58,50 +59,57 @@ const RecentPosts = () => {
             </div>
           </div>
 
-          <ul className="grid-list">
-            {blogs.map((post, index) => {
-              const title = post.title || 'Untitled';
-              const shortDescription = truncate(post.description, 6);
+          {/* Loader for blogs */}
+          {(!blogs || blogs.length === 0) && (
+            <div style={{ textAlign: 'center', padding: '40px 0', color: '#888' }}>Loading blogs...</div>
+          )}
 
-              return (
-                <li key={index}>
-                  <div className="blog-card">
-                    <figure
-                      className="card-banner img-holder"
-                      style={{ "--width": "550", "--height": "660" }}
-                    >
-                      <img
-                        src={post.imageUrl}
-                        width="550"
-                        height="660"
-                        loading="lazy"
-                        alt={title}
-                        className="img-cover"
-                      />
-                    </figure>
+          {blogs && blogs.length > 0 && (
+            <ul className="grid-list">
+              {blogs.map((post, index) => {
+                const title = post.title || 'Untitled';
+                const shortDescription = truncate(post.description, 6);
 
-                    <h1 id="titler">{title}</h1>
+                return (
+                  <li key={index}>
+                    <div className="blog-card">
+                      <figure
+                        className="card-banner img-holder"
+                        style={{ "--width": "550", "--height": "660" }}
+                      >
+                        <img
+                          src={post.imageUrl}
+                          width="550"
+                          height="660"
+                          loading="lazy"
+                          alt={title}
+                          className="img-cover"
+                        />
+                      </figure>
 
-                    <div className="card-content">
-                      <ul className="card-meta-list">
-                        {post.tags && post.tags.map((tag, tagIdx) => (
-                          <li key={tagIdx}>
-                            <span className="card-tag">{tag}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      <h1 id="titler">{title}</h1>
 
-                      <p className="card-text">{shortDescription}...</p>
+                      <div className="card-content">
+                        <ul className="card-meta-list">
+                          {post.tags && post.tags.map((tag, tagIdx) => (
+                            <li key={tagIdx}>
+                              <span className="card-tag">{tag}</span>
+                            </li>
+                          ))}
+                        </ul>
 
-                      <Link to={`/blogs/${post._id}`} className="read-more">
-                        {t('recent.readMore')} →
-                      </Link>
+                        <p className="card-text">{shortDescription}...</p>
+
+                        <Link to={`/blogs/${post._id}`} className="read-more">
+                          {t('recent.readMore')} →
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </section>
       <Footer2 />

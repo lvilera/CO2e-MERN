@@ -282,7 +282,10 @@
   "membership_perks": "¿Por qué unirse al Portal CO2e? Beneficios de la membresía:",
   "perk1": "Mercado P2P DecarbXchange y Centro de Inversión Fraccionada con precio de prelanzamiento.",
   "perk2": "Listados verificados de créditos de carbono.",
-  "month": "Mes"
+  "month": "Mes",
+  "courses_description": "Accede a nuestra biblioteca completa de cursos de capacitación corporativa diseñados para mejorar el conocimiento y las habilidades de tu equipo en sostenibilidad y gestión del carbono.",
+  "note": "Nota",
+  "courses_access_note": "Necesitas comprar un plan Pro o Premium para acceder a nuestros cursos."
 },
 "signup": {
   "title": "Registrarse",

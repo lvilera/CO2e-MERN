@@ -2312,3 +2312,23 @@ padding-bottom: 400px;
 
 
 }
+
+/*-----------------------------------*\
+  #ANCHOR DIVS FOR NAVIGATION
+\*-----------------------------------*/
+
+/* Anchor divs for navbar navigation - ensures sections appear from start */
+[id$="-anchor"] {
+  position: absolute;
+  top: -100px;
+  visibility: hidden;
+  height: 0;
+  width: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Ensure sections with anchor divs have relative positioning */
+#about, #service, #directory-listing, #ufcourse, #carbon-footprint, #satellite-verified, #totalCards, #courses, #logp2a, #carbon-guides-section, #calculator-section, #partners-section {
+  position: relative;
+}

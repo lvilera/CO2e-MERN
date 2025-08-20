@@ -116,49 +116,57 @@ const Blog2 = () => {
       {/* News Section */}
       <section id="tttt" className="section featured" aria-label="featured post">
         <div className="container">
-          <h2 className="h2 section-title">
+          <h2 className="h2 section-title" style={{ position: 'relative' }}>
+            <div id="news-heading-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: 0, width: 0 }}></div>
             {t('blog.start')} <strong className="strong">{t('blog.news')}</strong>
           </h2>
 
-          <ul className="has-scrollbar">
-            {posts.map((post, index) => {
-              const { title = 'Untitled', description = '', imageUrl, tags = [], _id } = post;
-              const { text, isTruncated } = truncate(description, 6);
+          {/* Loader for news */}
+          {(!posts || posts.length === 0) && (
+            <div style={{ textAlign: 'center', padding: '40px 0', color: '#888' }}>Loading news...</div>
+          )}
 
-              return (
-                <li key={index} className="scrollbar-item">
-                  <div className="blog-card">
-                    <figure className="card-banner img-holder">
-                      <img
-                        src={imageUrl}
-                        alt={title}
-                        className="img-cover"
-                        loading="lazy"
-                      />
-                    </figure>
+          {posts && posts.length > 0 && (
+            <ul className="has-scrollbar">
+              {posts.map((post, index) => {
+                const { title = 'Untitled', description = '', imageUrl, tags = [], _id } = post;
+                const { text, isTruncated } = truncate(description, 6);
 
-                    <h1 id="titler">{title}</h1>
+                return (
+                  <li key={index} className="scrollbar-item">
+                    <div className="blog-card">
+                      <figure className="card-banner img-holder">
+                        <img
+                          src={imageUrl}
+                          alt={title}
+                          className="img-cover"
+                          loading="lazy"
+                        />
+                      </figure>
 
-                    <div id="tagger" className="card-content">
-                      <ul className="card-meta-list">
-                        {tags.map((tag, i) => (
-                          <li key={i}><span className="card-tag">{tag}</span></li>
-                        ))}
-                      </ul>
+                      <h1 id="titler">{title}</h1>
 
-                      <p className="card-text">
-                        {text}{isTruncated && '...'}
-                      </p>
+                      <div id="tagger" className="card-content">
+                        <ul className="card-meta-list">
+                          {tags.map((tag, i) => (
+                            <li key={i}><span className="card-tag">{tag}</span></li>
+                          ))}
+                        </ul>
 
-                      <Link to={`/news/${_id}`} className="read-more">
-                        {t('blog.readMore')} →
-                      </Link>
+                        <p className="card-text">
+                          {text}{isTruncated && '...'}
+                        </p>
+
+                        <Link to={`/news/${_id}`} className="read-more">
+                          {t('blog.readMore')} →
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </section>
 

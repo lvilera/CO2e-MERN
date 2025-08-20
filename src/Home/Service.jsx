@@ -96,12 +96,16 @@ const Service = () => {
       className="section service"
       id="service"
       ref={serviceRef}
-      style={{ backgroundImage: `url(${serviceBg})` }}
+      style={{ backgroundImage: `url(${serviceBg})`, position: 'relative' }}
     >
+      {/* Anchor div for navbar navigation - ensures section appears from start */}
+      <div id="service-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
+      
       <div className="container">
-        <p className="section-subtitle" ref={subtitleRef}>
-          <img src={subtitleImage} width="32" height="7" alt="Wavy line" />
-          <span>{t("service.subtitle")}</span>
+        <p className="section-subtitle" ref={subtitleRef} style={{ position: 'relative' }}>
+          {/* Anchor div for navbar navigation - ensures heading appears from start */}
+          <div id="service-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
+          {t("serviceData.0.title")}
         </p>
 
         <h2 className="h2 section-title" ref={titleRef}>

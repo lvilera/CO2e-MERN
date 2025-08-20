@@ -52,6 +52,31 @@ const Plan = () => {
     }
   }, [isLoggedIn]);
 
+  // Handle hash navigation when page loads
+  useEffect(() => {
+    if (window.location.hash) {
+      const anchorId = window.location.hash.substring(1);
+      
+      const scrollWithHeaderOffset = () => {
+        const anchor = document.getElementById(anchorId);
+        if (anchor) {
+          const headerEl = document.querySelector('#hhw') || document.querySelector('header.header');
+          const headerOffset = headerEl ? headerEl.offsetHeight : 0;
+          const rect = anchor.getBoundingClientRect();
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const targetPosition = scrollTop + rect.top - (headerOffset + 10);
+          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+        }
+      };
+
+      // Multiple attempts to ensure DOM is ready
+      scrollWithHeaderOffset();
+      setTimeout(scrollWithHeaderOffset, 100);
+      setTimeout(scrollWithHeaderOffset, 500);
+      setTimeout(scrollWithHeaderOffset, 1000);
+    }
+  }, []);
+
   useEffect(() => {
     // Initialize animations
     initializeAnimations();
@@ -284,7 +309,11 @@ const Plan = () => {
 
           <div id="innerPlan">
             <div id="innerheading">
-              <h1>{t("plan.choose_membership_title")}</h1>
+              <h1 style={{ position: 'relative' }}>
+                {/* Anchor div for navbar navigation - ensures heading appears from start */}
+                <div id="plans-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
+                {t("plan.choose_membership_title")}
+              </h1>
             </div>
 
             {/* Message Display */}
@@ -304,6 +333,7 @@ const Plan = () => {
             )}
 
             <div id="totalCards" ref={cardsRef}>
+              
               {/* INDIVIDUAL PLAN */}
               <div id="Cards1" style={getCardStyle('free')}>
                 {currentPackage === 'free' && (
@@ -433,6 +463,23 @@ const Plan = () => {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Courses Section */}
+          <div id="courses">
+            <div style={{ textAlign: 'center', padding: '60px 20px', background: '#f8f9fa', borderRadius: '20px', margin: '40px 0' }}>
+              <h2 style={{ fontSize: '2.5rem', fontWeight: '700', color: '#222', marginBottom: '20px', position: 'relative' }}>
+                {/* Anchor div for navbar navigation - ensures heading appears from start */}
+                <div id="courses-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
+                {t("navbar.submenu.courses")}
+              </h2>
+              <p style={{ fontSize: '1.2rem', color: '#666', maxWidth: '800px', margin: '0 auto', lineHeight: '1.6' }}>
+                {t("plan.courses_description")}
+              </p>
+              <p style={{ fontSize: '1.1rem', color: '#555', marginTop: '20px', fontWeight: '500' }}>
+                <strong>{t("plan.note")}:</strong> {t("plan.courses_access_note")}
+              </p>
             </div>
           </div>
 

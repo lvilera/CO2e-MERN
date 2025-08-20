@@ -83,7 +83,10 @@ const About = () => {
   const tabKeys = ["mission", "vision", "nextPlan"];
 
   return (
-    <section className="section about" id="about" ref={aboutRef}>
+    <section className="section about" id="about" style={{ position: 'relative' }}>
+      {/* Anchor div for navbar navigation - ensures section appears from start */}
+      <div id="about-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
+      
       <div className="container">
         {/* ABOUT BANNER */}
         <div className="about-banner" ref={bannerRef}>
