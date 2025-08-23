@@ -92,21 +92,29 @@
     "button": "ÚNETE AHORA"
   },
   "services": {
+    "pageTitle": "Nuestros Servicios",
     "directoryListing": {
       "title": "Listado de Directorio",
       "letters": "A, B, C, D, E, F, G, H, I, J, K, L, …"
     },
     "sortByAlphabet": "Ordenar por Alfabeto",
     "sortByCategory": "Ordenar por Categoría",
-    "allCategories": "TODAS",
+
+    "selectServiceType": "Selecciona un tipo de servicio específico:",
     "categories": {
       "broker": "CORREDOR",
       "exchange": "INTERCAMBIO",
-      "hvac": "HVAC",
-      "landscaping": "PAISAJISMO",
+      "project": "PROYECTO",
       "localcontractors": "CONTRATISTAS LOCALES",
       "retail": "MINORISTA",
-      "wholesaler": "MAYORISTA"
+      "wholesaler": "MAYORISTA",
+      "hvac": "HVAC",
+      "landscaping": "PAISAJISMO",
+      "poolmaintenance": "Mantenimiento de Piscinas",
+      "carpenter": "Carpintero",
+      "electrician": "Electricista",
+      "plumber": "Fontanero",
+      "aryan": "Aryan"
     },
     "featuredListing": "Listado Destacado",
     "description": "Éxito sostenible a través de la conciencia de emisiones de carbono y el impacto climático en su organización...",
@@ -420,7 +428,92 @@
   "logout": "Cerrar sesión",
   "directory": {
     "desktop_only": "Solo Escritorio",
-    "desktop_message": "Para la mejor experiencia, por favor accede a la página del directorio en una computadora de escritorio o portátil. ¡El soporte móvil llegará pronto!"
+    "desktop_message": "Para la mejor experiencia, por favor accede a la página del directorio en una computadora de escritorio o portátil. ¡El soporte móvil llegará pronto!",
+    "page_title": "Listado de Directorio",
+    "mobile_view": "Vista Móvil",
+    "mobile_message": "Los listados del directorio se pueden ver en móvil. Para enviar el listado de tu empresa, por favor usa una computadora de escritorio.",
+    "contractor_type": "Tipo de Contratista",
+    "select_contractor_type": "Seleccionar Tipo de Contratista",
+    "specify_contractor_type": "Especificar Tipo de Contratista",
+    "enter_contractor_type": "Ingresa tu tipo de contratista específico",
+    "other_option_note": "Selecciona \"Otro\" si tu tipo de contratista no está en la lista anterior",
+    "select_platform": "Seleccionar Plataforma",
+    "select_industry": "Seleccionar Industria",
+    "social_platforms": {
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn",
+      "twitter": "X(Twitter)",
+      "instagram": "Instagram"
+    },
+    "industries": {
+      "broker": "Corredor",
+      "exchange": "Intercambio",
+      "local_contractors": "Contratistas Locales",
+      "project": "Proyecto",
+      "retail": "Minorista",
+      "wholesaler": "Mayorista"
+    },
+    "form": {
+      "company_name": "Nombre de la Empresa",
+      "email": "Correo Electrónico",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "state": "Estado/Provincia",
+      "country": "País",
+      "website_social_links": "Sitio Web/Enlaces Sociales",
+      "industry_category": "Industria/Categoría",
+      "short_description": "Descripción Breve",
+      "logo_image": "Logo/Imagen",
+      "submit_listing": "Enviar Listado",
+      "submit_your_company": "Envía tu Empresa",
+      "auto_detect_location": "Detectar Ubicación Automáticamente",
+      "auto_detect_note": "Haz clic para detectar automáticamente tu ciudad, estado y país",
+      "url_placeholder": "https://ejemplo.com"
+    },
+    "contractor_types": {
+      "plumber": "Plomero",
+      "electrician": "Electricista",
+      "carpenter": "Carpintero",
+      "painter": "Pintor",
+      "roofing": "Techado",
+      "hvac": "HVAC",
+      "landscaping": "Paisajismo",
+      "masonry": "Albañilería",
+      "flooring": "Pisos",
+      "general_contractor": "Contratista General",
+      "kitchen_bath": "Cocina y Baño",
+      "windows_doors": "Ventanas y Puertas",
+      "siding_gutters": "Revestimiento y Canaletas",
+      "concrete_asphalt": "Concreto y Asfalto",
+      "pest_control": "Control de Plagas",
+      "cleaning_services": "Servicios de Limpieza",
+      "security_systems": "Sistemas de Seguridad",
+      "pool_spa": "Piscina y Spa",
+      "fencing": "Cercas",
+      "deck_patio": "Terraza y Patio",
+      "insulation": "Aislamiento",
+      "solar_installation": "Instalación Solar",
+      "demolition": "Demolición",
+      "other": "Otro"
+    },
+    "errors": {
+      "fill_required_fields": "Por favor completa todos los campos requeridos para Contratistas Locales",
+      "specify_contractor_type": "Por favor especifica tu tipo de contratista al seleccionar \"Otro\"",
+      "desktop_required": "Por favor usa una computadora de escritorio para enviar listados. La visualización del directorio está disponible en móvil.",
+      "login_required": "Por favor inicia sesión para enviar un listado",
+      "premium_required": "Se requiere membresía Premium para enviar listados",
+      "submission_failed": "Error al enviar el listado",
+      "already_submitted": "Ya has completado el formulario."
+    },
+    "success": {
+      "listing_submitted": "¡Listado enviado exitosamente!"
+    },
+    "messages": {
+      "login_to_view": "Por favor inicia sesión para ver los listados del directorio.",
+      "premium_required_message": "Se requiere membresía Premium para enviar listados.",
+      "login_required_message": "Por favor inicia sesión para enviar un listado."
+    }
   }
 
 

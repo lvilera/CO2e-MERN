@@ -4,6 +4,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import "./Login.css";
 import Footer2 from '../Home/Footer2';
 import { useTranslation } from 'react-i18next';
+import { API_BASE } from '../config';
 
 const Login = () => {
   const { t } = useTranslation();
@@ -63,7 +64,7 @@ const Login = () => {
 
     // First, check if instructor
     try {
-      const instructorRes = await makeLoginRequest('https://e-back-bice.vercel.app/api/instructor-login', formData);
+      const instructorRes = await makeLoginRequest(`${API_BASE}/api/instructor-login`, formData);
       if (instructorRes && instructorRes.isInstructor) {
         setSuccess('Instructor login successful!');
         localStorage.setItem('isInstructor', 'true');
@@ -90,7 +91,7 @@ const Login = () => {
     }
 
     try {
-      const data = await makeLoginRequest('https://e-back-bice.vercel.app/api/login', formData);
+      const data = await makeLoginRequest(`${API_BASE}/api/login`, formData);
 
       localStorage.setItem('userId', data.userId); // Store userId for booking
 
@@ -104,17 +105,22 @@ const Login = () => {
         localStorage.setItem('fallbackToken', data.token);
       }
 
-      if (formData.email === "admin1234@gmail.com" && formData.password === "admin1234") {
+      // Check if user is admin based on backend response or hardcoded credentials
+      if (data.role === 'admin' || data.package === 'admin' || 
+          (formData.email === "admin@admin.com" && formData.password === "admin123") ||
+          (formData.email === "admin1234@gmail.com" && formData.password === "admin1234")) {
         setSuccess("Admin login successful!");
         localStorage.setItem("isAdmin", "true");
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem('userEmail', formData.email);
+        localStorage.setItem('userRole', 'admin');
         setTimeout(() => navigate('/Articles'), 1500);
       } else {
         localStorage.setItem("isAdmin", "false");
         localStorage.setItem("isLoggedIn", "true");
         setSuccess('Login successful!');
         localStorage.setItem('userEmail', formData.email);
+        localStorage.setItem('userRole', data.role || 'user');
         setTimeout(() => navigate('/'), 1500);
       }
     } catch (err) {
@@ -133,7 +139,7 @@ const handleForgotSubmit = async (e) => {
   e.preventDefault();
   setForgotMsg('');
   try {
-    const res = await fetch('https://e-back-bice.vercel.app/api/forgot-password', {
+    const res = await fetch(`${API_BASE}/api/forgot-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -151,7 +157,7 @@ const handleResetSubmit = async (e) => {
   e.preventDefault();
   setResetMsg('');
   try {
-    const res = await fetch('https://e-back-bice.vercel.app/api/reset-password', {
+    const res = await fetch(`${API_BASE}/api/reset-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token: resetToken, newPassword: resetPassword })

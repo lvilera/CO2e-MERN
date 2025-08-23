@@ -1,6 +1,7 @@
 import { useApi } from '../hooks/useApi';
+import { API_BASE } from '../config';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://co2e.vercel.app';
+const API_BASE_URL = API_BASE;
 
 export const useLocationService = () => {
   const { get, post, put } = useApi();

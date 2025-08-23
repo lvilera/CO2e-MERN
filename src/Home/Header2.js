@@ -58,13 +58,16 @@ const Header2= () => {
                 "AddBlog",
                 "Add Instructor",
                 "Upload Courses",
-                "Featured Listing"
+                "Featured Listing",
+                "Directory Upload"
               ].map((item, idx) => {
                 let to =
                   item === "Featured Listing"
                     ? "/admin/featured-listing"
                     : item === "Add Instructor"
                     ? "/admin/add-instructor"
+                    : item === "Directory Upload"
+                    ? "/admin/directory-upload"
                     : `/${item.toLowerCase().replace(/ /g, '-')}`;
                 const isActive = location.pathname === to;
                 return (

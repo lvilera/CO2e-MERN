@@ -21,9 +21,14 @@ const Services = () => {
   const [uploadError, setUploadError] = useState('');
   const [viewMode, setViewMode] = useState('alphabetical'); // 'alphabetical' or 'category'
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null); // null = ALL, 'Local Contractors' = main category, others = sub-categories
+  const [selectedCategory, setSelectedCategory] = useState('Local Contractors'); // 'Local Contractors' = main category, others = sub-categories
   const [showSubCategories, setShowSubCategories] = useState(false);
   const [subCategories, setSubCategories] = useState([]);
+  
+  // Debug: Log when categories change
+  useEffect(() => {
+    console.log('Categories state changed:', categories);
+  }, [categories]);
   const { get } = useApi();
 
   // Refs for animations
@@ -37,6 +42,7 @@ const Services = () => {
 
   useEffect(() => {
     // Don't auto-clear location - let the backend API detect it properly
+    console.log('Services component mounted, fetching data...');
     fetchFeaturedImages();
     fetchDirectoryListings();
     fetchCategories();
@@ -49,16 +55,7 @@ const Services = () => {
     initializeAnimations();
   }, [featuredImages, directoryListings]);
 
-  // Debug useEffect for alphabetical filtering
-  useEffect(() => {
-    console.log('Services: State changed - viewMode:', viewMode, 'selectedLetter:', selectedLetter, 'selectedCategory:', selectedCategory);
-    console.log('Services: Directory listings count:', directoryListings.length);
-    if (viewMode === 'alphabetical') {
-      console.log('Services: In alphabetical mode, filtering by letter:', selectedLetter);
-      const filtered = getFilteredListings();
-      console.log('Services: Filtered results count:', filtered.length);
-    }
-  }, [viewMode, selectedLetter, selectedCategory, directoryListings]);
+
 
   const initializeAnimations = () => {
     // Title animation
@@ -84,7 +81,7 @@ const Services = () => {
       );
     }
 
-    // Table animation
+    // Table animation - appear immediately without scroll trigger
     if (tableRef.current) {
       gsap.fromTo(tableRef.current,
         { opacity: 0, y: 30 },
@@ -93,12 +90,7 @@ const Services = () => {
           y: 0, 
           duration: 0.8, 
           delay: 0.3,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: tableRef.current,
-            start: "top 80%",
-            toggleActions: "play none none reverse"
-          }
+          ease: "power2.out"
         }
       );
     }
@@ -196,98 +188,143 @@ const Services = () => {
 
   const fetchFeaturedImages = async () => {
     try {
-      console.log('Services: Fetching featured listings from:', `${API_BASE}/api/featured-listings`);
-      
       // Try direct fetch first
       try {
         const response = await fetch(`${API_BASE}/api/featured-listings`);
         if (response.ok) {
           const data = await response.json();
-          console.log('Services: Featured listings fetched successfully via direct fetch:', data);
           setFeaturedImages(data);
           return;
         }
       } catch (directError) {
-        console.log('Services: Direct fetch failed for featured listings, trying useApi:', directError);
+        // Fallback to useApi
       }
       
       // Fallback to useApi
       const data = await get(`${API_BASE}/api/featured-listings`, 'Loading featured listings...');
-      console.log('Services: Featured listings fetched successfully via useApi:', data);
       setFeaturedImages(data);
     } catch (err) {
       console.error('Services: Failed to fetch featured listings:', err);
-      console.error('Services: API_BASE:', API_BASE);
       setFeaturedImages([]);
     }
   };
 
   const fetchDirectoryListings = async () => {
     try {
-      console.log('Services: Fetching directory listings from:', `${API_BASE}/api/directory`);
-      
       // Try direct fetch first
       try {
         const response = await fetch(`${API_BASE}/api/directory`);
         if (response.ok) {
           const data = await response.json();
-          console.log('Services: Directory listings fetched successfully via direct fetch:', data);
+          console.log('Services: Fetched directory listings:', data.length, 'entries');
+          console.log('Sample entries:', data.slice(0, 3));
           setDirectoryListings(data);
           return;
         }
       } catch (directError) {
-        console.log('Services: Direct fetch failed, trying useApi:', directError);
+        console.error('Direct fetch failed:', directError);
+        // Fallback to useApi
       }
       
       // Fallback to useApi
       const data = await get(`${API_BASE}/api/directory`, 'Loading directory listings...');
-      console.log('Services: Directory listings fetched successfully via useApi:', data);
+      console.log('Services: Fetched directory listings via useApi:', data.length, 'entries');
       setDirectoryListings(data);
     } catch (err) {
       console.error('Services: Failed to fetch directory listings:', err);
-      console.error('Services: API_BASE:', API_BASE);
       setDirectoryListings([]);
     }
   };
 
   const fetchCategories = async () => {
     try {
-      console.log('Services: Fetching categories from:', `${API_BASE}/api/directory/categories`);
-      
-      // Try direct fetch first
-      try {
-        const response = await fetch(`${API_BASE}/api/directory/categories`);
+      // First, get the actual unique industries from the database
+      const response = await fetch(`${API_BASE}/api/directory`);
         if (response.ok) {
-          const data = await response.json();
-          console.log('Services: Categories fetched successfully via direct fetch:', data);
-          
-          // Separate main categories from sub-categories
-          const mainCategories = ['Local Contractors'];
-          const subCats = data.filter(cat => cat !== 'Local Contractors');
-          
-          setCategories(mainCategories);
-          setSubCategories(subCats);
-          return;
-        }
-      } catch (directError) {
-        console.log('Services: Direct fetch failed, trying useApi:', directError);
+        const listings = await response.json();
+        
+        // Extract unique industries and display categories from database
+        const uniqueIndustries = [...new Set(listings.map(l => l.industry).filter(Boolean))];
+        const uniqueDisplayCategories = [...new Set(listings.map(l => l.displayCategory).filter(Boolean))];
+        console.log('Unique industries from database:', uniqueIndustries);
+        console.log('Unique display categories from database:', uniqueDisplayCategories);
+        
+        // Create a mapping from database industries to display categories
+        const industryToCategory = {
+          'Broker': 'Broker',
+          'Exchange': 'Exchange',
+          'Local Contractors': 'Local Contractors',
+          'Project': 'Project',
+          'Retail': 'Retail',
+          'Wholesaler': 'Wholesaler',
+          // Map other industries to appropriate categories
+          'Construction': 'Project',
+          'Technology': 'Project',
+          'Finance': 'Project',
+          'Wholesale': 'Wholesaler'
+        };
+        
+        // Create display categories based on actual data
+        const displayCategories = [];
+        
+        // First, add display categories from the database
+        uniqueDisplayCategories.forEach(displayCategory => {
+          if (!displayCategories.includes(displayCategory)) {
+            displayCategories.push(displayCategory);
+          }
+        });
+        
+        // Then, map any remaining industries to categories
+        uniqueIndustries.forEach(industry => {
+          const category = industryToCategory[industry] || industry;
+          if (!displayCategories.includes(category)) {
+            displayCategories.push(category);
+          }
+        });
+        
+        console.log('Display categories:', displayCategories);
+        console.log('Categories state being set to:', displayCategories);
+        setCategories(displayCategories);
+      } else {
+        // Fallback to predefined categories
+        const fallbackCategories = [
+          'Broker',
+          'Exchange', 
+          'Local Contractors',
+          'Project',
+          'Retail',
+          'Wholesaler'
+        ];
+        setCategories(fallbackCategories);
       }
       
-      // Fallback to useApi
-      const data = await get(`${API_BASE}/api/directory/categories`, 'Loading categories...');
-      console.log('Services: Categories fetched successfully via useApi:', data);
-      
-      // Separate main categories from sub-categories
-      const mainCategories = ['Local Contractors'];
-      const subCats = data.filter(cat => cat !== 'Local Contractors');
-      
-      setCategories(mainCategories);
-      setSubCategories(subCats);
+      // Still fetch contractor types for Local Contractors subcategories
+      try {
+        const contractorResponse = await fetch(`${API_BASE}/api/directory/contractor-types`);
+        if (contractorResponse.ok) {
+          const contractorTypes = await contractorResponse.json();
+          setSubCategories(contractorTypes);
+        } else {
+          setSubCategories([]);
+        }
+      } catch (contractorError) {
+        setSubCategories([]);
+      }
     } catch (err) {
-      console.error('Services: Failed to fetch categories:', err);
-      console.error('Services: API_BASE:', API_BASE);
-      setCategories(['Local Contractors']);
-      setSubCategories([]);
+      console.error('Services: Failed to set categories:', err);
+      
+            // Fallback to hardcoded categories
+      const fallbackCategories = [
+        'Broker',
+        'Exchange', 
+        'Local Contractors',
+        'Project',
+        'Retail',
+        'Wholesaler'
+      ];
+      
+      setCategories(fallbackCategories);
+          setSubCategories([]);
     }
   };
 
@@ -316,17 +353,12 @@ const Services = () => {
   
   // Detect and store user's location
   const detectUserLocation = async () => {
-    console.log('Services: detectUserLocation called');
-    
     // Check if we already have location in localStorage
     const existingLocation = localStorage.getItem('userLocation');
     if (existingLocation) {
-      console.log('Services: Found existing location in localStorage:', existingLocation);
       // Don't override existing location - return early
       return;
     }
-    
-    console.log('Services: No existing location, attempting to detect from backend API...');
     
     try {
       // Call the same backend API that Directory page uses
@@ -335,11 +367,8 @@ const Services = () => {
         credentials: 'include',
       });
       
-      console.log('Services: Backend location response status:', response.status);
-      
       if (response.ok) {
         const data = await response.json();
-        console.log('Services: Backend location data:', data);
         
         if (data.userLocation && data.userLocation.city !== 'Unknown') {
           const locationData = {
@@ -347,61 +376,44 @@ const Services = () => {
             state: data.userLocation.state || '',
             country: data.userLocation.country || ''
           };
-          console.log('Services: Setting location from backend API:', locationData);
           localStorage.setItem('userLocation', JSON.stringify(locationData));
         } else {
-          console.log('Services: Backend API returned unknown location, trying browser geolocation');
           // Try browser geolocation as fallback
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
               (position) => {
-                console.log('Services: Browser geolocation success:', position.coords);
                 // Don't set hardcoded location - let user set manually if needed
-                console.log('Services: Browser geolocation available but no reverse geocoding - location not set');
               },
               (error) => {
-                console.log('Services: Browser geolocation failed:', error);
-                console.log('Services: No location detected - user will need to set manually');
+                // Browser geolocation failed
               }
             );
-          } else {
-            console.log('Services: Browser geolocation not available - no location set');
           }
         }
       } else {
-        console.log('Services: Backend API failed with status:', response.status);
         // Try browser geolocation as fallback
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
-              console.log('Services: Browser geolocation success:', position.coords);
-              console.log('Services: Browser geolocation available but no reverse geocoding - location not set');
+              // Browser geolocation available but no reverse geocoding - location not set
             },
             (error) => {
-              console.log('Services: Browser geolocation failed:', error);
-              console.log('Services: No location detected - user will need to set manually');
+              // Browser geolocation failed
             }
           );
-        } else {
-          console.log('Services: Browser geolocation not available - no location set');
         }
       }
     } catch (error) {
-      console.log('Services: Backend API fetch failed:', error);
       // Try browser geolocation as fallback
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            console.log('Services: Browser geolocation success:', position.coords);
-            console.log('Services: Browser geolocation available but no reverse geocoding - location not set');
+            // Browser geolocation available but no reverse geocoding - location not set
           },
           (error) => {
-            console.log('Services: Browser geolocation failed:', error);
-            console.log('Services: No location detected - user will need to set manually');
+            // Browser geolocation failed
           }
         );
-      } else {
-        console.log('Services: Browser geolocation not available - no location set');
       }
     }
   };
@@ -409,15 +421,12 @@ const Services = () => {
   // Sync location data from other pages
   const syncLocationData = () => {
     const currentLocation = localStorage.getItem('userLocation');
-    console.log('Services: Current location in localStorage:', currentLocation);
     
     if (currentLocation) {
       try {
         const parsedLocation = JSON.parse(currentLocation);
-        console.log('Services: Parsed location data:', parsedLocation);
         return parsedLocation;
       } catch (error) {
-        console.log('Services: Error parsing location data:', error);
         return null;
       }
     }
@@ -428,18 +437,33 @@ const Services = () => {
   const getFilteredListings = () => {
     // Sync location data first
     const userLocation = syncLocationData();
-    console.log('Services: getFilteredListings - userLocation:', userLocation);
+    
+    console.log('getFilteredListings called with:', {
+      viewMode,
+      selectedCategory,
+      totalListings: directoryListings.length,
+      sampleIndustries: directoryListings.slice(0, 5).map(l => l.industry)
+    });
     
     if (viewMode === 'category') {
       if (selectedCategory) {
+        // If no category is selected, show Local Contractors by default
+        if (!selectedCategory) {
+          console.log('No category selected, showing Local Contractors by default');
+          return directoryListings.filter(listing => 
+            listing.displayCategory === 'Local Contractors' || 
+            listing.industry === 'Local Contractors'
+          );
+        }
+        
         // Special handling for Local Contractors - always filter by location
         if (selectedCategory === 'Local Contractors') {
-          console.log('Services: Filtering Local Contractors by location:', userLocation);
-          
           if (userLocation && userLocation.city && userLocation.state && userLocation.country) {
             // More flexible location matching - show contractors from same state/country
             const filtered = directoryListings.filter(l => {
-              if (l.industry !== selectedCategory) return false;
+              // Check displayCategory first, then fallback to industry
+              const isLocalContractor = (l.displayCategory === selectedCategory) || (l.industry === selectedCategory);
+              if (!isLocalContractor) return false;
               if (!l.city || !l.state || !l.country) return false;
               
               // Check if contractor is in the same state or country as user
@@ -451,36 +475,87 @@ const Services = () => {
               return sameCity || sameState || sameCountry;
             });
             
-            console.log('Services: Local Contractors filtered results:', filtered.length, 'out of', directoryListings.filter(l => l.industry === selectedCategory).length);
             return filtered;
           } else {
-            console.log('Services: No user location found, showing all Local Contractors');
             // If no user location, show all Local Contractors
-            return directoryListings.filter(l => l.industry === selectedCategory);
+            return directoryListings.filter(l => {
+              // Check displayCategory first, then fallback to industry
+              return (l.displayCategory === selectedCategory) || (l.industry === selectedCategory);
+            });
           }
         }
-        return directoryListings.filter(l => l.industry === selectedCategory);
+        
+        // Handle contractor type subcategories (e.g., Plumber, Electrician)
+        // Check if selectedCategory is a contractor type from the dynamically fetched subcategories
+        if (subCategories.includes(selectedCategory)) {
+          // Filter by both industry (Local Contractors) and contractor type
+          return directoryListings.filter(l => {
+            if (l.industry !== 'Local Contractors') return false;
+            
+            // Check if the listing has the specific contractor type
+            // This could be in contractorType field or customContractorType field
+            const listingContractorType = l.contractorType || l.customContractorType || '';
+            const matchesContractorType = listingContractorType.toLowerCase() === selectedCategory.toLowerCase();
+            
+            return matchesContractorType;
+          });
+        }
+        
+        // Handle industry mapping for Project category
+        if (selectedCategory === 'Project') {
+          const projectListings = directoryListings.filter(l => {
+            // Use displayCategory if available, otherwise fall back to industry mapping
+            if (l.displayCategory === 'Project') return true;
+            
+            // Fallback: Map database industries to Project category
+            const projectIndustries = ['Construction', 'Technology', 'Finance'];
+            return projectIndustries.includes(l.industry);
+          });
+          console.log('Project category filtering:', {
+            selectedCategory,
+            totalListings: directoryListings.length,
+            projectListings: projectListings.length,
+            projectIndustries: ['Construction', 'Technology', 'Finance'],
+            foundIndustries: [...new Set(projectListings.map(l => l.industry))]
+          });
+          return projectListings;
+        }
+        
+        // Handle industry mapping for Wholesaler category
+        if (selectedCategory === 'Wholesaler') {
+          return directoryListings.filter(l => {
+            // Use displayCategory if available, otherwise fall back to industry mapping
+            if (l.displayCategory === 'Wholesaler') return true;
+            
+            // Fallback: Map database industries to Wholesaler category
+            const wholesalerIndustries = ['Wholesale'];
+            return wholesalerIndustries.includes(l.industry);
+          });
+        }
+        
+        // For other categories, do exact matching (check both displayCategory and industry)
+        return directoryListings.filter(l => {
+          // First check displayCategory if available
+          if (l.displayCategory === selectedCategory) return true;
+          // Fallback to industry matching
+          return l.industry === selectedCategory;
+        });
       } else {
         return directoryListings; // Show all listings when no category is selected
       }
     } else {
       // In alphabetical view, show all listings that start with selected letter
       // But for Local Contractors, also apply location filtering if user location exists
-      console.log('Services: Alphabetical view filtering with letter:', selectedLetter, 'and location:', userLocation);
-      console.log('Services: Total directory listings:', directoryListings.length);
       
       return directoryListings.filter(l => {
         // Ensure company name exists and filter by first letter
         const companyName = l.company || l.Company || '';
         const matchesLetter = companyName.toUpperCase().startsWith(selectedLetter);
         
-        console.log('Services: Checking listing:', companyName, 'starts with', selectedLetter, '=', matchesLetter);
-        
         // If it's a Local Contractor and we have user location, apply location filtering
-        if (l.industry === 'Local Contractors' && userLocation && userLocation.city && userLocation.state && userLocation.country) {
+        if ((l.displayCategory === 'Local Contractors' || l.industry === 'Local Contractors') && userLocation && userLocation.city && userLocation.state && userLocation.country) {
           const hasLocationData = l.city && l.state && l.country;
           if (!hasLocationData) {
-            console.log('Services: Local Contractor missing location data:', l.company);
             return false;
           }
           
@@ -491,7 +566,6 @@ const Services = () => {
           
           const matchesLocation = sameCity || sameState || sameCountry;
           
-          console.log('Services: Local Contractor location match:', matchesLocation, 'for', l.company);
           return matchesLetter && matchesLocation;
         }
         
@@ -511,9 +585,19 @@ const Services = () => {
             <Header />
           </div>
 
-          <div id="directory-listing">
-            <div id="Listingg">
-              <h1 ref={titleRef} style={{ position: 'relative' }}>
+          <div id="directory-listing" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+            <div id="Listingg" style={{ 
+              paddingTop: '80px',
+              paddingLeft: 'clamp(20px, 5vw, 220px)',
+              paddingRight: 'clamp(20px, 5vw, 220px)',
+              textAlign: 'center'
+            }}>
+              <h1 ref={titleRef} style={{ 
+                position: 'relative',
+                fontSize: 'clamp(32px, 8vw, 50px)',
+                lineHeight: '1.2',
+                marginBottom: '20px'
+              }}>
                 {/* Anchor div for navbar navigation - ensures heading appears from start */}
                 <div id="directory-listing-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
                 {t("services.directoryListing.title")}
@@ -525,19 +609,20 @@ const Services = () => {
                 justifyContent: 'center', 
                 alignItems: 'center', 
                 gap: '16px', 
-                margin: '20px 220px 20px 220px',
+                margin: '20px auto',
+                maxWidth: '800px',
                 flexWrap: 'wrap',
                 overflowX: 'auto !important',
                 whiteSpace: 'nowrap !important',
-                padding: '0 10px'
+                padding: '0 20px',
+                width: '100%',
+                textAlign: 'center'
               }}>
                 <button
                   onClick={() => {
-                    console.log('Services: Switching to alphabetical mode, selectedLetter:', selectedLetter);
                     setViewMode('alphabetical');
                     setSelectedLetter('A');
-                    setSelectedCategory(null);
-                    console.log('Services: After switching - viewMode: alphabetical, selectedLetter: A');
+                    setSelectedCategory('Local Contractors');
                   }}
                   style={{
                     padding: '12px 24px',
@@ -548,7 +633,10 @@ const Services = () => {
                     fontWeight: '600',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
-                    fontSize: '16px'
+                    fontSize: '16px',
+                    textAlign: 'center',
+                    display: 'inline-block',
+                    margin: '0'
                   }}
                 >
                   {t("services.sortByAlphabet")}
@@ -556,7 +644,8 @@ const Services = () => {
                 <button
                   onClick={() => {
                     setViewMode('category');
-                    setSelectedCategory(null);
+                    setSelectedCategory('Local Contractors'); // Show Local Contractors by default
+                    setShowSubCategories(true);
                   }}
                   style={{
                     padding: '12px 24px',
@@ -567,7 +656,10 @@ const Services = () => {
                     fontWeight: '600',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
-                    fontSize: '16px'
+                    fontSize: '16px',
+                    textAlign: 'center',
+                    display: 'inline-block',
+                    margin: '0'
                   }}
                 >
                   {t("services.sortByCategory")}
@@ -576,15 +668,16 @@ const Services = () => {
               
               {/* Category Filter Row - Only show when in category mode - MOVED HERE */}
               {viewMode === 'category' && (
-                <div className="category-filter-container" style={{ 
-                  margin: '20px 0 30px 0', 
+                <div  className="category-filter-container" style={{ 
+                  margin: '20px auto 30px auto', 
                   width: '100%', 
-                  padding: '0 220px 0 220px',
+                  maxWidth: '1200px',
+                  padding: '0 20px',
                   display: 'flex',
-                  justifyContent: 'flex-start',
+                  justifyContent: 'center',
                   flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  textAlign: 'left'
+                  alignItems: 'center',
+                  textAlign: 'center'
                 }}>
                   <div className="category-scroll-wrapper" style={{
                     overflowX: 'auto',
@@ -595,26 +688,36 @@ const Services = () => {
                     scrollbarColor: '#90be55 #f0f0f0',
                     WebkitOverflowScrolling: 'touch',
                     padding: '10px 0',
-                    textAlign: 'left'
+                    textAlign: 'center',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: '100%'
                   }}>
                     <div className="category-list" style={{
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'flex-start',
+                      justifyContent: 'center',
                       gap: '8px',
                       fontSize: 'clamp(14px, 3vw, 24px)',
                       fontWeight: '500',
                       width: '100%',
-                      textAlign: 'left'
+                      textAlign: 'center',
+                      minHeight: '44px',
+                      flexWrap: 'wrap',
+                      margin: '0 auto',
+                      padding: '0'
                     }}>
                       {categories.map((category, idx) => (
-                        <span id="slider1" className="category-item"
+                        <span id="" className="category-item"
                           key={category}
                           onClick={() => {
                             if (category === 'Local Contractors') {
                               setSelectedCategory(category);
+                              setShowSubCategories(true); // Show subcategories
                             } else {
+                              // If selecting a different main category, reset to that category
                               setSelectedCategory(category);
+                              setShowSubCategories(false);
                             }
                           }}
                           style={{
@@ -637,8 +740,8 @@ const Services = () => {
                     </div>
                   </div>
                   
-                  {/* Sub-categories - Show when Local Contractors is selected OR when any sub-category is selected */}
-                  {(selectedCategory === 'Local Contractors' || (selectedCategory && selectedCategory !== 'Local Contractors')) && (
+                  {/* Sub-categories - Show when Local Contractors is selected or any of its subcategories */}
+                  {(selectedCategory === 'Local Contractors' || subCategories.includes(selectedCategory)) && (
                     <div id="sider" className="sub-categories-container" style={{
                       marginTop: '16px',
                       padding: '16px',
@@ -646,26 +749,32 @@ const Services = () => {
                       borderRadius: '8px',
                       border: '1px solid #e9ecef',
                       width: '100%',
-                      maxWidth: '800px'
+                      maxWidth: '800px',
+                      textAlign: 'center'
                     }}>
                       <div className="sub-categories-instruction" style={{
                         fontSize: 'clamp(12px, 2.5vw, 18px)',
                         color: '#666',
                         marginBottom: '12px',
-                        textAlign: 'left'
+                        textAlign: 'center'
                       }}>
-                        Select a specific service type:
+                        {t('services.selectServiceType')}
                       </div>
                       <div className="sub-categories-list" style={{
                         display: 'flex',
                         flexWrap: 'wrap',
                         justifyContent: 'center',
-                        gap: '8px'
+                        gap: '8px',
+                        margin: '0 auto',
+                        textAlign: 'center'
                       }}>
                         {subCategories.map((subCat, idx) => (
                           <span
                             key={subCat}
-                            onClick={() => setSelectedCategory(subCat)}
+                            onClick={() => {
+                              setSelectedCategory(subCat);
+                              setShowSubCategories(true); // Keep subcategories visible
+                            }}
                             style={{
                               cursor: 'pointer',
                               fontWeight: selectedCategory === subCat ? 700 : 400,
@@ -680,7 +789,7 @@ const Services = () => {
                               whiteSpace: 'nowrap'
                             }}
                           >
-                            {t(`services.categories.${subCat.toLowerCase().replace(/\s+/g, '')}`)}
+                            {subCat}
                           </span>
                         ))}
                       </div>
@@ -693,16 +802,24 @@ const Services = () => {
               
               {/* Directory A-Z Filter Row - Only show when in alphabetical mode */}
               {viewMode === 'alphabetical' && (
-                <div id="uppa">
+                <div id="uppa" style={{ padding: '0 20px' }}>
                 <div id="ppa">
-              <div id="parenta" ref={alphabetRef} style={{ fontSize: 32, margin: '24px 0', textAlign: 'center', whiteSpace: 'nowrap', overflowX: 'auto', width: '100%' }}>
+              <div id="parenta" ref={alphabetRef} style={{ 
+                fontSize: 'clamp(20px, 6vw, 32px)', 
+                margin: '16px auto', 
+                textAlign: 'center', 
+                whiteSpace: 'nowrap', 
+                overflowX: 'auto', 
+                width: '100%',
+                maxWidth: '1200px',
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'thin'
+              }}>
                 {alphabet.map((letter, idx) => (
                   <span id="iparent" key={letter}>
                     <span
                       onClick={() => {
-                        console.log('Services: Letter clicked:', letter, 'current selectedLetter:', selectedLetter);
                         setSelectedLetter(letter);
-                        console.log('Services: After setting selectedLetter to:', letter);
                       }}
                       style={{
                         cursor: 'pointer',
@@ -727,36 +844,93 @@ const Services = () => {
 
               {/* Directory Table */}
   
-              <div id="ttable" ref={tableRef} style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+              <div id="ttable" ref={tableRef} style={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center',
+                width: '100%',
+                padding: '0 20px',
+                marginTop: '20px'
+              }}>
               {filteredListings.length > 0 ? (
                 <div className="table-responsive-container" style={{ 
                   maxWidth: '1200px', 
                   width: '100%',
                   margin: '0 auto', 
                   background: '#fff', 
-                  borderRadius: 24, 
+                  borderRadius: 'clamp(16px, 3vw, 24px)', 
                   boxShadow: '0 6px 32px rgba(0,0,0,0.10)', 
                   padding: 0, 
-                  marginTop: 32, 
+                  marginTop: 0, 
+                  display: 'flex',
+                  justifyContent: 'center',
                   overflow: 'hidden'
                 }}>
-                  <div className="table-wrapper" style={{ overflowX: 'auto', width: '100%' }}>
+                  <div className="table-wrapper" style={{ 
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}>
                     <table className="responsive-table" style={{ 
                       width: '100%', 
+                      maxWidth: '100%',
                       borderCollapse: 'separate', 
                       borderSpacing: 0, 
-                      fontSize: 16,
-                      minWidth: selectedCategory === 'Local Contractors' ? '920px' : '800px' // Ensure minimum width for readability
+                      fontSize: 'clamp(14px, 3vw, 16px)',
+                      margin: '0 auto',
+                      tableLayout: 'fixed'
                     }}>
                       <thead>
                         <tr style={{ background: '#f7f7f7', fontWeight: 800 }}>
-                          <th style={{ padding: '16px 12px', border: 'none', textAlign: 'center', letterSpacing: 1, minWidth: '120px' }}>COMPANY</th>
-                          <th style={{ padding: '16px 12px', border: 'none', textAlign: 'center', letterSpacing: 1, minWidth: '120px' }}>SOCIAL LINK</th>
-                          <th style={{ padding: '16px 12px', border: 'none', textAlign: 'center', letterSpacing: 1, minWidth: '180px' }}>EMAIL</th>
-                          <th style={{ padding: '16px 12px', border: 'none', textAlign: 'center', letterSpacing: 1, minWidth: '140px' }}>PHONE NUMBER</th>
-                          <th style={{ padding: '16px 12px', border: 'none', textAlign: 'center', letterSpacing: 1, minWidth: '120px' }}>CATEGORY</th>
+                          <th style={{ 
+                            padding: 'clamp(8px, 2vw, 16px) clamp(6px, 1.5vw, 12px)', 
+                            border: 'none', 
+                            textAlign: 'center', 
+                            letterSpacing: 1, 
+                            fontSize: 'clamp(12px, 2.5vw, 16px)',
+                            width: selectedCategory === 'Local Contractors' ? '16%' : '20%'
+                          }}>COMPANY</th>
+                          <th style={{ 
+                            padding: 'clamp(8px, 2vw, 16px) clamp(6px, 1.5vw, 12px)', 
+                            border: 'none', 
+                            textAlign: 'center', 
+                            letterSpacing: 1, 
+                            fontSize: 'clamp(12px, 2.5vw, 16px)',
+                            width: selectedCategory === 'Local Contractors' ? '12%' : '15%'
+                          }}>SOCIAL LINK</th>
+                          <th style={{ 
+                            padding: 'clamp(8px, 2vw, 16px) clamp(6px, 1.5vw, 12px)', 
+                            border: 'none', 
+                            textAlign: 'center', 
+                            letterSpacing: 1, 
+                            fontSize: 'clamp(12px, 2.5vw, 16px)',
+                            width: selectedCategory === 'Local Contractors' ? '20%' : '25%'
+                          }}>EMAIL</th>
+                          <th style={{ 
+                            padding: 'clamp(8px, 2vw, 16px) clamp(6px, 1.5vw, 12px)', 
+                            border: 'none', 
+                            textAlign: 'center', 
+                            letterSpacing: 1, 
+                            fontSize: 'clamp(12px, 2.5vw, 16px)',
+                            width: selectedCategory === 'Local Contractors' ? '16%' : '20%'
+                          }}>PHONE NUMBER</th>
+                          <th style={{ 
+                            padding: 'clamp(8px, 2vw, 16px) clamp(6px, 1.5vw, 12px)', 
+                            border: 'none', 
+                            textAlign: 'center', 
+                            letterSpacing: 1, 
+                            fontSize: 'clamp(12px, 2.5vw, 16px)',
+                            width: selectedCategory === 'Local Contractors' ? '16%' : '20%'
+                          }}>CATEGORY</th>
                           {selectedCategory === 'Local Contractors' && (
-                            <th style={{ padding: '16px 12px', border: 'none', textAlign: 'center', letterSpacing: 1, minWidth: '120px' }}>LOCATION</th>
+                            <th style={{ 
+                              padding: 'clamp(8px, 2vw, 16px) clamp(6px, 1.5vw, 12px)', 
+                              border: 'none', 
+                              textAlign: 'center', 
+                              letterSpacing: 1, 
+                              fontSize: 'clamp(12px, 2.5vw, 16px)',
+                              width: '20%'
+                            }}>LOCATION</th>
                           )}
                         </tr>
                       </thead>
@@ -783,32 +957,99 @@ const Services = () => {
                           if (!effectivePackage || effectivePackage === 'free') style = { ...style, fontWeight: 400, color: '#000000' };
                           return (
                             <tr key={i}>
-                              <td style={{ ...style, padding: '14px 12px', border: 'none', wordBreak: 'break-word' }}>{l.company}</td>
-                              <td style={{ ...style, padding: '14px 12px', border: 'none' }}>
+                              <td style={{ 
+                                ...style, 
+                                padding: 'clamp(8px, 2vw, 14px) clamp(6px, 1.5vw, 12px)', 
+                                border: 'none', 
+                                wordBreak: 'break-word',
+                                fontSize: 'clamp(12px, 2.5vw, 16px)',
+                                textAlign: 'center',
+                                maxWidth: '0',
+                                overflow: 'hidden',
+                                wordWrap: 'break-word',
+                                whiteSpace: 'normal'
+                              }}>{l.company}</td>
+                              <td style={{ 
+                                ...style, 
+                                padding: 'clamp(8px, 2vw, 14px) clamp(6px, 1.5vw, 12px)', 
+                                border: 'none',
+                                fontSize: 'clamp(12px, 2.5vw, 16px)',
+                                textAlign: 'center',
+                                maxWidth: '0',
+                                overflow: 'hidden',
+                                wordWrap: 'break-word',
+                                whiteSpace: 'normal'
+                              }}>
                                 {l.socialType && l.socialLink ? (
                                   <>
                                     <a href={l.socialLink} target="_blank" rel="noopener noreferrer">
                                       <button id="tb" style={{ 
-                                        padding: '4px 14px', 
-                                        borderRadius: 8, 
+                                        padding: 'clamp(3px, 1vw, 4px) clamp(8px, 2vw, 14px)', 
+                                        borderRadius: 'clamp(6px, 1.5vw, 8px)', 
                                         background: 'transparent', 
                                         color: style.color, 
                                         border: `2px solid ${style.color}`, 
                                         fontWeight: style.fontWeight, 
-                                        fontSize: 16, 
+                                        fontSize: 'clamp(12px, 2.5vw, 16px)', 
                                         cursor: 'pointer', 
                                         textTransform: 'capitalize',
-                                        opacity: 1
+                                        opacity: 1,
+                                        minHeight: '32px',
+                                        minWidth: '60px'
                                       }}>{l.socialType}</button>
                                     </a>
                                   </>
                                 ) : ''}
                               </td>
-                              <td style={{ ...style, padding: '14px 12px', border: 'none', wordBreak: 'break-all' }}>{l.email}</td>
-                              <td style={{ ...style, padding: '14px 12px', border: 'none', wordBreak: 'break-word' }}>{l.phone}</td>
-                              <td style={{ ...style, padding: '14px 12px', border: 'none', wordBreak: 'break-word' }}>{l.industry}</td>
+                              <td style={{ 
+                                ...style, 
+                                padding: 'clamp(8px, 2vw, 14px) clamp(6px, 1.5vw, 12px)', 
+                                border: 'none', 
+                                wordBreak: 'break-all',
+                                fontSize: 'clamp(12px, 2.5vw, 16px)',
+                                textAlign: 'center',
+                                maxWidth: '0',
+                                overflow: 'hidden',
+                                wordWrap: 'break-word',
+                                whiteSpace: 'normal'
+                              }}>{l.email}</td>
+                              <td style={{ 
+                                ...style, 
+                                padding: 'clamp(8px, 2vw, 14px) clamp(6px, 1.5vw, 12px)', 
+                                border: 'none', 
+                                wordBreak: 'break-word',
+                                fontSize: 'clamp(12px, 2.5vw, 16px)',
+                                textAlign: 'center',
+                                maxWidth: '0',
+                                overflow: 'hidden',
+                                wordWrap: 'break-word',
+                                whiteSpace: 'normal'
+                              }}>{l.phone}</td>
+                              <td style={{ 
+                                ...style, 
+                                padding: 'clamp(8px, 2vw, 14px) clamp(6px, 1.5vw, 12px)', 
+                                border: 'none', 
+                                wordBreak: 'break-word',
+                                fontSize: 'clamp(12px, 2.5vw, 16px)',
+                                textAlign: 'center',
+                                maxWidth: '0',
+                                overflow: 'hidden',
+                                wordWrap: 'break-word',
+                                whiteSpace: 'normal'
+                              }}>{l.industry}</td>
                               {selectedCategory === 'Local Contractors' && (
-                                <td style={{ ...style, padding: '14px 12px', border: 'none', wordBreak: 'break-word' }}>
+                                <td style={{ 
+                                  ...style, 
+                                  padding: 'clamp(8px, 2vw, 14px) clamp(6px, 1.5vw, 12px)', 
+                                  border: 'none', 
+                                  wordBreak: 'break-word',
+                                  fontSize: 'clamp(12px, 2.5vw, 16px)',
+                                  textAlign: 'center',
+                                  maxWidth: '0',
+                                  overflow: 'hidden',
+                                  wordWrap: 'break-word',
+                                  whiteSpace: 'normal'
+                                }}>
                                   {l.city && l.state && l.country ? `${l.city}, ${l.state}, ${l.country}` : 'Location not specified'}
                                 </td>
                               )}

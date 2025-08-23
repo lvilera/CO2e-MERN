@@ -92,55 +92,63 @@
     "button": "REJOIGNEZ-NOUS"
   },
   "services": {
+    "pageTitle": "Nos Services",
     "directoryListing": {
       "title": "Liste des Répertoires",
       "letters": "A, B, C, D, E, F, G, H, I, J, K, L, …"
     },
     "sortByAlphabet": "Trier par Alphabet",
     "sortByCategory": "Trier par Catégorie",
-    "allCategories": "TOUTES",
+
+    "selectServiceType": "Sélectionnez un type de service spécifique :",
     "categories": {
       "broker": "COURTIER",
       "exchange": "ÉCHANGE",
-      "hvac": "CVC",
-      "landscaping": "AMÉNAGEMENT PAYSAGER",
+      "project": "PROJET",
       "localcontractors": "ENTREPRENEURS LOCAUX",
       "retail": "DÉTAIL",
-      "wholesaler": "GROSSISTE"
+      "wholesaler": "GROSSISTE",
+      "hvac": "CVC",
+      "landscaping": "AMÉNAGEMENT PAYSAGER",
+      "poolmaintenance": "Entretien de Piscine",
+      "carpenter": "Menuisier",
+      "electrician": "Électricien",
+      "plumber": "Plumbier",
+      "aryan": "Aryan"
     },
     "featuredListing": "Liste en Vedette",
-    "description": "Succès durable grâce à la sensibilisation aux émissions de carbone et à l’impact climatique dans votre organisation...",
-    "courseButton": "Formation des employés en entreprise",
+    "description": "Succès durable grâce à la sensibilisation aux émissions de carbone et à l'impact climatique dans votre organisation...",
+    "courseButton": "Cours de Formation des Employés Corporatifs",
     "professor": "Professeur",
     "commencing": "Commence",
-    "trainingSummary": "Nos formations visent à sensibiliser les employés à l’impact climatique de leur travail quotidien...",
+    "trainingSummary": "Nos cours de formation visent à sensibiliser les employés à l'impact climatique...",
     "cards": [
       {
-        "title": "Sciences du climat - Hiver/Printemps 2024",
-        "desc": "Le changement climatique désigne des modifications à long terme des températures et des conditions météorologiques..."
+        "title": "Science du climat - Hiver/Printemps 2024",
+        "desc": "Le changement climatique fait référence aux changements à long terme..."
       },
       {
-        "title": "Sciences de la vision - Hiver/Printemps 2024",
+        "title": "Science visuelle - Hiver/Printemps 2024",
         "desc": "Étudiez les mécanismes qui nous permettent de visualiser le monde..."
       },
       {
         "title": "Économie - Hiver/Printemps 2024",
-        "desc": "Vous apprendrez les principes fondamentaux de l’économie et comment les critiquer..."
+        "desc": "Vous apprendrez les principes fondamentaux de l'économie..."
       },
       {
-        "title": "Sciences du climat - Été/Automne 2024",
-        "desc": "Le changement climatique désigne des modifications à long terme..."
+        "title": "Science du climat - Été/Automne 2024",
+        "desc": "Le changement climatique fait référence aux changements à long terme..."
       }
     ],
     "course1": {
-      "title": "Stratégie carbone zéro net pour les entreprises",
-      "line1": "Stratégie carbone zéro net",
-      "line2": "Décarbonation",
-      "line3": "Comptabilité carbone | Bilan carbone",
+      "title": "Stratégie de carbone net zéro pour les entreprises",
+      "line1": "Stratégie de carbone net zéro",
+      "line2": "Décarbonisation",
+      "line3": "Comptabilité carbone | Empreinte carbone",
       "line4": "Réduction carbone | Durabilité"
     },
     "course2": {
-      "title": "Stratégies gagnantes en développement durable et ESG 2.",
+      "title": "Stratégies gagnantes en durabilité corporative et ESG 2.",
       "desc": "Intégration des ODD, ESG et création de valeur, transformation en modèles d'affaires résilients..."
     },
     "createdBy": "Créé par CO2ePortal.com"
@@ -420,7 +428,92 @@
   "logout": "Déconnexion",
   "directory": {
     "desktop_only": "Ordinateur Seulement",
-    "desktop_message": "Pour une meilleure expérience, veuillez accéder à la page du répertoire sur un ordinateur de bureau ou portable. La prise en charge mobile arrive bientôt !"
+    "desktop_message": "Pour une meilleure expérience, veuillez accéder à la page du répertoire sur un ordinateur de bureau ou portable. La prise en charge mobile arrive bientôt !",
+    "page_title": "Listage de Répertoire",
+    "mobile_view": "Vue Mobile",
+    "mobile_message": "Les listes du répertoire sont visibles sur mobile. Pour soumettre votre liste d'entreprise, veuillez utiliser un ordinateur de bureau.",
+    "contractor_type": "Type de Contracteur",
+    "select_contractor_type": "Sélectionner le Type de Contracteur",
+    "specify_contractor_type": "Spécifier le Type de Contracteur",
+    "enter_contractor_type": "Entrez votre type de contracteur spécifique",
+    "other_option_note": "Sélectionnez \"Autre\" si votre type de contracteur n'est pas dans la liste ci-dessus",
+    "select_platform": "Sélectionner la Plateforme",
+    "select_industry": "Sélectionner l'Industrie",
+    "social_platforms": {
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn",
+      "twitter": "X(Twitter)",
+      "instagram": "Instagram"
+    },
+    "industries": {
+      "broker": "Courtier",
+      "exchange": "Échange",
+      "local_contractors": "Contracteurs Locaux",
+      "project": "Projet",
+      "retail": "Détail",
+      "wholesaler": "Grossiste"
+    },
+    "form": {
+      "company_name": "Nom de l'Entreprise",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "address": "Adresse",
+      "city": "Ville",
+      "state": "État/Province",
+      "country": "Pays",
+      "website_social_links": "Site Web/Liens Sociaux",
+      "industry_category": "Industrie/Catégorie",
+      "short_description": "Description Courte",
+      "logo_image": "Logo/Image",
+      "submit_listing": "Soumettre l'Annonce",
+      "submit_your_company": "Soumettez votre Entreprise",
+      "auto_detect_location": "Détecter la Localisation Automatiquement",
+      "auto_detect_note": "Cliquez pour détecter automatiquement votre ville, état et pays",
+      "url_placeholder": "https://exemple.com"
+    },
+    "contractor_types": {
+      "plumber": "Plombier",
+      "electrician": "Électricien",
+      "carpenter": "Menuisier",
+      "painter": "Peintre",
+      "roofing": "Toiture",
+      "hvac": "CVC",
+      "landscaping": "Aménagement paysager",
+      "masonry": "Maçonnerie",
+      "flooring": "Planchers",
+      "general_contractor": "Contracteur Général",
+      "kitchen_bath": "Cuisine et Salle de Bain",
+      "windows_doors": "Fenêtres et Portes",
+      "siding_gutters": "Revêtement et Gouttières",
+      "concrete_asphalt": "Béton et Asphalte",
+      "pest_control": "Contrôle des Parasites",
+      "cleaning_services": "Services de Nettoyage",
+      "security_systems": "Systèmes de Sécurité",
+      "pool_spa": "Piscine et Spa",
+      "fencing": "Clôtures",
+      "deck_patio": "Terrase et Patio",
+      "insulation": "Isolation",
+      "solar_installation": "Installation Solaire",
+      "demolition": "Démolition",
+      "other": "Autre"
+    },
+    "errors": {
+      "fill_required_fields": "Veuillez remplir tous les champs requis pour les Contracteurs Locaux",
+      "specify_contractor_type": "Veuillez spécifier votre type de contracteur lors de la sélection d'\"Autre\"",
+      "desktop_required": "Veuillez utiliser un ordinateur de bureau pour soumettre des annonces. La visualisation du répertoire est disponible sur mobile.",
+      "login_required": "Veuillez vous connecter pour soumettre une annonce",
+      "premium_required": "Abonnement Premium requis pour soumettre des annonces",
+      "submission_failed": "Échec de la soumission de l'annonce",
+      "already_submitted": "Vous avez déjà rempli le formulaire."
+    },
+    "success": {
+      "listing_submitted": "Annonce soumise avec succès !"
+    },
+    "messages": {
+      "login_to_view": "Veuillez vous connecter pour voir les annonces du répertoire.",
+      "premium_required_message": "Abonnement Premium requis pour soumettre des annonces.",
+      "login_required_message": "Veuillez vous connecter pour soumettre une annonce."
+    }
   }
 
 

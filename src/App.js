@@ -31,6 +31,7 @@ import BuyCourses from './BuyCourses';
 import DirectoryListing from './DirectoryListing';
 import Contact from './Contact';
 import AdminAddInstructor from './AdminAddInstructor';
+import AdminDirectoryUpload from './AdminDirectoryUpload';
 import Slots from './Slots';
 import GSAPProvider from './components/GSAPProvider';
 import IPhoneTest from './components/IPhoneTest';
@@ -144,6 +145,7 @@ function AppContent() {
           <Route path="/iphone-test" element={<IPhoneTest />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin/add-instructor" element={<AdminRoute><AdminAddInstructor /></AdminRoute>} />
+          <Route path="/admin/directory-upload" element={<AdminRoute><AdminDirectoryUpload /></AdminRoute>} />
           <Route path="/slots" element={<Slots />} />
 
         {/* Admin Routes */}

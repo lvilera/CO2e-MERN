@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Header from './Home/Header';
 import Footer2 from './Home/Footer2';
 import './ResetPassword.css';
+import { API_BASE } from './config';
 
 const ResetPassword = () => {
   const { t } = useTranslation();
@@ -45,7 +46,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await fetch('https://e-back-bice.vercel.app/api/reset-password', {
+      const response = await fetch(`${API_BASE}/api/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

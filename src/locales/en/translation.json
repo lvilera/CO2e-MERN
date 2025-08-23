@@ -92,21 +92,29 @@
     "button": "JOIN NOW"
   },
   "services": {
+    "pageTitle": "Our Services",
     "directoryListing": {
       "title": "Directory Listing",
       "letters": "A, B, C, D, E, F, G, H, I, J, K, L, …"
     },
     "sortByAlphabet": "Sort by Alphabet",
     "sortByCategory": "Sort by Category",
-    "allCategories": "ALL",
+
+    "selectServiceType": "Select a specific service type:",
     "categories": {
       "broker": "BROKER",
       "exchange": "EXCHANGE",
-      "hvac": "HVAC",
-      "landscaping": "LANDSCAPING",
+      "project": "PROJECT",
       "localcontractors": "LOCAL CONTRACTORS",
       "retail": "RETAIL",
-      "wholesaler": "WHOLESALER"
+      "wholesaler": "WHOLESALER",
+      "hvac": "HVAC",
+      "landscaping": "LANDSCAPING",
+      "poolmaintenance": "Pool Maintenance",
+      "carpenter": "Carpenter",
+      "electrician": "Electrician",
+      "plumber": "Plumber",
+      "aryan": "Aryan"
     },
     "featuredListing": "Featured Listing",
     "description": "Sustainable Success through Carbon Emissions awareness and Climate impact in your organization...",
@@ -125,7 +133,7 @@
       },
       {
         "title": "Economics - Winter/Spring 2024",
-        "desc": "You’ll learn the fundamental principles of economics..."
+        "desc": "You'll learn the fundamental principles of economics..."
       },
       {
         "title": "Climate Science - Summer/Fall 2024",
@@ -419,7 +427,92 @@
   "logout": "Logout",
   "directory": {
     "desktop_only": "Desktop Only",
-    "desktop_message": "For the best experience, please access the directory page on a desktop or laptop computer. Mobile support is coming soon!"
+    "desktop_message": "For the best experience, please access the directory page on a desktop or laptop computer. Mobile support is coming soon!",
+    "page_title": "Directory Listing",
+    "mobile_view": "Mobile View",
+    "mobile_message": "Directory listings are viewable on mobile. To submit your company listing, please use a desktop computer.",
+    "contractor_type": "Contractor Type",
+    "select_contractor_type": "Select Contractor Type",
+    "specify_contractor_type": "Specify Contractor Type",
+    "enter_contractor_type": "Enter your specific contractor type",
+    "other_option_note": "Select \"Other\" if your contractor type is not listed above",
+    "select_platform": "Select Platform",
+    "select_industry": "Select Industry",
+    "social_platforms": {
+      "facebook": "Facebook",
+      "linkedin": "LinkedIn",
+      "twitter": "X(Twitter)",
+      "instagram": "Instagram"
+    },
+    "industries": {
+      "broker": "Broker",
+      "exchange": "Exchange",
+      "local_contractors": "Local Contractors",
+      "project": "Project",
+      "retail": "Retail",
+      "wholesaler": "Wholesaler"
+    },
+    "form": {
+      "company_name": "Company Name",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "city": "City",
+      "state": "State/Province",
+      "country": "Country",
+      "website_social_links": "Website/Social Links",
+      "industry_category": "Industry/Category",
+      "short_description": "Short Description",
+      "logo_image": "Logo/Image",
+      "submit_listing": "Submit Listing",
+      "submit_your_company": "Submit Your Company",
+      "auto_detect_location": "Auto-detect Location",
+      "auto_detect_note": "Click to automatically detect your city, state, and country",
+      "url_placeholder": "https://example.com"
+    },
+    "contractor_types": {
+      "plumber": "Plumber",
+      "electrician": "Electrician",
+      "carpenter": "Carpenter",
+      "painter": "Painter",
+      "roofing": "Roofing",
+      "hvac": "HVAC",
+      "landscaping": "Landscaping",
+      "masonry": "Masonry",
+      "flooring": "Flooring",
+      "general_contractor": "General Contractor",
+      "kitchen_bath": "Kitchen & Bath",
+      "windows_doors": "Windows & Doors",
+      "siding_gutters": "Siding & Gutters",
+      "concrete_asphalt": "Concrete & Asphalt",
+      "pest_control": "Pest Control",
+      "cleaning_services": "Cleaning Services",
+      "security_systems": "Security Systems",
+      "pool_spa": "Pool & Spa",
+      "fencing": "Fencing",
+      "deck_patio": "Deck & Patio",
+      "insulation": "Insulation",
+      "solar_installation": "Solar Installation",
+      "demolition": "Demolition",
+      "other": "Other"
+    },
+    "errors": {
+      "fill_required_fields": "Please fill in all required fields for Local Contractors",
+      "specify_contractor_type": "Please specify your contractor type when selecting \"Other\"",
+      "desktop_required": "Please use a desktop computer to submit listings. Directory viewing is available on mobile.",
+      "login_required": "Please log in to submit a listing",
+      "premium_required": "Premium membership required to submit listings",
+      "submission_failed": "Failed to submit listing",
+      "already_submitted": "You have already filled the form."
+    },
+    "success": {
+      "listing_submitted": "Listing submitted successfully!"
+    },
+    "messages": {
+      "login_to_view": "Please log in to view the directory listings.",
+      "premium_required_message": "Premium membership required to submit listings.",
+      "login_required_message": "Please log in to submit a listing."
+    }
   }
 
 }

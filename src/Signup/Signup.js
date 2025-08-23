@@ -6,6 +6,7 @@ import Header from '../Home/Header';
 import Footer2 from '../Home/Footer2';
 import { useApi } from '../hooks/useApi';
 import '../Login/Login.css';
+import { API_BASE } from '../config';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const Signup = () => {
     setError('');
     setSuccess('');
     try {
-      const data = await post('https://e-back-bice.vercel.app/api/signup', formData, 'Signing up...');
+      const data = await post(`${API_BASE}/api/signup`, formData, 'Signing up...');
       setSuccess('Signup successful!');
       localStorage.setItem('userEmail', formData.email); // Save user email for booking
       setTimeout(() => navigate('/login'), 1500);
