@@ -52,7 +52,6 @@ const Services = () => {
     fetchServiceImages();
     fetchFeaturedListings();
     fetchUser();
-    detectUserLocation();
   }, [i18n]);
 
   useEffect(() => {
@@ -368,92 +367,10 @@ const Services = () => {
   const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
   
   // Detect and store user's location
-  const detectUserLocation = async () => {
-    // Check if we already have location in localStorage
-    const existingLocation = localStorage.getItem('userLocation');
-    if (existingLocation) {
-      // Don't override existing location - return early
-      return;
-    }
-    
-    try {
-      // Call the same backend API that Directory page uses
-      const response = await fetch(`${API_BASE}/api/directory/nearby`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        
-        if (data.userLocation && data.userLocation.city !== 'Unknown') {
-          const locationData = {
-            city: data.userLocation.city || '',
-            state: data.userLocation.state || '',
-            country: data.userLocation.country || ''
-          };
-          localStorage.setItem('userLocation', JSON.stringify(locationData));
-        } else {
-          // Try browser geolocation as fallback
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                // Don't set hardcoded location - let user set manually if needed
-              },
-              (error) => {
-                // Browser geolocation failed
-              }
-            );
-          }
-        }
-      } else {
-        // Try browser geolocation as fallback
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              // Browser geolocation available but no reverse geocoding - location not set
-            },
-            (error) => {
-              // Browser geolocation failed
-            }
-          );
-        }
-      }
-    } catch (error) {
-      // Try browser geolocation as fallback
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            // Browser geolocation available but no reverse geocoding - location not set
-          },
-          (error) => {
-            // Browser geolocation failed
-          }
-        );
-      }
-    }
-  };
-  
-  // Sync location data from other pages
-  const syncLocationData = () => {
-    const currentLocation = localStorage.getItem('userLocation');
-    
-    if (currentLocation) {
-      try {
-        const parsedLocation = JSON.parse(currentLocation);
-        return parsedLocation;
-      } catch (error) {
-        return null;
-      }
-    }
-    return null;
-  };
+
 
   // Determine filtered listings based on view mode
   const getFilteredListings = () => {
-    // Sync location data first
-    const userLocation = syncLocationData();
-    
     console.log('getFilteredListings called with:', {
       viewMode,
       selectedCategory,
@@ -472,33 +389,20 @@ const Services = () => {
           );
         }
         
-        // Special handling for Local Contractors - always filter by location
+        // Special handling for Local Contractors - show all local contractors without location filtering
         if (selectedCategory === 'Local Contractors') {
-          if (userLocation && userLocation.city && userLocation.state && userLocation.country) {
-            // More flexible location matching - show contractors from same state/country
-            const filtered = directoryListings.filter(l => {
-              // Check displayCategory first, then fallback to industry
-              const isLocalContractor = (l.displayCategory === selectedCategory) || (l.industry === selectedCategory);
-              if (!isLocalContractor) return false;
-              if (!l.city || !l.state || !l.country) return false;
-              
-              // Check if contractor is in the same state or country as user
-              const sameState = l.state.toLowerCase() === userLocation.state.toLowerCase();
-              const sameCountry = l.country.toLowerCase() === userLocation.country.toLowerCase();
-              const sameCity = l.city.toLowerCase() === userLocation.city.toLowerCase();
-              
-              // Show contractors from same city, state, or country
-              return sameCity || sameState || sameCountry;
+          const localContractors = directoryListings.filter(l => {
+            // Check displayCategory first, then fallback to industry
+            const isLocalContractor = (l.displayCategory === selectedCategory) || (l.industry === selectedCategory);
+            console.log('Checking listing:', l.company, {
+              displayCategory: l.displayCategory,
+              industry: l.industry,
+              isLocalContractor: isLocalContractor
             });
-            
-            return filtered;
-          } else {
-            // If no user location, show all Local Contractors
-            return directoryListings.filter(l => {
-              // Check displayCategory first, then fallback to industry
-              return (l.displayCategory === selectedCategory) || (l.industry === selectedCategory);
-            });
-          }
+            return isLocalContractor;
+          });
+          console.log('Local Contractors found:', localContractors.length, 'out of', directoryListings.length, 'total listings');
+          return localContractors;
         }
         
         // Remove contractor category filtering - we now show all local contractors mixed together
@@ -556,24 +460,7 @@ const Services = () => {
         const companyName = l.company || l.Company || '';
         const matchesLetter = companyName.toUpperCase().startsWith(selectedLetter);
         
-        // If it's a Local Contractor and we have user location, apply location filtering
-        if ((l.displayCategory === 'Local Contractors' || l.industry === 'Local Contractors') && userLocation && userLocation.city && userLocation.state && userLocation.country) {
-          const hasLocationData = l.city && l.state && l.country;
-          if (!hasLocationData) {
-            return false;
-          }
-          
-          // More flexible location matching
-          const sameState = l.state.toLowerCase() === userLocation.state.toLowerCase();
-          const sameCountry = l.country.toLowerCase() === userLocation.country.toLowerCase();
-          const sameCity = l.city.toLowerCase() === userLocation.city.toLowerCase();
-          
-          const matchesLocation = sameCity || sameState || sameCountry;
-          
-          return matchesLetter && matchesLocation;
-        }
-        
-        // For non-Local Contractors or when no location data, just filter by letter
+        // For all entries, just filter by letter (no location filtering)
         return matchesLetter;
       });
     }
