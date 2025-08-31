@@ -693,15 +693,16 @@ const Services = () => {
                   borderRadius: 'clamp(16px, 3vw, 24px)', 
                   boxShadow: '0 6px 32px rgba(0,0,0,0.10)', 
                   padding: 0, 
-                  marginTop: 0, 
-                  display: 'flex',
-                  justifyContent: 'center',
-                  overflow: 'hidden'
+                  marginTop: 0,
+                  overflow: 'visible'
                 }}>
                   <div className="table-wrapper" style={{ 
                     width: '100%',
                     overflowX: 'auto',
-                    WebkitOverflowScrolling: 'touch'
+                    overflowY: 'visible',
+                    WebkitOverflowScrolling: 'touch',
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: '#ccc transparent'
                   }}>
                     <table className="responsive-table" style={{ 
                       width: '100%', 

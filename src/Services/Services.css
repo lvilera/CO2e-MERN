@@ -2298,3 +2298,34 @@ justify-content: center !important;
 .table-wrapper::-webkit-scrollbar-thumb:hover {
   background: #999;
 }
+
+/* Enhanced mobile scrolling for table */
+@media screen and (max-width: 768px) {
+  .table-wrapper {
+    overflow-x: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+    transform: translateZ(0); /* Force hardware acceleration */
+    will-change: scroll-position;
+  }
+  
+  .table-responsive-container {
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+  
+  .responsive-table {
+    min-width: 1000px !important;
+  }
+}
+
+/* For very small devices */
+@media screen and (max-width: 480px) {
+  .table-wrapper {
+    margin: 0 -10px; /* Extend scrollable area to screen edges */
+    padding: 0 10px;
+  }
+  
+  .table-wrapper::-webkit-scrollbar {
+    height: 6px !important;
+  }
+}
