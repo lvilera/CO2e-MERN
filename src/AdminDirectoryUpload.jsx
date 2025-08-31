@@ -302,7 +302,12 @@ const AdminDirectoryUpload = () => {
           <h4 style={{ margin: '0 0 12px 0', color: '#495057' }}>📋 File Requirements:</h4>
           <ul style={{ margin: 0, paddingLeft: 20, color: '#6c757d' }}>
             <li>Excel (.xlsx, .xls, .xlsm) or CSV format</li>
-            <li>Columns: COMPANY, WEBSITE, CONTACT, EMAIL, PHONE NUMBER, CATEGORY, SUB-CATEGORY2</li>
+            <li>Required Columns: COMPANY, EMAIL, PHONE NUMBER, CONTACT, CATEGORY</li>
+            <li>Optional Columns: WEBSITE, SUB-CATEGORY2, IMAGE, LINK, SOCIAL MEDIA, USER</li>
+            <li>IMAGE: Full URLs to images (only shown for premium users)</li>
+            <li>LINK: Social media URLs</li>
+            <li>SOCIAL MEDIA: Platform name (facebook, twitter, linkedin, instagram, etc.)</li>
+            <li>USER: Package type (free, pro, premium) - affects display styling</li>
             <li>First row should contain headers</li>
             <li>Maximum file size: 10MB</li>
           </ul>

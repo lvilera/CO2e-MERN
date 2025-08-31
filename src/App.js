@@ -27,6 +27,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import AdminCourseUpload from './AdminCourseUpload';
 import Courses from './Courses';
 import AdminFeaturedListing from './AdminFeaturedListing';
+import AdminServiceImages from './AdminServiceImages';
 import BuyCourses from './BuyCourses';
 import DirectoryListing from './DirectoryListing';
 import Contact from './Contact';
@@ -146,6 +147,8 @@ function AppContent() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin/add-instructor" element={<AdminRoute><AdminAddInstructor /></AdminRoute>} />
           <Route path="/admin/directory-upload" element={<AdminRoute><AdminDirectoryUpload /></AdminRoute>} />
+          <Route path="/admin/featured-listing" element={<AdminRoute><AdminFeaturedListing /></AdminRoute>} />
+          <Route path="/admin/service-images" element={<AdminRoute><AdminServiceImages /></AdminRoute>} />
           <Route path="/slots" element={<Slots />} />
 
         {/* Admin Routes */}

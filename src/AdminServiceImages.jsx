@@ -3,13 +3,12 @@ import DynamicHeader from './components/DynamicHeader';
 import Footer2 from './Home/Footer2';
 import { API_BASE } from './config';
 
-const AdminFeaturedListing = () => {
+const AdminServiceImages = () => {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [listings, setListings] = useState([]);
+  const [images, setImages] = useState([]);
   const [message, setMessage] = useState({ text: '', type: '' });
-
   const imageInputRef = useRef();
 
   const showMessage = (text, type = 'success') => {
@@ -18,17 +17,17 @@ const AdminFeaturedListing = () => {
   };
 
   useEffect(() => {
-    fetchListings();
+    fetchImages();
   }, []);
 
-  const fetchListings = async () => {
+  const fetchImages = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/featured-listings`);
+      const res = await fetch(`${API_BASE}/api/service-images`);
       const data = await res.json();
-      setListings(data);
+      setImages(data);
     } catch (err) {
-      console.error('Error fetching listings:', err);
-      showMessage('Error fetching listings', 'error');
+      console.error('Error fetching images:', err);
+      showMessage('Error fetching images', 'error');
     }
   };
 
@@ -47,11 +46,12 @@ const AdminFeaturedListing = () => {
     setUploading(true);
     const formData = new FormData();
     formData.append('image', image);
+    
     try {
       // Get admin token from localStorage or cookie
       const token = localStorage.getItem('token') || getCookie('token');
       
-      const res = await fetch(`${API_BASE}/api/featured-listings`, {
+      const res = await fetch(`${API_BASE}/api/service-images`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -68,8 +68,8 @@ const AdminFeaturedListing = () => {
       setImage(null);
       setPreview(null);
       imageInputRef.current.value = '';
-      fetchListings();
-      showMessage('Featured image uploaded successfully!');
+      fetchImages();
+      showMessage('Service image uploaded successfully!');
     } catch (err) {
       showMessage('Upload failed: ' + err.message, 'error');
     } finally {
@@ -91,7 +91,7 @@ const AdminFeaturedListing = () => {
       // Get admin token from localStorage or cookie
       const token = localStorage.getItem('token') || getCookie('token');
       
-      const res = await fetch(`${API_BASE}/api/featured-listings/${id}`, { 
+      const res = await fetch(`${API_BASE}/api/service-images/${id}`, { 
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -104,8 +104,8 @@ const AdminFeaturedListing = () => {
         throw new Error(errorData.error || 'Delete failed');
       }
       
-      fetchListings();
-      showMessage('Featured image deleted successfully!');
+      fetchImages();
+      showMessage('Service image deleted successfully!');
     } catch (err) {
       showMessage('Delete failed: ' + err.message, 'error');
     }
@@ -115,7 +115,7 @@ const AdminFeaturedListing = () => {
     <>
       <DynamicHeader />
       <div style={{ maxWidth: 700, margin: '340px auto', background: '#fff', borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.08)', padding: 32 }}>
-        <h2 style={{ textAlign: 'center', marginBottom: 24 }}>Admin: Featured Listing Images</h2>
+        <h2 style={{ textAlign: 'center', marginBottom: 24 }}>Admin: Service Images</h2>
         
         {/* Message Display */}
         {message.text && (
@@ -135,19 +135,41 @@ const AdminFeaturedListing = () => {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           <label style={{ fontWeight: 500 }}>Upload Image</label>
-          <input type="file" accept="image/*" ref={imageInputRef} onChange={handleImageChange} required style={{ padding: 10, borderRadius: 8, border: '1px solid #ccc' }} />
+          <input 
+            type="file" 
+            accept="image/*" 
+            ref={imageInputRef} 
+            onChange={handleImageChange} 
+            required 
+            style={{ padding: 10, borderRadius: 8, border: '1px solid #ccc' }} 
+          />
           {preview && <img src={preview} alt="Preview" style={{ maxWidth: 300, margin: '10px auto', display: 'block', borderRadius: 12 }} />}
           
-          <button type="submit" disabled={uploading} style={{ background: '#90be55', color: 'white', border: 'none', borderRadius: 8, padding: 14, fontWeight: 600, fontSize: 18, marginTop: 10 }}>
+          <button 
+            type="submit" 
+            disabled={uploading} 
+            style={{ 
+              background: '#90be55', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: 8, 
+              padding: 14, 
+              fontWeight: 600, 
+              fontSize: 18, 
+              marginTop: 10 
+            }}
+          >
             {uploading ? 'Uploading...' : 'Upload Image'}
           </button>
         </form>
+        
         <hr style={{ margin: '32px 0' }} />
-        <h3 style={{ textAlign: 'center', marginBottom: 16 }}>All Featured Images</h3>
+        
+        <h3 style={{ textAlign: 'center', marginBottom: 16 }}>All Service Images</h3>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, justifyContent: 'center' }}>
-          {listings.length === 0 && <div style={{ textAlign: 'center', color: '#888' }}>No images uploaded yet.</div>}
-          {listings.map(listing => (
-            <div key={listing._id} style={{ 
+          {images.length === 0 && <div style={{ textAlign: 'center', color: '#888' }}>No images uploaded yet.</div>}
+          {images.map(img => (
+            <div key={img._id} style={{ 
               border: '1px solid #eee', 
               borderRadius: 10, 
               padding: 12, 
@@ -155,8 +177,8 @@ const AdminFeaturedListing = () => {
               background: '#fafafa' 
             }}>
               <img 
-                src={listing.imageUrl} 
-                alt="Featured" 
+                src={img.imageUrl} 
+                alt="Service" 
                 style={{ 
                   width: 220, 
                   height: 120, 
@@ -166,7 +188,7 @@ const AdminFeaturedListing = () => {
                 }} 
               />
               <button 
-                onClick={() => handleDelete(listing._id)} 
+                onClick={() => handleDelete(img._id)} 
                 style={{ 
                   position: 'absolute', 
                   top: 8, 
@@ -191,4 +213,4 @@ const AdminFeaturedListing = () => {
   );
 };
 
-export default AdminFeaturedListing; 
+export default AdminServiceImages; 

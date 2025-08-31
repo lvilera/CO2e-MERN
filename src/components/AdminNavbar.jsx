@@ -10,8 +10,8 @@ const AdminNavbar = () => {
   const adminMenuItems = [
     { name: 'Dashboard', path: '/admin', icon: IoHomeOutline },
     { name: 'Instructor', path: '/admin/add-instructor', icon: IoPersonOutline },
-    { name: 'Courses', path: '/admin/upload-courses', icon: IoBookOutline },
-    { name: 'Listing', path: '/admin/featured-listing', icon: IoStarOutline },
+    { name: 'Course', path: '/admin/upload-courses', icon: IoBookOutline },
+    { name: 'Featured', path: '/admin/featured-listing', icon: IoStarOutline },
     { name: 'Directory', path: '/admin/directory-upload', icon: IoDocumentTextOutline },
     { name: 'Add News', path: '/admin/add-news', icon: IoNewspaperOutline },
     { name: 'Add Blog', path: '/admin/add-blog', icon: IoDocumentTextOutline },

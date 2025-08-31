@@ -99,6 +99,7 @@
     },
     "sortByAlphabet": "Trier par Alphabet",
     "sortByCategory": "Trier par Catégorie",
+    "featuredListings": "Annonces en Vedette",
 
     "selectServiceType": "Sélectionnez un type de service spécifique :",
     "categories": {

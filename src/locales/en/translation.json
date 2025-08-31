@@ -99,6 +99,7 @@
     },
     "sortByAlphabet": "Sort by Alphabet",
     "sortByCategory": "Sort by Category",
+    "featuredListings": "Featured Listings",
 
     "selectServiceType": "Select a specific service type:",
     "categories": {
@@ -116,7 +117,7 @@
       "plumber": "Plumber",
       "aryan": "Aryan"
     },
-    "featuredListing": "Featured Listing",
+
     "description": "Sustainable Success through Carbon Emissions awareness and Climate impact in your organization...",
     "courseButton": "Corporative Employee Training Course",
     "professor": "Professor",

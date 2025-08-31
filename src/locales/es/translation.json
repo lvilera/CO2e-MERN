@@ -99,6 +99,7 @@
     },
     "sortByAlphabet": "Ordenar por Alfabeto",
     "sortByCategory": "Ordenar por Categoría",
+    "featuredListings": "Listados Destacados",
 
     "selectServiceType": "Selecciona un tipo de servicio específico:",
     "categories": {
@@ -116,7 +117,7 @@
       "plumber": "Fontanero",
       "aryan": "Aryan"
     },
-    "featuredListing": "Listado Destacado",
+
     "description": "Éxito sostenible a través de la conciencia de emisiones de carbono y el impacto climático en su organización...",
     "courseButton": "Curso Corporativo de Capacitación para Empleados",
     "professor": "Profesor",

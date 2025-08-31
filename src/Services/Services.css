@@ -381,9 +381,8 @@
 
 /* Better handling of long category names */
 .category-item {
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    max-width: 250px;
+    overflow: visible;
     white-space: nowrap;
     display: inline-block;
     vertical-align: middle;
@@ -399,7 +398,7 @@
     }
     
     .category-item {
-        max-width: 150px;
+        max-width: 180px;
         font-size: clamp(13px, 3.5vw, 16px) !important;
         padding: 8px 12px !important;
         margin: 2px !important;
@@ -407,6 +406,7 @@
         background: #f8f9fa !important;
         border: 1px solid #e9ecef !important;
         transition: all 0.2s ease !important;
+        overflow: visible !important;
     }
     
     .category-item:hover {
@@ -423,10 +423,11 @@
     }
     
     .category-item {
-        max-width: 120px;
+        max-width: 140px;
         font-size: clamp(12px, 4vw, 15px) !important;
         padding: 6px 10px !important;
         margin: 1px !important;
+        overflow: visible !important;
     }
 }
 
@@ -2272,4 +2273,28 @@ width: 100% !important;
 display: flex !important;
 align-items: center !important;
 justify-content: center !important;
+}
+
+/* Custom scrollbar for table horizontal scroll */
+.table-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #999;
 }

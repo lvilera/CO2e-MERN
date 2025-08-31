@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import Hero from "./Hero";
 import Features from "./Features";
+import FeaturedListings from "./FeaturedListings";
 import About from "./About";
 import CTA from "./CTA";
 import PartnerSection from "./PartnerSection";
@@ -44,6 +45,7 @@ const Home = () => {
     </div>
       <Hero />
       <Features />
+      <FeaturedListings />
       <About />
       <PartnerSection />
       <Service />

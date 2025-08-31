@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Services = () => {
   const { t, i18n } = useTranslation();
-  const [featuredImages, setFeaturedImages] = useState([]);
+
   const [directoryListings, setDirectoryListings] = useState([]);
   const [selectedLetter, setSelectedLetter] = useState('A');
   const [user, setUser] = useState(null);
@@ -21,9 +21,11 @@ const Services = () => {
   const [uploadError, setUploadError] = useState('');
   const [viewMode, setViewMode] = useState('alphabetical'); // 'alphabetical' or 'category'
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('Local Contractors'); // 'Local Contractors' = main category, others = sub-categories
+  const [selectedCategory, setSelectedCategory] = useState('Local Contractors'); // Default to Local Contractors
   const [showSubCategories, setShowSubCategories] = useState(false);
   const [subCategories, setSubCategories] = useState([]);
+  const [serviceImages, setServiceImages] = useState([]);
+  const [featuredListings, setFeaturedListings] = useState([]);
   
   // Debug: Log when categories change
   useEffect(() => {
@@ -43,9 +45,12 @@ const Services = () => {
   useEffect(() => {
     // Don't auto-clear location - let the backend API detect it properly
     console.log('Services component mounted, fetching data...');
-    fetchFeaturedImages();
+    
+
     fetchDirectoryListings();
     fetchCategories();
+    fetchServiceImages();
+    fetchFeaturedListings();
     fetchUser();
     detectUserLocation();
   }, [i18n]);
@@ -53,7 +58,7 @@ const Services = () => {
   useEffect(() => {
     // Initialize animations
     initializeAnimations();
-  }, [featuredImages, directoryListings]);
+  }, [directoryListings]);
 
 
 
@@ -186,28 +191,7 @@ const Services = () => {
     }
   };
 
-  const fetchFeaturedImages = async () => {
-    try {
-      // Try direct fetch first
-      try {
-        const response = await fetch(`${API_BASE}/api/featured-listings`);
-        if (response.ok) {
-          const data = await response.json();
-          setFeaturedImages(data);
-          return;
-        }
-      } catch (directError) {
-        // Fallback to useApi
-      }
-      
-      // Fallback to useApi
-      const data = await get(`${API_BASE}/api/featured-listings`, 'Loading featured listings...');
-      setFeaturedImages(data);
-    } catch (err) {
-      console.error('Services: Failed to fetch featured listings:', err);
-      setFeaturedImages([]);
-    }
-  };
+
 
   const fetchDirectoryListings = async () => {
     try {
@@ -240,7 +224,7 @@ const Services = () => {
     try {
       // First, get the actual unique industries from the database
       const response = await fetch(`${API_BASE}/api/directory`);
-        if (response.ok) {
+      if (response.ok) {
         const listings = await response.json();
         
         // Extract unique industries and display categories from database
@@ -286,11 +270,11 @@ const Services = () => {
         console.log('Categories state being set to:', displayCategories);
         setCategories(displayCategories);
       } else {
-        // Fallback to predefined categories
+        // Fallback to predefined categories (including Local Contractors)
         const fallbackCategories = [
+          'Local Contractors',
           'Broker',
           'Exchange', 
-          'Local Contractors',
           'Project',
           'Retail',
           'Wholesaler'
@@ -298,33 +282,65 @@ const Services = () => {
         setCategories(fallbackCategories);
       }
       
-      // Still fetch contractor types for Local Contractors subcategories
+      // Fetch Local Contractor subcategories for potential future use
       try {
-        const contractorResponse = await fetch(`${API_BASE}/api/directory/contractor-types`);
+        const contractorResponse = await fetch(`${API_BASE}/api/directory/local-contractor-categories`);
         if (contractorResponse.ok) {
-          const contractorTypes = await contractorResponse.json();
-          setSubCategories(contractorTypes);
+          const contractorCategories = await contractorResponse.json();
+          setSubCategories(contractorCategories);
+          console.log('Local contractor subcategories loaded:', contractorCategories);
         } else {
           setSubCategories([]);
         }
       } catch (contractorError) {
+        console.error('Error fetching contractor categories:', contractorError);
         setSubCategories([]);
       }
     } catch (err) {
       console.error('Services: Failed to set categories:', err);
       
-            // Fallback to hardcoded categories
+      // Fallback to hardcoded categories (including Local Contractors)
       const fallbackCategories = [
+        'Local Contractors',
         'Broker',
         'Exchange', 
-        'Local Contractors',
         'Project',
         'Retail',
         'Wholesaler'
       ];
       
       setCategories(fallbackCategories);
-          setSubCategories([]);
+      setSubCategories([]);
+    }
+  };
+
+  const fetchServiceImages = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/api/service-images`);
+      if (response.ok) {
+        const data = await response.json();
+        setServiceImages(data);
+        console.log('Service images loaded:', data.length);
+      } else {
+        console.error('Failed to fetch service images');
+      }
+    } catch (error) {
+      console.error('Error fetching service images:', error);
+    }
+  };
+
+  const fetchFeaturedListings = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/api/featured-listings`);
+      if (response.ok) {
+        const data = await response.json();
+        setFeaturedListings(data);
+        console.log('Featured listings loaded:', data.length);
+      } else {
+        console.error('Failed to fetch featured listings');
+      }
+    } catch (error) {
+      console.error('Error fetching featured listings:', error);
     }
   };
 
@@ -485,21 +501,9 @@ const Services = () => {
           }
         }
         
-        // Handle contractor type subcategories (e.g., Plumber, Electrician)
-        // Check if selectedCategory is a contractor type from the dynamically fetched subcategories
-        if (subCategories.includes(selectedCategory)) {
-          // Filter by both industry (Local Contractors) and contractor type
-          return directoryListings.filter(l => {
-            if (l.industry !== 'Local Contractors') return false;
-            
-            // Check if the listing has the specific contractor type
-            // This could be in contractorType field or customContractorType field
-            const listingContractorType = l.contractorType || l.customContractorType || '';
-            const matchesContractorType = listingContractorType.toLowerCase() === selectedCategory.toLowerCase();
-            
-            return matchesContractorType;
-          });
-        }
+        // Remove contractor category filtering - we now show all local contractors mixed together
+        // No longer filter by specific contractor types (Finance, Technology, etc.)
+        // The contractor type will be displayed in the category column but not used for filtering
         
         // Handle industry mapping for Project category
         if (selectedCategory === 'Project') {
@@ -645,7 +649,7 @@ const Services = () => {
                   onClick={() => {
                     setViewMode('category');
                     setSelectedCategory('Local Contractors'); // Show Local Contractors by default
-                    setShowSubCategories(true);
+                    setShowSubCategories(false); // Show all local contractors without subcategory filter
                   }}
                   style={{
                     padding: '12px 24px',
@@ -711,14 +715,8 @@ const Services = () => {
                         <span id="" className="category-item"
                           key={category}
                           onClick={() => {
-                            if (category === 'Local Contractors') {
-                              setSelectedCategory(category);
-                              setShowSubCategories(true); // Show subcategories
-                            } else {
-                              // If selecting a different main category, reset to that category
-                              setSelectedCategory(category);
-                              setShowSubCategories(false);
-                            }
+                            setSelectedCategory(category);
+                            setShowSubCategories(false); // Never show subcategories, show all local contractors
                           }}
                           style={{
                             cursor: 'pointer',
@@ -727,11 +725,12 @@ const Services = () => {
                             textDecoration: selectedCategory === category ? 'underline' : 'none',
                             fontSize: 'clamp(14px, 3vw, 24px)',
                             transition: 'all 0.2s ease',
-                            padding: '4px 8px',
+                            padding: '4px 12px',
                             borderRadius: '4px',
                             whiteSpace: 'nowrap',
                             minWidth: 'fit-content',
-                            textAlign: 'left'
+                            width: 'auto',
+                            textAlign: 'center'
                           }}
                         >
                           {t(`services.categories.${category.toLowerCase().replace(/\s+/g, '')}`)}
@@ -740,63 +739,7 @@ const Services = () => {
                     </div>
                   </div>
                   
-                  {/* Sub-categories - Show when Local Contractors is selected or any of its subcategories */}
-                  {(selectedCategory === 'Local Contractors' || subCategories.includes(selectedCategory)) && (
-                    <div id="sider" className="sub-categories-container" style={{
-                      marginTop: '16px',
-                      padding: '16px',
-                      background: '#f8f9fa',
-                      borderRadius: '8px',
-                      border: '1px solid #e9ecef',
-                      width: '100%',
-                      maxWidth: '800px',
-                      textAlign: 'center'
-                    }}>
-                      <div className="sub-categories-instruction" style={{
-                        fontSize: 'clamp(12px, 2.5vw, 18px)',
-                        color: '#666',
-                        marginBottom: '12px',
-                        textAlign: 'center'
-                      }}>
-                        {t('services.selectServiceType')}
-                      </div>
-                      <div className="sub-categories-list" style={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        justifyContent: 'center',
-                        gap: '8px',
-                        margin: '0 auto',
-                        textAlign: 'center'
-                      }}>
-                        {subCategories.map((subCat, idx) => (
-                          <span
-                            key={subCat}
-                            onClick={() => {
-                              setSelectedCategory(subCat);
-                              setShowSubCategories(true); // Keep subcategories visible
-                            }}
-                            style={{
-                              cursor: 'pointer',
-                              fontWeight: selectedCategory === subCat ? 700 : 400,
-                              color: selectedCategory === subCat ? '#90be55' : '#666',
-                              textDecoration: selectedCategory === subCat ? 'underline' : 'none',
-                              fontSize: 'clamp(12px, 2.5vw, 16px)',
-                              transition: 'all 0.2s ease',
-                              padding: '6px 12px',
-                              borderRadius: '20px',
-                              border: selectedCategory === subCat ? '2px solid #90be55' : '1px solid #ddd',
-                              background: selectedCategory === subCat ? '#f0f8f0' : 'white',
-                              whiteSpace: 'nowrap'
-                            }}
-                          >
-                            {subCat}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Location indicator for Local Contractors - REMOVED */}
+                  {/* No subcategory display - show all local contractors mixed together */}
                 </div>
               )}
               
@@ -844,6 +787,8 @@ const Services = () => {
 
               {/* Directory Table */}
   
+
+
               <div id="ttable" ref={tableRef} style={{ 
                 display: 'flex', 
                 justifyContent: 'center', 
@@ -868,76 +813,88 @@ const Services = () => {
                 }}>
                   <div className="table-wrapper" style={{ 
                     width: '100%',
-                    display: 'flex',
-                    justifyContent: 'center'
+                    overflowX: 'auto',
+                    WebkitOverflowScrolling: 'touch'
                   }}>
                     <table className="responsive-table" style={{ 
                       width: '100%', 
+                      minWidth: '1000px',
                       maxWidth: '100%',
                       borderCollapse: 'separate', 
                       borderSpacing: 0, 
-                      fontSize: 'clamp(14px, 3vw, 16px)',
+                      fontSize: '14px',
                       margin: '0 auto',
-                      tableLayout: 'fixed'
+                      tableLayout: 'auto'
                     }}>
-                      <thead>
-                        <tr style={{ background: '#f7f7f7', fontWeight: 800 }}>
-                          <th style={{ 
-                            padding: 'clamp(8px, 2vw, 16px) clamp(6px, 1.5vw, 12px)', 
-                            border: 'none', 
-                            textAlign: 'center', 
-                            letterSpacing: 1, 
-                            fontSize: 'clamp(12px, 2.5vw, 16px)',
-                            width: selectedCategory === 'Local Contractors' ? '16%' : '20%'
-                          }}>COMPANY</th>
-                          <th style={{ 
-                            padding: 'clamp(8px, 2vw, 16px) clamp(6px, 1.5vw, 12px)', 
-                            border: 'none', 
-                            textAlign: 'center', 
-                            letterSpacing: 1, 
-                            fontSize: 'clamp(12px, 2.5vw, 16px)',
-                            width: selectedCategory === 'Local Contractors' ? '12%' : '15%'
-                          }}>SOCIAL LINK</th>
-                          <th style={{ 
-                            padding: 'clamp(8px, 2vw, 16px) clamp(6px, 1.5vw, 12px)', 
-                            border: 'none', 
-                            textAlign: 'center', 
-                            letterSpacing: 1, 
-                            fontSize: 'clamp(12px, 2.5vw, 16px)',
-                            width: selectedCategory === 'Local Contractors' ? '20%' : '25%'
-                          }}>EMAIL</th>
-                          <th style={{ 
-                            padding: 'clamp(8px, 2vw, 16px) clamp(6px, 1.5vw, 12px)', 
-                            border: 'none', 
-                            textAlign: 'center', 
-                            letterSpacing: 1, 
-                            fontSize: 'clamp(12px, 2.5vw, 16px)',
-                            width: selectedCategory === 'Local Contractors' ? '16%' : '20%'
-                          }}>PHONE NUMBER</th>
-                          <th style={{ 
-                            padding: 'clamp(8px, 2vw, 16px) clamp(6px, 1.5vw, 12px)', 
-                            border: 'none', 
-                            textAlign: 'center', 
-                            letterSpacing: 1, 
-                            fontSize: 'clamp(12px, 2.5vw, 16px)',
-                            width: selectedCategory === 'Local Contractors' ? '16%' : '20%'
-                          }}>CATEGORY</th>
-                          {selectedCategory === 'Local Contractors' && (
+                                              <thead>
+                          <tr style={{ background: '#f7f7f7', fontWeight: 800 }}>
                             <th style={{ 
-                              padding: 'clamp(8px, 2vw, 16px) clamp(6px, 1.5vw, 12px)', 
+                              padding: '12px 8px', 
                               border: 'none', 
                               textAlign: 'center', 
                               letterSpacing: 1, 
-                              fontSize: 'clamp(12px, 2.5vw, 16px)',
-                              width: '20%'
-                            }}>LOCATION</th>
-                          )}
+                              fontSize: '14px',
+                              width: '120px',
+                              minWidth: '120px',
+                              verticalAlign: 'middle'
+                            }}>IMAGE</th>
+                            <th style={{ 
+                              padding: '12px 8px', 
+                              border: 'none', 
+                              textAlign: 'center', 
+                              letterSpacing: 1, 
+                              fontSize: '14px',
+                              width: '200px',
+                              minWidth: '200px',
+                              verticalAlign: 'middle'
+                            }}>COMPANY</th>
+                          <th style={{ 
+                            padding: '12px 8px', 
+                            border: 'none', 
+                            textAlign: 'center', 
+                            letterSpacing: 1, 
+                            fontSize: '14px',
+                            width: '150px',
+                            minWidth: '150px',
+                            verticalAlign: 'middle'
+                          }}>SOCIAL LINK</th>
+                          <th style={{ 
+                            padding: '12px 8px', 
+                            border: 'none', 
+                            textAlign: 'center', 
+                            letterSpacing: 1, 
+                            fontSize: '14px',
+                            width: '180px',
+                            minWidth: '180px',
+                            verticalAlign: 'middle'
+                          }}>EMAIL</th>
+                          <th style={{ 
+                            padding: '12px 8px', 
+                            border: 'none', 
+                            textAlign: 'center', 
+                            letterSpacing: 1, 
+                            fontSize: '14px',
+                            width: '140px',
+                            minWidth: '140px',
+                            verticalAlign: 'middle'
+                          }}>PHONE NUMBER</th>
+                          <th style={{ 
+                            padding: '12px 8px', 
+                            border: 'none', 
+                            textAlign: 'center', 
+                            letterSpacing: 1, 
+                            fontSize: '14px',
+                            width: '130px',
+                            minWidth: '130px',
+                            verticalAlign: 'middle'
+                          }}>CATEGORY</th>
                         </tr>
                       </thead>
                       <tbody>
+
                         {filteredListings.length === 0 && (
                           <tr>
-                            <td colSpan={selectedCategory === 'Local Contractors' ? 6 : 5} style={{ textAlign: 'center', color: '#888', padding: 24 }}>
+                            <td colSpan={6} style={{ textAlign: 'center', color: '#888', padding: 24 }}>
                               {viewMode === 'category' 
                                 ? (selectedCategory ? `No listings for category "${selectedCategory}".` : 'No listings in the directory yet.')
                                 : `No listings for letter "${selectedLetter}".`
@@ -951,108 +908,175 @@ const Services = () => {
                           if (user && user.email === l.email && user.package && user.package !== l.package) {
                             effectivePackage = user.package;
                           }
-                          let style = { fontWeight: 400, color: '#222', textAlign: 'center', background: i % 2 === 0 ? '#fff' : '#fafbfc' };
-                          if (effectivePackage === 'pro') style = { ...style, fontWeight: 700, color: '#27ae60' };
-                          if (effectivePackage === 'premium') style = { ...style, fontWeight: 700, color: '#ff6b57' };
-                          if (!effectivePackage || effectivePackage === 'free') style = { ...style, fontWeight: 400, color: '#000000' };
+                          
+                          // Base style for all entries
+                          let style = { 
+                            textAlign: 'center', 
+                            background: i % 2 === 0 ? '#fff' : '#fafbfc',
+                            color: '#000000' // All text is black
+                          };
+                          
+                          // Free members: Normal text
+                          if (!effectivePackage || effectivePackage === 'free') {
+                            style = { 
+                              ...style, 
+                              fontWeight: 400, 
+                              fontSize: '14px' 
+                            };
+                          }
+                          
+                          // Pro members: Bold text, slightly bigger font
+                          if (effectivePackage === 'pro') {
+                            style = { 
+                              ...style, 
+                              fontWeight: 700, 
+                              fontSize: '14px' 
+                            };
+                          }
+                          
+                          // Premium members: Same as Pro + images (handled separately)
+                          if (effectivePackage === 'premium') {
+                            style = { 
+                              ...style, 
+                              fontWeight: 700, 
+                              fontSize: '14px' 
+                            };
+                          }
                           return (
                             <tr key={i}>
+                              {/* Image column - shows image only for premium users based on USER column data */}
                               <td style={{ 
                                 ...style, 
-                                padding: 'clamp(8px, 2vw, 14px) clamp(6px, 1.5vw, 12px)', 
+                                padding: '12px 8px', 
+                                border: 'none',
+                                textAlign: 'center',
+                                verticalAlign: 'middle',
+                                width: '120px',
+                                minWidth: '120px'
+                              }}>
+                                {l.package === 'premium' && l.imageUrl ? (
+                                  <img 
+                                    src={l.imageUrl} 
+                                    alt={l.company} 
+                                    style={{ 
+                                      width: '60px', 
+                                      height: '60px', 
+                                      objectFit: 'cover', 
+                                      borderRadius: '8px',
+                                      border: '2px solid #000000',
+                                      display: 'block',
+                                      margin: '0 auto'
+                                    }}
+                                    onError={(e) => {
+                                      console.error('Image failed to load:', l.imageUrl, e);
+                                    }}
+                                    onLoad={() => {
+                                      console.log('Image loaded successfully:', l.imageUrl);
+                                    }}
+                                  />
+                                ) : (
+                                  <span style={{ fontSize: '12px', color: '#888' }}>
+                                    {l.package === 'premium' ? 'Premium' : (l.package === 'pro' ? 'Pro' : 'Free')}
+                                  </span>
+                                )}
+                              </td>
+                              
+                              <td style={{ 
+                                ...style, 
+                                padding: '12px 8px', 
                                 border: 'none', 
                                 wordBreak: 'break-word',
-                                fontSize: 'clamp(12px, 2.5vw, 16px)',
                                 textAlign: 'center',
-                                maxWidth: '0',
-                                overflow: 'hidden',
+                                verticalAlign: 'middle',
                                 wordWrap: 'break-word',
-                                whiteSpace: 'normal'
+                                whiteSpace: 'normal',
+                                width: '200px',
+                                minWidth: '200px'
                               }}>{l.company}</td>
+                              
                               <td style={{ 
                                 ...style, 
-                                padding: 'clamp(8px, 2vw, 14px) clamp(6px, 1.5vw, 12px)', 
+                                padding: '12px 8px', 
                                 border: 'none',
-                                fontSize: 'clamp(12px, 2.5vw, 16px)',
                                 textAlign: 'center',
-                                maxWidth: '0',
-                                overflow: 'hidden',
-                                wordWrap: 'break-word',
-                                whiteSpace: 'normal'
+                                verticalAlign: 'middle',
+                                width: '150px',
+                                minWidth: '150px'
                               }}>
                                 {l.socialType && l.socialLink ? (
-                                  <>
-                                    <a href={l.socialLink} target="_blank" rel="noopener noreferrer">
+                                  <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: '100%'
+                                  }}>
+                                    <a href={l.socialLink} target="_blank" rel="noopener noreferrer" style={{
+                                      textDecoration: 'none'
+                                    }}>
                                       <button id="tb" style={{ 
-                                        padding: 'clamp(3px, 1vw, 4px) clamp(8px, 2vw, 14px)', 
-                                        borderRadius: 'clamp(6px, 1.5vw, 8px)', 
+                                        padding: '4px 6px', 
+                                        borderRadius: '4px', 
                                         background: 'transparent', 
                                         color: style.color, 
-                                        border: `2px solid ${style.color}`, 
-                                        fontWeight: style.fontWeight, 
-                                        fontSize: 'clamp(12px, 2.5vw, 16px)', 
+                                        border: `1px solid ${style.color}`, 
+                                        fontWeight: (l.package === 'pro' || l.package === 'premium') ? 'bold' : '500', 
+                                        fontSize: 'clamp(8px, 2vw, 10px)', 
                                         cursor: 'pointer', 
                                         textTransform: 'capitalize',
                                         opacity: 1,
-                                        minHeight: '32px',
-                                        minWidth: '60px'
+                                        height: '26px',
+                                        minWidth: '50px',
+                                        width: 'auto',
+                                        maxWidth: '80px',
+                                        display: 'block',
+                                        lineHeight: '1.2',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        marginRight: '8px',
+                                        boxSizing: 'border-box'
                                       }}>{l.socialType}</button>
                                     </a>
-                                  </>
+                                  </div>
                                 ) : ''}
                               </td>
                               <td style={{ 
                                 ...style, 
-                                padding: 'clamp(8px, 2vw, 14px) clamp(6px, 1.5vw, 12px)', 
+                                padding: '12px 8px', 
                                 border: 'none', 
                                 wordBreak: 'break-all',
-                                fontSize: 'clamp(12px, 2.5vw, 16px)',
                                 textAlign: 'center',
-                                maxWidth: '0',
-                                overflow: 'hidden',
+                                verticalAlign: 'middle',
                                 wordWrap: 'break-word',
-                                whiteSpace: 'normal'
+                                whiteSpace: 'normal',
+                                width: '180px',
+                                minWidth: '180px'
                               }}>{l.email}</td>
                               <td style={{ 
                                 ...style, 
-                                padding: 'clamp(8px, 2vw, 14px) clamp(6px, 1.5vw, 12px)', 
+                                padding: '12px 8px', 
                                 border: 'none', 
                                 wordBreak: 'break-word',
-                                fontSize: 'clamp(12px, 2.5vw, 16px)',
                                 textAlign: 'center',
-                                maxWidth: '0',
-                                overflow: 'hidden',
+                                verticalAlign: 'middle',
                                 wordWrap: 'break-word',
-                                whiteSpace: 'normal'
+                                whiteSpace: 'normal',
+                                width: '140px',
+                                minWidth: '140px'
                               }}>{l.phone}</td>
                               <td style={{ 
                                 ...style, 
-                                padding: 'clamp(8px, 2vw, 14px) clamp(6px, 1.5vw, 12px)', 
+                                padding: '12px 8px', 
                                 border: 'none', 
                                 wordBreak: 'break-word',
-                                fontSize: 'clamp(12px, 2.5vw, 16px)',
                                 textAlign: 'center',
-                                maxWidth: '0',
-                                overflow: 'hidden',
+                                verticalAlign: 'middle',
                                 wordWrap: 'break-word',
-                                whiteSpace: 'normal'
-                              }}>{l.industry}</td>
-                              {selectedCategory === 'Local Contractors' && (
-                                <td style={{ 
-                                  ...style, 
-                                  padding: 'clamp(8px, 2vw, 14px) clamp(6px, 1.5vw, 12px)', 
-                                  border: 'none', 
-                                  wordBreak: 'break-word',
-                                  fontSize: 'clamp(12px, 2.5vw, 16px)',
-                                  textAlign: 'center',
-                                  maxWidth: '0',
-                                  overflow: 'hidden',
-                                  wordWrap: 'break-word',
-                                  whiteSpace: 'normal'
-                                }}>
-                                  {l.city && l.state && l.country ? `${l.city}, ${l.state}, ${l.country}` : 'Location not specified'}
-                                </td>
-                              )}
+                                whiteSpace: 'normal',
+                                width: '130px',
+                                minWidth: '130px'
+                              }}>{l.contractorType || l.industry}</td>
+
                             </tr>
                           );
                         })}
@@ -1066,20 +1090,199 @@ const Services = () => {
             </div>
             </div>
           </div>
-          <div id="featured">
-            <h1>{t("services.featuredListing")}</h1>
-          </div>
 
-          <div id="bannerr1" style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
-            {featuredImages.length === 0 && (
-              <div style={{ color: '#888', fontSize: 18 }}>No featured listings yet.</div>
-            )}
-            {featuredImages.map(img => (
-              <div key={img._id} style={{ border: '1px solid #222', borderRadius: 28, padding: 0, background: '#fff', minWidth: 320, minHeight: 140, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src={img.imageUrl} alt="Featured" style={{ width: 320, height: 140, objectFit: 'contain', borderRadius: 24 }} />
+          {/* Service Images Section */}
+          {serviceImages.length > 0 && (
+            <div style={{
+              padding: '60px 20px',
+              background: '#f8f9fa',
+              marginTop: '40px'
+            }}>
+              <div style={{
+                maxWidth: '1200px',
+                margin: '0 auto',
+                textAlign: 'center'
+              }}>
+                <h2 style={{
+                  fontSize: 'clamp(28px, 4vw, 36px)',
+                  fontWeight: '700',
+                  color: '#333',
+                  marginBottom: '40px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px'
+                }}>
+                  Service <span style={{ color: '#90be55' }}>Gallery</span>
+                </h2>
+                
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                  gap: '20px',
+                  alignItems: 'start'
+                }}>
+                  {serviceImages.map((image, index) => (
+                    <div
+                      key={image._id}
+                      style={{
+                        background: '#fff',
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                        transition: 'all 0.3s ease',
+                        transform: 'translateY(0)',
+                        animation: `fadeInUp 0.6s ease forwards ${index * 0.1}s`,
+                        opacity: 0
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-5px)';
+                        e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.15)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
+                      }}
+                    >
+                      <img
+                        src={image.imageUrl}
+                        alt="Service"
+                        style={{
+                          width: '100%',
+                          height: '200px',
+                          objectFit: 'cover',
+                          transition: 'transform 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.transform = 'scale(1.05)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = 'scale(1)';
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            ))}
-          </div>
+          )}
+
+          {/* Featured Listings Section */}
+          {featuredListings.length > 0 && (
+            <div style={{
+              padding: '40px 20px',
+              background: '#ffffff',
+              marginTop: '30px'
+            }}>
+              <div style={{
+                maxWidth: '1200px',
+                margin: '0 auto',
+                textAlign: 'center'
+              }}>
+                <h2 style={{
+                  fontSize: 'clamp(24px, 3.5vw, 30px)',
+                  fontWeight: '700',
+                  color: '#333',
+                  marginBottom: '30px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px'
+                }}>
+                  {t("services.featuredListings").split(' ').map((word, index, array) => (
+                    index === array.length - 1 ? 
+                      <span key={index} style={{ color: '#90be55' }}>{word}</span> : 
+                      <span key={index}>{word} </span>
+                  ))}
+                </h2>
+                
+                <div style={{
+                  display: 'flex',
+                  gap: '20px',
+                  overflowX: 'auto',
+                  paddingBottom: '10px',
+                  scrollbarWidth: 'thin',
+                  WebkitOverflowScrolling: 'touch',
+                  justifyContent: 'center'
+                }}>
+                  {featuredListings.map((listing, index) => (
+                    <div
+                      key={listing._id}
+                      style={{
+                        background: '#fff',
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                        transition: 'all 0.3s ease',
+                        transform: 'translateY(0)',
+                        animation: `fadeInUp 0.6s ease forwards ${index * 0.05}s`,
+                        opacity: 0,
+                        border: '2px solid #f0f0f0',
+                        minWidth: '300px',
+                        maxWidth: '300px',
+                        flexShrink: 0
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-8px)';
+                        e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)';
+                        e.currentTarget.style.borderColor = '#90be55';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
+                        e.currentTarget.style.borderColor = '#f0f0f0';
+                      }}
+                    >
+                      <img
+                        src={listing.imageUrl}
+                        alt="Featured Listing"
+                        style={{
+                          width: '100%',
+                          height: '180px',
+                          objectFit: 'cover',
+                          transition: 'transform 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.transform = 'scale(1.05)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = 'scale(1)';
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <style jsx>{`
+            @keyframes fadeInUp {
+              from {
+                opacity: 0;
+                transform: translateY(30px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+            
+            /* Custom scrollbar for featured listings */
+            div::-webkit-scrollbar {
+              height: 8px;
+            }
+            
+            div::-webkit-scrollbar-track {
+              background: #f1f1f1;
+              border-radius: 4px;
+            }
+            
+            div::-webkit-scrollbar-thumb {
+              background: #90be55;
+              border-radius: 4px;
+            }
+            
+            div::-webkit-scrollbar-thumb:hover {
+              background: #7ba848;
+            }
+          `}</style>
 
           <div id="des" ref={descriptionRef}>
             <div id="innerdes">
