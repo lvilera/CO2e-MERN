@@ -11,6 +11,9 @@ const AdminDirectoryUpload = () => {
   const [previewData, setPreviewData] = useState([]);
   const [uploadHistory, setUploadHistory] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
+  const [selectedUpload, setSelectedUpload] = useState(null);
+  const [uploadDetails, setUploadDetails] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
   const fileInputRef = useRef();
 
   // Debug: Log message state changes
@@ -55,7 +58,28 @@ const AdminDirectoryUpload = () => {
     }, 5000);
   };
 
+  const handleViewUploadDetails = async (upload) => {
+    setSelectedUpload(upload);
+    setLoadingDetails(true);
+    
+    try {
+      const response = await fetch(`${API_BASE}/api/directory/admin-uploads?batchId=${upload.uploadBatch}`, {
+        credentials: 'include',
+      });
 
+      if (response.ok) {
+        const result = await response.json();
+        setUploadDetails(result);
+      } else {
+        showMessage('Failed to fetch upload details', 'error');
+      }
+    } catch (error) {
+      console.error('Error fetching upload details:', error);
+      showMessage('Error fetching upload details', 'error');
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
 
   const handleDeleteUpload = async (uploadId, fileName) => {
     if (!window.confirm(`Are you sure you want to delete the upload "${fileName}" and all its listings? This action cannot be undone.`)) {
@@ -73,6 +97,11 @@ const AdminDirectoryUpload = () => {
         showMessage(`Successfully deleted upload "${fileName}" and ${result.deletedListings} listings`, 'success');
         // Refresh the upload history
         fetchUploadHistory();
+        // Close details if this upload was being viewed
+        if (selectedUpload && selectedUpload._id === uploadId) {
+          setSelectedUpload(null);
+          setUploadDetails(null);
+        }
       } else {
         const errorData = await response.json();
         showMessage(`Failed to delete upload: ${errorData.error || 'Unknown error'}`, 'error');
@@ -606,6 +635,23 @@ const AdminDirectoryUpload = () => {
                     
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
                       <button
+                        onClick={() => handleViewUploadDetails(upload)}
+                        style={{
+                          padding: '6px 12px',
+                          backgroundColor: '#17a2b8',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: 6,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
+                        title="View upload details and listings"
+                      >
+                        👁️ View
+                      </button>
+                      <button
                         onClick={() => handleDeleteUpload(upload._id, upload.originalFileName)}
                         style={{
                           padding: '6px 12px',
@@ -657,7 +703,143 @@ const AdminDirectoryUpload = () => {
           )}
         </div>
 
+        {/* Upload Details Modal */}
+        {selectedUpload && (
+          <div style={{ 
+            marginTop: 24, 
+            padding: 24, 
+            background: '#fff', 
+            borderRadius: 12, 
+            border: '2px solid #17a2b8',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.12)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h4 style={{ margin: 0, color: '#17a2b8' }}>
+                📋 Upload Details: {selectedUpload.originalFileName}
+              </h4>
+              <button
+                onClick={() => {
+                  setSelectedUpload(null);
+                  setUploadDetails(null);
+                }}
+                style={{
+                  padding: '8px 12px',
+                  backgroundColor: '#6c757d',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 6,
+                  fontSize: 14,
+                  cursor: 'pointer'
+                }}
+              >
+                ✕ Close
+              </button>
+            </div>
 
+            {loadingDetails ? (
+              <p style={{ textAlign: 'center', color: '#6c757d' }}>Loading upload details...</p>
+            ) : uploadDetails ? (
+              <div>
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+                  gap: 16, 
+                  marginBottom: 20 
+                }}>
+                  <div style={{ padding: 12, background: '#f8f9fa', borderRadius: 8 }}>
+                    <div style={{ fontSize: 12, color: '#6c757d', marginBottom: 4 }}>Total Listings</div>
+                    <div style={{ fontSize: 18, fontWeight: 600, color: '#333' }}>{uploadDetails.count}</div>
+                  </div>
+                  <div style={{ padding: 12, background: '#f8f9fa', borderRadius: 8 }}>
+                    <div style={{ fontSize: 12, color: '#6c757d', marginBottom: 4 }}>Upload Date</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#333' }}>
+                      {new Date(selectedUpload.uploadDate).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <div style={{ padding: 12, background: '#f8f9fa', borderRadius: 8 }}>
+                    <div style={{ fontSize: 12, color: '#6c757d', marginBottom: 4 }}>File Size</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#333' }}>
+                      {(selectedUpload.fileSize / 1024).toFixed(1)} KB
+                    </div>
+                  </div>
+                  <div style={{ padding: 12, background: '#f8f9fa', borderRadius: 8 }}>
+                    <div style={{ fontSize: 12, color: '#6c757d', marginBottom: 4 }}>Status</div>
+                    <div style={{ 
+                      fontSize: 14, 
+                      fontWeight: 600,
+                      color: selectedUpload.status === 'completed' ? '#155724' : selectedUpload.status === 'partial' ? '#856404' : '#721c24'
+                    }}>
+                      {selectedUpload.status.toUpperCase()}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Listings Table */}
+                <div style={{ marginTop: 20 }}>
+                  <h5 style={{ margin: '0 0 16px 0', color: '#495057' }}>📊 Uploaded Listings</h5>
+                  <div style={{ 
+                    maxHeight: '300px', 
+                    overflowY: 'auto', 
+                    border: '1px solid #dee2e6',
+                    borderRadius: 8
+                  }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <thead style={{ background: '#f8f9fa', position: 'sticky', top: 0 }}>
+                        <tr>
+                          <th style={{ padding: '12px 8px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontSize: 12 }}>Company</th>
+                          <th style={{ padding: '12px 8px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontSize: 12 }}>Email</th>
+                          <th style={{ padding: '12px 8px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontSize: 12 }}>Industry</th>
+                          <th style={{ padding: '12px 8px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontSize: 12 }}>Package</th>
+                          <th style={{ padding: '12px 8px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontSize: 12 }}>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {uploadDetails.listings.slice(0, 50).map((listing, index) => (
+                          <tr key={listing._id} style={{ borderBottom: '1px solid #f1f3f4' }}>
+                            <td style={{ padding: '8px', fontSize: 12 }}>{listing.company}</td>
+                            <td style={{ padding: '8px', fontSize: 12 }}>{listing.email}</td>
+                            <td style={{ padding: '8px', fontSize: 12 }}>{listing.industry}</td>
+                            <td style={{ padding: '8px', fontSize: 12 }}>
+                              <span style={{ 
+                                padding: '2px 6px', 
+                                borderRadius: 4, 
+                                fontSize: 10,
+                                backgroundColor: listing.package === 'premium' ? '#ffc107' : listing.package === 'pro' ? '#17a2b8' : '#6c757d',
+                                color: 'white'
+                              }}>
+                                {listing.package}
+                              </span>
+                            </td>
+                            <td style={{ padding: '8px', fontSize: 12 }}>
+                              <span style={{ 
+                                padding: '2px 6px', 
+                                borderRadius: 4, 
+                                fontSize: 10,
+                                backgroundColor: listing.validationStatus === 'valid' ? '#d4edda' : listing.validationStatus === 'invalid' ? '#f8d7da' : '#fff3cd',
+                                color: listing.validationStatus === 'valid' ? '#155724' : listing.validationStatus === 'invalid' ? '#721c24' : '#856404'
+                              }}>
+                                {listing.validationStatus || 'pending'}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                        {uploadDetails.listings.length > 50 && (
+                          <tr>
+                            <td colSpan="5" style={{ padding: '12px', textAlign: 'center', color: '#6c757d', fontSize: 12 }}>
+                              ... and {uploadDetails.listings.length - 50} more listings
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p style={{ textAlign: 'center', color: '#6c757d' }}>No details available</p>
+            )}
+          </div>
+        )}
 
         {/* Additional Info */}
         <div style={{ 
