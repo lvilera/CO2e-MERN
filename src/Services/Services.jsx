@@ -478,7 +478,7 @@ const Services = () => {
 
           <div id="directory-listing" style={{ maxWidth: '100%', overflow: 'hidden' }}>
             <div id="Listingg" style={{ 
-              paddingTop: '80px',
+              paddingTop: '60px',
               paddingLeft: 'clamp(20px, 5vw, 220px)',
               paddingRight: 'clamp(20px, 5vw, 220px)',
               textAlign: 'center'
@@ -487,7 +487,7 @@ const Services = () => {
                 position: 'relative',
                 fontSize: 'clamp(32px, 8vw, 50px)',
                 lineHeight: '1.2',
-                marginBottom: '20px'
+                marginBottom: '15px'
               }}>
                 {/* Anchor div for navbar navigation - ensures heading appears from start */}
                 <div id="directory-listing-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
@@ -500,7 +500,7 @@ const Services = () => {
                 justifyContent: 'center', 
                 alignItems: 'center', 
                 gap: '16px', 
-                margin: '20px auto',
+                margin: '10px auto',
                 maxWidth: '800px',
                 flexWrap: 'wrap',
                 overflowX: 'auto !important',
@@ -560,7 +560,7 @@ const Services = () => {
               {/* Category Filter Row - Only show when in category mode - MOVED HERE */}
               {viewMode === 'category' && (
                 <div  className="category-filter-container" style={{ 
-                  margin: '20px auto 30px auto', 
+                  margin: '10px auto 20px auto', 
                   width: '100%', 
                   maxWidth: '1200px',
                   padding: '0 20px',
@@ -636,7 +636,7 @@ const Services = () => {
                 <div id="ppa">
               <div id="parenta" ref={alphabetRef} style={{ 
                 fontSize: 'clamp(20px, 6vw, 32px)', 
-                margin: '16px auto', 
+                margin: '8px auto', 
                 textAlign: 'center', 
                 whiteSpace: 'nowrap', 
                 overflowX: 'auto', 
@@ -682,7 +682,7 @@ const Services = () => {
                 alignItems: 'center',
                 width: '100%',
                 padding: '0 20px',
-                marginTop: '20px'
+                marginTop: '-10px'
               }}>
               {filteredListings.length > 0 ? (
                 <div className="table-responsive-container" style={{ 

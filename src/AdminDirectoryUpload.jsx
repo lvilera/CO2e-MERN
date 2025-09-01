@@ -55,6 +55,34 @@ const AdminDirectoryUpload = () => {
     }, 5000);
   };
 
+
+
+  const handleDeleteUpload = async (uploadId, fileName) => {
+    if (!window.confirm(`Are you sure you want to delete the upload "${fileName}" and all its listings? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/api/directory/upload-history/${uploadId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        showMessage(`Successfully deleted upload "${fileName}" and ${result.deletedListings} listings`, 'success');
+        // Refresh the upload history
+        fetchUploadHistory();
+      } else {
+        const errorData = await response.json();
+        showMessage(`Failed to delete upload: ${errorData.error || 'Unknown error'}`, 'error');
+      }
+    } catch (error) {
+      console.error('Error deleting upload:', error);
+      showMessage('Error deleting upload', 'error');
+    }
+  };
+
   const handleDeleteAll = async () => {
     if (!window.confirm('Are you sure you want to delete ALL uploaded data? This action cannot be undone.')) {
       return;
@@ -534,43 +562,102 @@ const AdminDirectoryUpload = () => {
           ) : uploadHistory.length === 0 ? (
             <p style={{ color: '#6c757d', textAlign: 'center' }}>No uploads yet</p>
           ) : (
-            <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
               {uploadHistory.map((upload, index) => (
                 <div key={upload._id || index} style={{ 
-                  padding: 12, 
+                  padding: 16, 
                   background: 'white', 
-                  borderRadius: 6, 
+                  borderRadius: 8, 
                   border: '1px solid #dee2e6',
-                  marginBottom: 8
+                  marginBottom: 12,
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
                 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                      <strong>{upload.originalName}</strong>
-                      <div style={{ fontSize: 12, color: '#6c757d', marginTop: 2 }}>
-                        {new Date(upload.uploadDate).toLocaleString()} • {upload.fileType.toUpperCase()} • {(upload.fileSize / 1024).toFixed(1)} KB
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                        <strong style={{ fontSize: 16, color: '#333' }}>{upload.originalFileName}</strong>
+                        <div style={{ 
+                          padding: '4px 8px', 
+                          borderRadius: 12, 
+                          fontSize: 11,
+                          fontWeight: 600,
+                          backgroundColor: upload.status === 'completed' ? '#d4edda' : upload.status === 'partial' ? '#fff3cd' : '#f8d7da',
+                          color: upload.status === 'completed' ? '#155724' : upload.status === 'partial' ? '#856404' : '#721c24'
+                        }}>
+                          {upload.status.toUpperCase()}
+                        </div>
                       </div>
+                      
+                      <div style={{ fontSize: 13, color: '#6c757d', marginBottom: 8 }}>
+                        📅 {new Date(upload.uploadDate).toLocaleString()} • 📁 {upload.fileType.toUpperCase()} • 💾 {(upload.fileSize / 1024).toFixed(1)} KB
+                      </div>
+                      
+                      <div style={{ fontSize: 13, color: '#6c757d', marginBottom: 8 }}>
+                        📊 {upload.successfulUploads}/{upload.totalRows} rows uploaded successfully
+                        {upload.failedUploads > 0 && <span style={{ color: '#dc3545' }}> • ❌ {upload.failedUploads} failed</span>}
+                      </div>
+                      
+                      {upload.processingTime && (
+                        <div style={{ fontSize: 12, color: '#6c757d' }}>
+                          ⏱️ Processed in {upload.processingTime}ms
+                        </div>
+                      )}
                     </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ 
-                        padding: '4px 8px', 
-                        borderRadius: 4, 
-                        fontSize: 12,
-                        fontWeight: 600,
-                        backgroundColor: upload.status === 'completed' ? '#d4edda' : upload.status === 'partial' ? '#fff3cd' : '#f8d7da',
-                        color: upload.status === 'completed' ? '#155724' : upload.status === 'partial' ? '#856404' : '#721c24'
-                      }}>
-                        {upload.status.toUpperCase()}
-                      </div>
-                      <div style={{ fontSize: 12, color: '#6c757d', marginTop: 4 }}>
-                        {upload.successfulUploads}/{upload.totalRows} rows
-                      </div>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
+                      <button
+                        onClick={() => handleDeleteUpload(upload._id, upload.originalFileName)}
+                        style={{
+                          padding: '6px 12px',
+                          backgroundColor: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: 6,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease'
+                        }}
+                        title={`Delete this upload and all ${upload.successfulUploads} listings`}
+                      >
+                        🗑️ Delete
+                      </button>
                     </div>
                   </div>
+                  
+                  {/* Show errors if any */}
+                  {upload.errors && upload.errors.length > 0 && (
+                    <div style={{ 
+                      marginTop: 12, 
+                      padding: 12, 
+                      background: '#fff3cd', 
+                      borderRadius: 6, 
+                      border: '1px solid #ffeaa7' 
+                    }}>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: '#856404', marginBottom: 8 }}>
+                        ⚠️ Upload Errors ({upload.errors.length}):
+                      </div>
+                      <div style={{ maxHeight: '100px', overflowY: 'auto', fontSize: 11 }}>
+                        {upload.errors.slice(0, 5).map((error, idx) => (
+                          <div key={idx} style={{ marginBottom: 4, color: '#856404' }}>
+                            Row {error.row} ({error.sheet}): {error.error}
+                          </div>
+                        ))}
+                        {upload.errors.length > 5 && (
+                          <div style={{ color: '#856404', fontStyle: 'italic' }}>
+                            ... and {upload.errors.length - 5} more errors
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           )}
         </div>
+
+
 
         {/* Additional Info */}
         <div style={{ 
