@@ -8,7 +8,7 @@ const Dashboard = () => {
   const [form, setForm] = useState({ 
     titleEn: '', titleFr: '', titleEs: '',
     descriptionEn: '', descriptionFr: '', descriptionEs: '',
-    link: '' 
+    link: ''
   });
   const [cards, setCards] = useState([]);
   const [search, setSearch] = useState('');
@@ -48,25 +48,37 @@ const Dashboard = () => {
     };
   }, []);
 
-  const handleChange = (e) => {
+    const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch(`${API_BASE_URL}/card/cards`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
-    });
-    const data = await res.json();
-    showMessage('Card added!');
-    setForm({ 
-      titleEn: '', titleFr: '', titleEs: '',
-      descriptionEn: '', descriptionFr: '', descriptionEs: '',
-      link: '' 
-    });
-    fetchCards();
+    
+    try {
+      const res = await fetch(`${API_BASE_URL}/card/cards`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to create card');
+      }
+      
+      const data = await res.json();
+      showMessage('Card added successfully!');
+      setForm({ 
+        titleEn: '', titleFr: '', titleEs: '',
+        descriptionEn: '', descriptionFr: '', descriptionEs: '',
+        link: ''
+      });
+      fetchCards();
+    } catch (error) {
+      console.error('Error creating card:', error);
+      showMessage(error.message || 'Failed to create card', 'error');
+    }
   };
 
   const handleDelete = async (id) => {
