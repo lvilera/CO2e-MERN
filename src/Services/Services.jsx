@@ -26,7 +26,7 @@ const Services = () => {
   const [subCategories, setSubCategories] = useState([]);
   const [serviceImages, setServiceImages] = useState([]);
   const [featuredListings, setFeaturedListings] = useState([]);
-  
+
   // Debug: Log when categories change
   useEffect(() => {
     console.log('Categories state changed:', categories);
@@ -45,7 +45,7 @@ const Services = () => {
   useEffect(() => {
     // Don't auto-clear location - let the backend API detect it properly
     console.log('Services component mounted, fetching data...');
-    
+
 
     fetchDirectoryListings();
     fetchCategories();
@@ -64,7 +64,7 @@ const Services = () => {
   const initializeAnimations = () => {
     // Title animation
     if (titleRef.current) {
-      gsap.fromTo(titleRef.current, 
+      gsap.fromTo(titleRef.current,
         { opacity: 0, y: 50 },
         { opacity: 1, y: 0, duration: 1, ease: "power2.out" }
       );
@@ -75,10 +75,10 @@ const Services = () => {
       const letters = alphabetRef.current.querySelectorAll('span');
       gsap.fromTo(letters,
         { opacity: 0, scale: 0.8 },
-        { 
-          opacity: 1, 
-          scale: 1, 
-          duration: 0.5, 
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
           stagger: 0.05,
           ease: "back.out(1.7)"
         }
@@ -89,10 +89,10 @@ const Services = () => {
     if (tableRef.current) {
       gsap.fromTo(tableRef.current,
         { opacity: 0, y: 30 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.8, 
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
           delay: 0.3,
           ease: "power2.out"
         }
@@ -107,9 +107,9 @@ const Services = () => {
     if (descriptionRef.current) {
       gsap.fromTo(descriptionRef.current,
         { opacity: 0, y: 30 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
@@ -125,9 +125,9 @@ const Services = () => {
     if (courseButtonRef.current) {
       gsap.fromTo(courseButtonRef.current,
         { opacity: 0, scale: 0.8 },
-        { 
-          opacity: 1, 
-          scale: 1, 
+        {
+          opacity: 1,
+          scale: 1,
           duration: 0.6,
           ease: "back.out(1.7)",
           scrollTrigger: {
@@ -144,9 +144,9 @@ const Services = () => {
       const cards = serviceCardsRef.current.querySelectorAll('#scard');
       gsap.fromTo(cards,
         { opacity: 0, y: 50, rotation: -3 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           rotation: 0,
           duration: 0.8,
           stagger: 0.15,
@@ -165,9 +165,9 @@ const Services = () => {
       const cards = bottomCardsRef.current.querySelectorAll('div');
       gsap.fromTo(cards,
         { opacity: 0, x: -50 },
-        { 
-          opacity: 1, 
-          x: 0, 
+        {
+          opacity: 1,
+          x: 0,
           duration: 0.8,
           stagger: 0.3,
           ease: "power2.out",
@@ -208,7 +208,7 @@ const Services = () => {
         console.error('Direct fetch failed:', directError);
         // Fallback to useApi
       }
-      
+
       // Fallback to useApi
       const data = await get(`${API_BASE}/api/directory`, 'Loading directory listings...');
       console.log('Services: Fetched directory listings via useApi:', data.length, 'entries');
@@ -225,13 +225,13 @@ const Services = () => {
       const response = await fetch(`${API_BASE}/api/directory`);
       if (response.ok) {
         const listings = await response.json();
-        
+
         // Extract unique industries and display categories from database
         const uniqueIndustries = [...new Set(listings.map(l => l.industry).filter(Boolean))];
         const uniqueDisplayCategories = [...new Set(listings.map(l => l.displayCategory).filter(Boolean))];
         console.log('Unique industries from database:', uniqueIndustries);
         console.log('Unique display categories from database:', uniqueDisplayCategories);
-        
+
         // Create a mapping from database industries to display categories
         const industryToCategory = {
           'Broker': 'Broker',
@@ -246,17 +246,17 @@ const Services = () => {
           'Finance': 'Project',
           'Wholesale': 'Wholesaler'
         };
-        
+
         // Create display categories based on actual data
         const displayCategories = [];
-        
+
         // First, add display categories from the database
         uniqueDisplayCategories.forEach(displayCategory => {
           if (!displayCategories.includes(displayCategory)) {
             displayCategories.push(displayCategory);
           }
         });
-        
+
         // Then, map any remaining industries to categories
         uniqueIndustries.forEach(industry => {
           const category = industryToCategory[industry] || industry;
@@ -264,7 +264,7 @@ const Services = () => {
             displayCategories.push(category);
           }
         });
-        
+
         console.log('Display categories:', displayCategories);
         console.log('Categories state being set to:', displayCategories);
         setCategories(displayCategories);
@@ -273,14 +273,14 @@ const Services = () => {
         const fallbackCategories = [
           'Local Contractors',
           'Broker',
-          'Exchange', 
+          'Exchange',
           'Project',
           'Retail',
           'Wholesaler'
         ];
         setCategories(fallbackCategories);
       }
-      
+
       // Fetch Local Contractor subcategories for potential future use
       try {
         const contractorResponse = await fetch(`${API_BASE}/api/directory/local-contractor-categories`);
@@ -297,17 +297,17 @@ const Services = () => {
       }
     } catch (err) {
       console.error('Services: Failed to set categories:', err);
-      
+
       // Fallback to hardcoded categories (including Local Contractors)
       const fallbackCategories = [
         'Local Contractors',
         'Broker',
-        'Exchange', 
+        'Exchange',
         'Project',
         'Retail',
         'Wholesaler'
       ];
-      
+
       setCategories(fallbackCategories);
       setSubCategories([]);
     }
@@ -365,7 +365,7 @@ const Services = () => {
   };
 
   const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
-  
+
   // Detect and store user's location
 
 
@@ -377,18 +377,18 @@ const Services = () => {
       totalListings: directoryListings.length,
       sampleIndustries: directoryListings.slice(0, 5).map(l => l.industry)
     });
-    
+
     if (viewMode === 'category') {
       if (selectedCategory) {
         // If no category is selected, show Local Contractors by default
         if (!selectedCategory) {
           console.log('No category selected, showing Local Contractors by default');
-          return directoryListings.filter(listing => 
-            listing.displayCategory === 'Local Contractors' || 
+          return directoryListings.filter(listing =>
+            listing.displayCategory === 'Local Contractors' ||
             listing.industry === 'Local Contractors'
           );
         }
-        
+
         // Special handling for Local Contractors - show all local contractors without location filtering
         if (selectedCategory === 'Local Contractors') {
           const localContractors = directoryListings.filter(l => {
@@ -404,17 +404,17 @@ const Services = () => {
           console.log('Local Contractors found:', localContractors.length, 'out of', directoryListings.length, 'total listings');
           return localContractors;
         }
-        
+
         // Remove contractor category filtering - we now show all local contractors mixed together
         // No longer filter by specific contractor types (Finance, Technology, etc.)
         // The contractor type will be displayed in the category column but not used for filtering
-        
+
         // Handle industry mapping for Project category
         if (selectedCategory === 'Project') {
           const projectListings = directoryListings.filter(l => {
             // Use displayCategory if available, otherwise fall back to industry mapping
             if (l.displayCategory === 'Project') return true;
-            
+
             // Fallback: Map database industries to Project category
             const projectIndustries = ['Construction', 'Technology', 'Finance'];
             return projectIndustries.includes(l.industry);
@@ -428,19 +428,19 @@ const Services = () => {
           });
           return projectListings;
         }
-        
+
         // Handle industry mapping for Wholesaler category
         if (selectedCategory === 'Wholesaler') {
           return directoryListings.filter(l => {
             // Use displayCategory if available, otherwise fall back to industry mapping
             if (l.displayCategory === 'Wholesaler') return true;
-            
+
             // Fallback: Map database industries to Wholesaler category
             const wholesalerIndustries = ['Wholesale'];
             return wholesalerIndustries.includes(l.industry);
           });
         }
-        
+
         // For other categories, do exact matching (check both displayCategory and industry)
         return directoryListings.filter(l => {
           // First check displayCategory if available
@@ -454,18 +454,18 @@ const Services = () => {
     } else {
       // In alphabetical view, show all listings that start with selected letter
       // But for Local Contractors, also apply location filtering if user location exists
-      
+
       return directoryListings.filter(l => {
         // Ensure company name exists and filter by first letter
         const companyName = l.company || l.Company || '';
         const matchesLetter = companyName.toUpperCase().startsWith(selectedLetter);
-        
+
         // For all entries, just filter by letter (no location filtering)
         return matchesLetter;
       });
     }
   };
-  
+
   const filteredListings = getFilteredListings();
 
   return (
@@ -477,13 +477,13 @@ const Services = () => {
           </div>
 
           <div id="directory-listing" style={{ maxWidth: '100%', overflow: 'hidden' }}>
-            <div id="Listingg" style={{ 
+            <div id="Listingg" style={{
               paddingTop: '60px',
               paddingLeft: 'clamp(20px, 5vw, 220px)',
               paddingRight: 'clamp(20px, 5vw, 220px)',
               textAlign: 'center'
             }}>
-              <h1 ref={titleRef} style={{ 
+              <h1 ref={titleRef} style={{
                 position: 'relative',
                 fontSize: 'clamp(32px, 8vw, 50px)',
                 lineHeight: '1.2',
@@ -493,13 +493,13 @@ const Services = () => {
                 <div id="directory-listing-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
                 {t("services.directoryListing.title")}
               </h1>
-              
+
               {/* Sorting Buttons - Positioned above the category section */}
-              <div id="barea1" style={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center', 
-                gap: '16px', 
+              <div id="barea1" style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: '16px',
                 margin: '10px auto',
                 maxWidth: '800px',
                 flexWrap: 'wrap',
@@ -556,12 +556,12 @@ const Services = () => {
                   {t("services.sortByCategory")}
                 </button>
               </div>
-              
+
               {/* Category Filter Row - Only show when in category mode - MOVED HERE */}
               {viewMode === 'category' && (
-                <div  className="category-filter-container" style={{ 
-                  margin: '10px auto 20px auto', 
-                  width: '100%', 
+                <div className="category-filter-container" style={{
+                  margin: '10px auto 20px auto',
+                  width: '100%',
                   maxWidth: '1200px',
                   padding: '0 20px',
                   display: 'flex',
@@ -625,357 +625,379 @@ const Services = () => {
                       ))}
                     </div>
                   </div>
-                  
+
                   {/* No subcategory display - show all local contractors mixed together */}
                 </div>
               )}
-              
+
               {/* Directory A-Z Filter Row - Only show when in alphabetical mode */}
               {viewMode === 'alphabetical' && (
                 <div id="uppa" style={{ padding: '0 20px' }}>
-                <div id="ppa">
-              <div id="parenta" ref={alphabetRef} style={{ 
-                fontSize: 'clamp(20px, 6vw, 32px)', 
-                margin: '8px auto', 
-                textAlign: 'center', 
-                whiteSpace: 'nowrap', 
-                overflowX: 'auto', 
-                width: '100%',
-                maxWidth: '1200px',
-                WebkitOverflowScrolling: 'touch',
-                scrollbarWidth: 'thin'
-              }}>
-                {alphabet.map((letter, idx) => (
-                  <span id="iparent" key={letter}>
-                    <span
-                      onClick={() => {
-                        setSelectedLetter(letter);
-                      }}
-                      style={{
-                        cursor: 'pointer',
-                        fontWeight: selectedLetter === letter ? 700 : 400,
-                        color: selectedLetter === letter ? '#90be55' : '#222',
-                        textDecoration: selectedLetter === letter ? 'underline' : 'none',
-                        fontSize: selectedLetter === letter ? 40 : 32,
-                        transition: 'all 0.2s',
-                      }}
-                    >
-                      {letter}
-                    </span>
-                    {idx < alphabet.length - 1 && <span>, </span>}
-                  </span>
-                ))}
-              </div>
-              </div>
-              </div>
+                  <div id="ppa">
+                    <div id="parenta" ref={alphabetRef} style={{
+                      fontSize: 'clamp(20px, 6vw, 32px)',
+                      margin: '8px auto',
+                      textAlign: 'center',
+                      whiteSpace: 'nowrap',
+                      overflowX: 'auto',
+                      width: '100%',
+                      maxWidth: '1200px',
+                      WebkitOverflowScrolling: 'touch',
+                      scrollbarWidth: 'thin'
+                    }}>
+                      {alphabet.map((letter, idx) => (
+                        <span id="iparent" key={letter}>
+                          <span
+                            onClick={() => {
+                              setSelectedLetter(letter);
+                            }}
+                            style={{
+                              cursor: 'pointer',
+                              fontWeight: selectedLetter === letter ? 700 : 400,
+                              color: selectedLetter === letter ? '#90be55' : '#222',
+                              textDecoration: selectedLetter === letter ? 'underline' : 'none',
+                              fontSize: selectedLetter === letter ? 40 : 32,
+                              transition: 'all 0.2s',
+                            }}
+                          >
+                            {letter}
+                          </span>
+                          {idx < alphabet.length - 1 && <span>, </span>}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               )}
-              
+
               {/* Location indicator for alphabetical view when Local Contractors are filtered - REMOVED */}
 
               {/* Directory Table */}
-  
 
 
-              <div id="ttable" ref={tableRef} style={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
+
+              <div id="ttable" ref={tableRef} style={{
+                display: 'flex',
+                justifyContent: 'center',
                 alignItems: 'center',
                 width: '100%',
                 padding: '0 20px',
                 marginTop: '-10px'
               }}>
-              {filteredListings.length > 0 ? (
-                <div className="table-responsive-container" style={{ 
-                  maxWidth: '1200px', 
-                  width: '100%',
-                  margin: '0 auto', 
-                  background: '#fff', 
-                  borderRadius: 'clamp(16px, 3vw, 24px)', 
-                  boxShadow: '0 6px 32px rgba(0,0,0,0.10)', 
-                  padding: 0, 
-                  marginTop: 0,
-                  overflow: 'visible'
-                }}>
-                  <div className="table-wrapper" style={{ 
+                {filteredListings.length > 0 ? (
+                  <div className="table-responsive-container" style={{
+                    maxWidth: '1200px',
                     width: '100%',
-                    overflowX: 'auto',
-                    overflowY: 'visible',
-                    WebkitOverflowScrolling: 'touch',
-                    scrollbarWidth: 'thin',
-                    scrollbarColor: '#ccc transparent'
+                    margin: '0 auto',
+                    background: '#fff',
+                    borderRadius: 'clamp(16px, 3vw, 24px)',
+                    boxShadow: '0 6px 32px rgba(0,0,0,0.10)',
+                    padding: 0,
+                    marginTop: 0,
+                    overflow: 'visible'
                   }}>
-                    <table className="responsive-table" style={{ 
-                      width: '100%', 
-                      minWidth: '1000px',
-                      maxWidth: '100%',
-                      borderCollapse: 'separate', 
-                      borderSpacing: 0, 
-                      fontSize: '14px',
-                      margin: '0 auto',
-                      tableLayout: 'auto'
+                    <div className="table-wrapper" style={{
+                      width: '100%',
+                      overflowX: 'auto',
+                      overflowY: 'visible',
+                      WebkitOverflowScrolling: 'touch',
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: '#ccc transparent'
                     }}>
-                                              <thead>
+                      <table className="responsive-table" style={{
+                        width: '100%',
+                        minWidth: '1000px',
+                        maxWidth: '100%',
+                        borderCollapse: 'separate',
+                        borderSpacing: 0,
+                        fontSize: '14px',
+                        margin: '0 auto',
+                        tableLayout: 'auto'
+                      }}>
+                        <thead>
                           <tr style={{ background: '#f7f7f7', fontWeight: 800 }}>
-                            <th style={{ 
-                              padding: '12px 8px', 
-                              border: 'none', 
-                              textAlign: 'center', 
-                              letterSpacing: 1, 
+                            <th style={{
+                              padding: '12px 8px',
+                              border: 'none',
+                              textAlign: 'center',
+                              letterSpacing: 1,
                               fontSize: '14px',
                               width: '120px',
                               minWidth: '120px',
                               verticalAlign: 'middle'
                             }}>IMAGE</th>
-                            <th style={{ 
-                              padding: '12px 8px', 
-                              border: 'none', 
-                              textAlign: 'center', 
-                              letterSpacing: 1, 
+                            <th style={{
+                              padding: '12px 8px',
+                              border: 'none',
+                              textAlign: 'center',
+                              letterSpacing: 1,
                               fontSize: '14px',
                               width: '200px',
                               minWidth: '200px',
                               verticalAlign: 'middle'
                             }}>COMPANY</th>
-                          <th style={{ 
-                            padding: '12px 8px', 
-                            border: 'none', 
-                            textAlign: 'center', 
-                            letterSpacing: 1, 
-                            fontSize: '14px',
-                            width: '150px',
-                            minWidth: '150px',
-                            verticalAlign: 'middle'
-                          }}>SOCIAL LINK</th>
-                          <th style={{ 
-                            padding: '12px 8px', 
-                            border: 'none', 
-                            textAlign: 'center', 
-                            letterSpacing: 1, 
-                            fontSize: '14px',
-                            width: '180px',
-                            minWidth: '180px',
-                            verticalAlign: 'middle'
-                          }}>EMAIL</th>
-                          <th style={{ 
-                            padding: '12px 8px', 
-                            border: 'none', 
-                            textAlign: 'center', 
-                            letterSpacing: 1, 
-                            fontSize: '14px',
-                            width: '140px',
-                            minWidth: '140px',
-                            verticalAlign: 'middle'
-                          }}>PHONE NUMBER</th>
-                          <th style={{ 
-                            padding: '12px 8px', 
-                            border: 'none', 
-                            textAlign: 'center', 
-                            letterSpacing: 1, 
-                            fontSize: '14px',
-                            width: '130px',
-                            minWidth: '130px',
-                            verticalAlign: 'middle'
-                          }}>CATEGORY</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-
-                        {filteredListings.length === 0 && (
-                          <tr>
-                            <td colSpan={6} style={{ textAlign: 'center', color: '#888', padding: 24 }}>
-                              {viewMode === 'category' 
-                                ? (selectedCategory ? `No listings for category "${selectedCategory}".` : 'No listings in the directory yet.')
-                                : `No listings for letter "${selectedLetter}".`
-                              }
-                            </td>
+                            <th style={{
+                              padding: '12px 8px',
+                              border: 'none',
+                              textAlign: 'center',
+                              letterSpacing: 1,
+                              fontSize: '14px',
+                              width: '150px',
+                              minWidth: '150px',
+                              verticalAlign: 'middle'
+                            }}>WEBSITE</th>
+                            <th style={{
+                              padding: '12px 8px',
+                              border: 'none',
+                              textAlign: 'center',
+                              letterSpacing: 1,
+                              fontSize: '14px',
+                              width: '150px',
+                              minWidth: '150px',
+                              verticalAlign: 'middle'
+                            }}>CONTACT</th>
+                            <th style={{
+                              padding: '12px 8px',
+                              border: 'none',
+                              textAlign: 'center',
+                              letterSpacing: 1,
+                              fontSize: '14px',
+                              width: '180px',
+                              minWidth: '180px',
+                              verticalAlign: 'middle'
+                            }}>EMAIL</th>
+                            <th style={{
+                              padding: '12px 8px',
+                              border: 'none',
+                              textAlign: 'center',
+                              letterSpacing: 1,
+                              fontSize: '14px',
+                              width: '140px',
+                              minWidth: '140px',
+                              verticalAlign: 'middle'
+                            }}>PHONE NUMBER</th>
+                            <th style={{
+                              padding: '12px 8px',
+                              border: 'none',
+                              textAlign: 'center',
+                              letterSpacing: 1,
+                              fontSize: '14px',
+                              width: '130px',
+                              minWidth: '130px',
+                              verticalAlign: 'middle'
+                            }}>CATEGORY</th>
                           </tr>
-                        )}
-                        {filteredListings.map((l, i) => {
-                          // Determine package: use listing.package, but if current user matches and has upgraded, use user.package
-                          let effectivePackage = l.package;
-                          if (user && user.email === l.email && user.package && user.package !== l.package) {
-                            effectivePackage = user.package;
-                          }
-                          
-                          // Base style for all entries
-                          let style = { 
-                            textAlign: 'center', 
-                            background: i % 2 === 0 ? '#fff' : '#fafbfc',
-                            color: '#000000' // All text is black
-                          };
-                          
-                          // Free members: Normal text
-                          if (!effectivePackage || effectivePackage === 'free') {
-                            style = { 
-                              ...style, 
-                              fontWeight: 400, 
-                              fontSize: '14px' 
-                            };
-                          }
-                          
-                          // Pro members: Bold text, slightly bigger font
-                          if (effectivePackage === 'pro') {
-                            style = { 
-                              ...style, 
-                              fontWeight: 700, 
-                              fontSize: '14px' 
-                            };
-                          }
-                          
-                          // Premium members: Same as Pro + images (handled separately)
-                          if (effectivePackage === 'premium') {
-                            style = { 
-                              ...style, 
-                              fontWeight: 700, 
-                              fontSize: '14px' 
-                            };
-                          }
-                          return (
-                            <tr key={i}>
-                              {/* Image column - shows image only for premium users based on USER column data */}
-                              <td style={{ 
-                                ...style, 
-                                padding: '12px 8px', 
-                                border: 'none',
-                                textAlign: 'center',
-                                verticalAlign: 'middle',
-                                width: '120px',
-                                minWidth: '120px'
-                              }}>
-                                {l.package === 'premium' && l.imageUrl ? (
-                                  <img 
-                                    src={l.imageUrl} 
-                                    alt={l.company} 
-                                    style={{ 
-                                      width: '60px', 
-                                      height: '60px', 
-                                      objectFit: 'cover', 
-                                      borderRadius: '8px',
-                                      border: '2px solid #000000',
-                                      display: 'block',
-                                      margin: '0 auto'
-                                    }}
-                                    onError={(e) => {
-                                      console.error('Image failed to load:', l.imageUrl, e);
-                                    }}
-                                    onLoad={() => {
-                                      console.log('Image loaded successfully:', l.imageUrl);
-                                    }}
-                                  />
-                                ) : (
-                                  <span style={{ fontSize: '12px', color: '#888' }}>
-                                    {l.package === 'premium' ? 'Premium' : (l.package === 'pro' ? 'Pro' : 'Free')}
-                                  </span>
-                                )}
-                              </td>
-                              
-                              <td style={{ 
-                                ...style, 
-                                padding: '12px 8px', 
-                                border: 'none', 
-                                wordBreak: 'break-word',
-                                textAlign: 'center',
-                                verticalAlign: 'middle',
-                                wordWrap: 'break-word',
-                                whiteSpace: 'normal',
-                                width: '200px',
-                                minWidth: '200px'
-                              }}>{l.company}</td>
-                              
-                              <td style={{ 
-                                ...style, 
-                                padding: '12px 8px', 
-                                border: 'none',
-                                textAlign: 'center',
-                                verticalAlign: 'middle',
-                                width: '150px',
-                                minWidth: '150px'
-                              }}>
-                                {l.socialType && l.socialLink ? (
-                                  <div style={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    width: '100%'
-                                  }}>
-                                    <a href={l.socialLink} target="_blank" rel="noopener noreferrer" style={{
-                                      textDecoration: 'none'
-                                    }}>
-                                      <button id="tb" style={{ 
-                                        padding: '4px 6px', 
-                                        borderRadius: '4px', 
-                                        background: 'transparent', 
-                                        color: style.color, 
-                                        border: `1px solid ${style.color}`, 
-                                        fontWeight: (l.package === 'pro' || l.package === 'premium') ? 'bold' : '500', 
-                                        fontSize: 'clamp(8px, 2vw, 10px)', 
-                                        cursor: 'pointer', 
-                                        textTransform: 'capitalize',
-                                        opacity: 1,
-                                        height: '26px',
-                                        minWidth: '50px',
-                                        width: 'auto',
-                                        maxWidth: '80px',
-                                        display: 'block',
-                                        lineHeight: '1.2',
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        marginRight: '8px',
-                                        boxSizing: 'border-box'
-                                      }}>{l.socialType}</button>
-                                    </a>
-                                  </div>
-                                ) : ''}
-                              </td>
-                              <td style={{ 
-                                ...style, 
-                                padding: '12px 8px', 
-                                border: 'none', 
-                                wordBreak: 'break-all',
-                                textAlign: 'center',
-                                verticalAlign: 'middle',
-                                wordWrap: 'break-word',
-                                whiteSpace: 'normal',
-                                width: '180px',
-                                minWidth: '180px'
-                              }}>{l.email}</td>
-                              <td style={{ 
-                                ...style, 
-                                padding: '12px 8px', 
-                                border: 'none', 
-                                wordBreak: 'break-word',
-                                textAlign: 'center',
-                                verticalAlign: 'middle',
-                                wordWrap: 'break-word',
-                                whiteSpace: 'normal',
-                                width: '140px',
-                                minWidth: '140px'
-                              }}>{l.phone}</td>
-                              <td style={{ 
-                                ...style, 
-                                padding: '12px 8px', 
-                                border: 'none', 
-                                wordBreak: 'break-word',
-                                textAlign: 'center',
-                                verticalAlign: 'middle',
-                                wordWrap: 'break-word',
-                                whiteSpace: 'normal',
-                                width: '130px',
-                                minWidth: '130px'
-                              }}>{l.contractorType || l.industry}</td>
+                        </thead>
+                        <tbody>
 
+                          {filteredListings.length === 0 && (
+                            <tr>
+                              <td colSpan={6} style={{ textAlign: 'center', color: '#888', padding: 24 }}>
+                                {viewMode === 'category'
+                                  ? (selectedCategory ? `No listings for category "${selectedCategory}".` : 'No listings in the directory yet.')
+                                  : `No listings for letter "${selectedLetter}".`
+                                }
+                              </td>
                             </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                          )}
+                          {filteredListings.map((l, i) => {
+                            // Determine package: use listing.package, but if current user matches and has upgraded, use user.package
+                            let effectivePackage = l.package;
+                            if (user && user.email === l.email && user.package && user.package !== l.package) {
+                              effectivePackage = user.package;
+                            }
+
+                            // Base style for all entries
+                            let style = {
+                              textAlign: 'center',
+                              background: i % 2 === 0 ? '#fff' : '#fafbfc',
+                              color: '#000000' // All text is black
+                            };
+
+                            // Free members: Normal text
+                            if (!effectivePackage || effectivePackage === 'free') {
+                              style = {
+                                ...style,
+                                fontWeight: 400,
+                                fontSize: '14px'
+                              };
+                            }
+
+                            // Pro members: Bold text, slightly bigger font
+                            if (effectivePackage === 'pro') {
+                              style = {
+                                ...style,
+                                fontWeight: 700,
+                                fontSize: '14px'
+                              };
+                            }
+
+                            // Premium members: Same as Pro + images (handled separately)
+                            if (effectivePackage === 'premium') {
+                              style = {
+                                ...style,
+                                fontWeight: 700,
+                                fontSize: '14px'
+                              };
+                            }
+                            return (
+                              <tr key={i}>
+                                {/* Image column - shows image only for premium users based on USER column data */}
+                                <td style={{
+                                  ...style,
+                                  padding: '12px 8px',
+                                  border: 'none',
+                                  textAlign: 'center',
+                                  verticalAlign: 'middle',
+                                  width: '120px',
+                                  minWidth: '120px'
+                                }}>
+                                  {l.package === 'premium' && l.imageUrl ? (
+                                    <img
+                                      src={l.imageUrl}
+                                      alt={l.company}
+                                      style={{
+                                        width: '60px',
+                                        height: '60px',
+                                        objectFit: 'cover',
+                                        borderRadius: '8px',
+                                        border: '2px solid #000000',
+                                        display: 'block',
+                                        margin: '0 auto'
+                                      }}
+                                      onError={(e) => {
+                                        console.error('Image failed to load:', l.imageUrl, e);
+                                      }}
+                                      onLoad={() => {
+                                        console.log('Image loaded successfully:', l.imageUrl);
+                                      }}
+                                    />
+                                  ) : (
+                                    <span style={{ fontSize: '12px', color: '#888' }}>
+                                      {l.package === 'premium' ? 'Premium' : (l.package === 'pro' ? 'Pro' : 'Free')}
+                                    </span>
+                                  )}
+                                </td>
+
+                                <td style={{
+                                  ...style,
+                                  padding: '12px 8px',
+                                  border: 'none',
+                                  wordBreak: 'break-word',
+                                  textAlign: 'center',
+                                  verticalAlign: 'middle',
+                                  wordWrap: 'break-word',
+                                  whiteSpace: 'normal',
+                                  width: '200px',
+                                  minWidth: '200px'
+                                }}>{l.company}</td>
+
+                                <td style={{
+                                  ...style,
+                                  padding: '12px 8px',
+                                  border: 'none',
+                                  textAlign: 'center',
+                                  verticalAlign: 'middle',
+                                  width: '150px',
+                                  minWidth: '150px'
+                                }}>
+                                  {l.socialType && l.socialLink ? (
+                                    <div style={{
+                                      display: 'flex',
+                                      justifyContent: 'center',
+                                      alignItems: 'center',
+                                      width: '100%'
+                                    }}>
+                                      <a href={l.socialLink} target="_blank" rel="noopener noreferrer" style={{
+                                        textDecoration: 'none'
+                                      }}>
+                                        <button id="" style={{
+                                          padding: '4px 6px',
+                                          borderRadius: '4px',
+                                          background: 'transparent',
+                                          color: style.color,
+                                          border: `1px solid ${style.color}`,
+                                          fontWeight: (l.package === 'pro' || l.package === 'premium') ? 'bold' : '500',
+                                          fontSize: 'clamp(8px, 2vw, 10px)',
+                                          cursor: 'pointer',
+                                          textTransform: 'capitalize',
+                                          opacity: 1,
+                                          height: '26px',
+                                          minWidth: '50px',
+                                          width: 'auto',
+                                          maxWidth: '80px',
+                                          display: 'block',
+                                          lineHeight: '1.2',
+                                          whiteSpace: 'nowrap',
+                                          overflow: 'hidden',
+                                          textOverflow: 'ellipsis',
+                                          marginRight: '8px',
+                                          boxSizing: 'border-box'
+                                        }}>{l.socialType}</button>
+                                      </a>
+                                    </div>
+                                  ) : ''}
+                                </td>
+                                <td style={{
+                                  ...style,
+                                  padding: '12px 8px',
+                                  border: 'none',
+                                  wordBreak: 'break-word',
+                                  textAlign: 'center',
+                                  verticalAlign: 'middle',
+                                  wordWrap: 'break-word',
+                                  whiteSpace: 'normal',
+                                  width: '200px',
+                                  minWidth: '200px'
+                                }}>{l.address}</td>
+                                <td style={{
+                                  ...style,
+                                  padding: '12px 8px',
+                                  border: 'none',
+                                  wordBreak: 'break-all',
+                                  textAlign: 'center',
+                                  verticalAlign: 'middle',
+                                  wordWrap: 'break-word',
+                                  whiteSpace: 'normal',
+                                  width: '180px',
+                                  minWidth: '180px'
+                                }}>{l.email}</td>
+                                <td style={{
+                                  ...style,
+                                  padding: '12px 8px',
+                                  border: 'none',
+                                  wordBreak: 'break-word',
+                                  textAlign: 'center',
+                                  verticalAlign: 'middle',
+                                  wordWrap: 'break-word',
+                                  whiteSpace: 'normal',
+                                  width: '140px',
+                                  minWidth: '140px'
+                                }}>{l.phone}</td>
+                                <td style={{
+                                  ...style,
+                                  padding: '12px 8px',
+                                  border: 'none',
+                                  wordBreak: 'break-word',
+                                  textAlign: 'center',
+                                  verticalAlign: 'middle',
+                                  wordWrap: 'break-word',
+                                  whiteSpace: 'normal',
+                                  width: '130px',
+                                  minWidth: '130px'
+                                }}>{l.contractorType || l.industry}</td>
+
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
-              ) : directoryListings.length === 0 ? (
-                <div style={{ textAlign: 'center', color: '#aaa', fontSize: 18, marginTop: 40 }}>No companies in the directory yet.</div>
-              ) : null}
-            </div>
+                ) : directoryListings.length === 0 ? (
+                  <div style={{ textAlign: 'center', color: '#aaa', fontSize: 18, marginTop: 40 }}>No companies in the directory yet.</div>
+                ) : null}
+              </div>
             </div>
           </div>
 
@@ -1001,7 +1023,7 @@ const Services = () => {
                 }}>
                   Service <span style={{ color: '#90be55' }}>Gallery</span>
                 </h2>
-                
+
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
@@ -1074,12 +1096,12 @@ const Services = () => {
                   letterSpacing: '1px'
                 }}>
                   {t("services.featuredListings").split(' ').map((word, index, array) => (
-                    index === array.length - 1 ? 
-                      <span key={index} style={{ color: '#90be55' }}>{word}</span> : 
+                    index === array.length - 1 ?
+                      <span key={index} style={{ color: '#90be55' }}>{word}</span> :
                       <span key={index}>{word} </span>
                   ))}
                 </h2>
-                
+
                 <div style={{
                   display: 'flex',
                   gap: '20px',
@@ -1185,7 +1207,7 @@ const Services = () => {
             <div id="totalscard">
               {[1, 2, 3, 4].map((_, i) => (
                 <div id="scard" key={i}>
-                  <img src={`./s${i+1}.png`} />
+                  <img src={`./s${i + 1}.png`} />
                   <h1>{t(`services.cards.${i}.title`)}</h1>
                   <p>{t(`services.cards.${i}.desc`)}</p>
                   <div id="innerh1s">
