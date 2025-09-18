@@ -17,7 +17,7 @@ import PartnerSection from "./PartnerSection";
 import DonateSection from "./Donate";
 import TestimonialsPartnerEventInsta from "./TestimonialsPartnerEventInsta";
 
-const Header2= () => {
+const Header2 = () => {
   const [navOpen, setNavOpen] = useState(false);
   const location = useLocation();
 
@@ -57,6 +57,7 @@ const Header2= () => {
                 "AddNews",
                 "AddBlog",
                 "Add Instructor",
+                "Manage User",
                 "Upload Courses",
                 "Featured Listing",
                 "Directory Upload"
@@ -65,10 +66,12 @@ const Header2= () => {
                   item === "Featured Listing"
                     ? "/admin/featured-listing"
                     : item === "Add Instructor"
-                    ? "/admin/add-instructor"
-                    : item === "Directory Upload"
-                    ? "/admin/directory-upload"
-                    : `/${item.toLowerCase().replace(/ /g, '-')}`;
+                      ? "/admin/add-instructor"
+                      : item === "Manage User"
+                        ? "/admin/manage-user"
+                        : item === "Directory Upload"
+                          ? "/admin/directory-upload"
+                          : `/${item.toLowerCase().replace(/ /g, '-')}`;
                 const isActive = location.pathname === to;
                 return (
                   <li key={idx}>
@@ -88,7 +91,7 @@ const Header2= () => {
           </nav>
 
           <div className="header-action">
-         
+
 
           </div>
         </div>
