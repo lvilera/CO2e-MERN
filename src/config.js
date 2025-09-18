@@ -1,7 +1,7 @@
 // API Configuration
-// export const API_BASE_URL = 'https://e-back-bice.vercel.app';
+export const API_BASE_URL = 'https://e-back-bice.vercel.app';
 
-export const API_BASE_URL = "http://localhost:5001";
+// export const API_BASE_URL = "http://localhost:5001";
 
 // For production, use: https://e-back-bice.vercel.app
 // For local development, use: http://localhost:5001
