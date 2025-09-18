@@ -32,6 +32,7 @@ import BuyCourses from './BuyCourses';
 import DirectoryListing from './DirectoryListing';
 import Contact from './Contact';
 import AdminAddInstructor from './AdminAddInstructor';
+import AdminManageUser from "./AdminManageUser";
 import AdminDirectoryUpload from './AdminDirectoryUpload';
 import Slots from './Slots';
 import GSAPProvider from './components/GSAPProvider';
@@ -49,25 +50,25 @@ function SuccessRedirect() {
         credentials: 'include',
         body: JSON.stringify({ packageName, bookingId })
       })
-      .then(res => res.json())
-      .then(data => {
-        setTimeout(() => {
-          if (packageName.startsWith('course:')) {
-            window.location.href = '/buy-courses';
-          } else {
-            window.location.href = '/login';
-          }
-        }, 2000);
-      })
-      .catch((err) => {
-        setTimeout(() => {
-          if (packageName.startsWith('course:')) {
-            window.location.href = '/buy-courses';
-          } else {
-            window.location.href = '/login';
-          }
-        }, 2000);
-      });
+        .then(res => res.json())
+        .then(data => {
+          setTimeout(() => {
+            if (packageName.startsWith('course:')) {
+              window.location.href = '/buy-courses';
+            } else {
+              window.location.href = '/login';
+            }
+          }, 2000);
+        })
+        .catch((err) => {
+          setTimeout(() => {
+            if (packageName.startsWith('course:')) {
+              window.location.href = '/buy-courses';
+            } else {
+              window.location.href = '/login';
+            }
+          }, 2000);
+        });
     } else {
       setTimeout(() => {
         window.location.href = '/login';
@@ -86,7 +87,7 @@ function SuccessRedirect() {
       });
     }
   }, []);
-  return <div style={{textAlign:'center',marginTop:100}}><h1>Payment Successful!</h1><p>Redirecting...</p></div>;
+  return <div style={{ textAlign: 'center', marginTop: 100 }}><h1>Payment Successful!</h1><p>Redirecting...</p></div>;
 }
 
 function CancelRedirect() {
@@ -96,7 +97,7 @@ function CancelRedirect() {
     }, 3000);
   }, []);
   return (
-    <div style={{textAlign:'center',marginTop:100}}>
+    <div style={{ textAlign: 'center', marginTop: 100 }}>
       <h1>Payment Cancelled</h1>
       <p>Your payment was cancelled. Redirecting back to pricing...</p>
     </div>
@@ -123,18 +124,18 @@ function AppContent() {
   return (
     <Router>
       {/* 🌍 Language Switcher UI */}
-     
+
       <CartProvider>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/trade" element={<Trading />} />
-        <Route path="/service" element={<Services />} />
-        <Route path="/news" element={<Blog2 />} />
-        <Route path="/pricing" element={<Plan />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/news/:id" element={<NewsDetails />} />
-        <Route path="/blogs/:id" element={<BlogDetails />} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/trade" element={<Trading />} />
+          <Route path="/service" element={<Services />} />
+          <Route path="/news" element={<Blog2 />} />
+          <Route path="/pricing" element={<Plan />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/news/:id" element={<NewsDetails />} />
+          <Route path="/blogs/:id" element={<BlogDetails />} />
           <Route path="/upload-courses" element={<AdminCourseUpload />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/admin/featured-listing" element={<AdminFeaturedListing />} />
@@ -146,27 +147,28 @@ function AppContent() {
           <Route path="/iphone-test" element={<IPhoneTest />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin/add-instructor" element={<AdminRoute><AdminAddInstructor /></AdminRoute>} />
+          <Route path="/admin/manage-user" element={<AdminRoute><AdminManageUser /></AdminRoute>} />
           <Route path="/admin/directory-upload" element={<AdminRoute><AdminDirectoryUpload /></AdminRoute>} />
           <Route path="/admin/featured-listing" element={<AdminRoute><AdminFeaturedListing /></AdminRoute>} />
           <Route path="/admin/service-images" element={<AdminRoute><AdminServiceImages /></AdminRoute>} />
           <Route path="/slots" element={<Slots />} />
 
-        {/* Admin Routes */}
-        <Route
-          path="/Articles"
-          element={<AdminRoute><Dashboard /></AdminRoute>}
-        />
-        <Route
-          path="/AddNews"
-          element={<AdminRoute><NewsDashboard /></AdminRoute>}
-        />
-        <Route
-          path="/AddBlog"
-          element={<AdminRoute><BlogDashboard /></AdminRoute>}
-        />
-      </Routes>
+          {/* Admin Routes */}
+          <Route
+            path="/Articles"
+            element={<AdminRoute><Dashboard /></AdminRoute>}
+          />
+          <Route
+            path="/AddNews"
+            element={<AdminRoute><NewsDashboard /></AdminRoute>}
+          />
+          <Route
+            path="/AddBlog"
+            element={<AdminRoute><BlogDashboard /></AdminRoute>}
+          />
+        </Routes>
       </CartProvider>
-      
+
       {/* Global Loading Spinner */}
       {isLoading && <LoadingSpinner message={loadingMessage} />}
     </Router>

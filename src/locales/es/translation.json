@@ -100,7 +100,6 @@
     "sortByAlphabet": "Ordenar por Alfabeto",
     "sortByCategory": "Ordenar por Categoría",
     "featuredListings": "Listados Destacados",
-
     "selectServiceType": "Selecciona un tipo de servicio específico:",
     "categories": {
       "broker": "CORREDOR",
@@ -117,7 +116,6 @@
       "plumber": "Fontanero",
       "aryan": "Aryan"
     },
-
     "description": "Éxito sostenible a través de la conciencia de emisiones de carbono y el impacto climático en su organización...",
     "courseButton": "Curso Corporativo de Capacitación para Empleados",
     "professor": "Profesor",
@@ -202,150 +200,150 @@
     "button": "Únete ahora"
   },
   "testimonials": {
-      "subtitle": "Nuestro Compromiso",
-      "title": "Con un",
-      "strong": "Mundo Sostenible",
-      "paragraph": "Creemos en un futuro donde las prácticas sostenibles estén en el centro de cada acción empresarial e individual. Somos una plataforma integral dedicada a acelerar la transición global hacia una economía baja en carbono. Ofrecemos capacitación experta en gestión del carbono, un mercado transparente de créditos de carbono basado en blockchain y oportunidades de inversión fraccionada de alto impacto para ayudar a nuestros clientes a reducir y compensar su huella ambiental.",
-      "services": "Servicios",
-      "our": "Nuestros",
-      "servicesStrong": "Servicios",
-      "join": "Unirse",
-      "learnMore": "Saber más",
-      "events": [
-        {
-          "day": "01",
-          "title": "Capacitación",
-          "heading": "Capacitación y Educación en Gestión del Carbono:",
-          "paragraph": "Brindamos capacitación corporativa para mejorar la comprensión de los mercados de carbono, la reducción de emisiones y las mejores prácticas."
-        },
-        {
-          "day": "02",
-          "title": "Mercado",
-          "heading": "Mercado P2P DecarbXchange:",
-          "paragraph": "Nuestro mercado entre pares basado en blockchain permite el intercambio seguro y transparente de créditos de carbono verificados."
-        },
-        {
-          "day": "03",
-          "title": "Inversión",
-          "heading": "Centro de Inversión Fraccionada:",
-          "paragraph": "Facilitamos la participación en proyectos sostenibles de alto impacto mediante inversiones accesibles."
-        }
-      ]
-    },
-    "footer": {
-  "subscribe_heading": "Suscríbete a nuestro boletín",
-  "subscribe_placeholder": "Suscríbete a nuestro boletín",
-  "subscribe_button": "Suscribirse",
-  "portal_name": "Portal CO2e",
-  "copyright": "Derechos de autor@2025 | Portal CO2e",
-  "nav_links": "INICIO | SERVICIO | COMERCIO | PRECIOS | NOTICIAS"
-},
-"trading": {
-  "coming_soon": "Próximamente",
-  "carbon_guides_title": "Guías de compensación de carbono",
-  "untitled": "Sin título",
-  "no_description": "Sin descripción disponible",
-  "learn_more": "Aprende más",
-  "calculator_title": "Calcula tus emisiones de CO2",
-  "democratizing_title": "Democratizando la inversión verde: un nuevo paradigma",
-  "democratizing_text": "La urgencia de la acción climática ha impulsado una revolución global en las estrategias de inversión, llevando las finanzas sostenibles de un nicho a una prioridad central. En esta transformación, la propiedad fraccionada surge como una innovación que permite una participación más amplia más allá de los grandes institucionales y los ricos.",
-  "partners_title": "Socios"
-},
-"plan": {
-  "choose_membership_title": "💼 Elige tu paquete de membresía",
-  "current": "ACTUAL",
-  "free_plan": "Plan Gratis",
-  "free": "Gratis",
-  "free_desc": "Perfecto para individuos o startups que quieren comenzar",
-  "free_listed_directory": "Listado en el directorio (como texto plano)",
-  "free_no_courses": "Sin acceso a cursos",
-  "free_no_discounts": "Sin descuentos",
-  "free_no_featured": "Sin listado destacado (sin imagen ni resaltado)",
-  "activating": "Activando...",
-  "start_free": "Comenzar gratis",
-  "pro_plan": "Plan Pro",
-  "pro_desc": "Ideal para empresas en crecimiento que buscan más exposición y oportunidades de aprendizaje",
-  "pro_listed_directory": "Listado en el directorio con:",
-  "pro_bold_text": "Texto en negrita",
-  "pro_color": "Color",
-  "pro_larger_font": "Fuente más grande",
-  "pro_access_courses": "Acceso a todos los cursos dirigidos por instructores",
-  "pro_no_discounts": "Sin descuentos en cursos",
-  "pro_no_featured": "Sin listado destacado en la página principal",
-  "redirecting": "Redirigiendo...",
-  "upgrade_now": "Mejorar ahora",
-  "premium_plan": "Plan Premium",
-  "premium_desc": "Obtén máxima visibilidad, descuentos exclusivos y acceso completo a cursos",
-  "premium_all_pro_features": "Todas las características del Plan Pro más:",
-  "premium_featured_homepage": "Listado destacado en la página principal (imagen de la empresa mostrada)",
-  "premium_discounts_courses": "Descuentos en todos los cursos",
-  "premium_access_courses": "Acceso a todos los cursos dirigidos por instructores",
-  "premium_listed_directory": "Listado en el directorio con:",
-  "go_premium": "Hazte Premium",
-  "blockchain_title": "Descubre nuestro mercado P2P seguro basado en blockchain",
-  "blockchain_text": "Compra y vende créditos de carbono verificados con total transparencia. Toma el control de tu impacto climático, seas empresa o particular.",
-  "investment_hub_title": "Centro de Inversión Fraccionada: Invierte en Sostenibilidad",
-  "investment_hub_text": "Comienza a invertir en proyectos sostenibles reales con tan solo $X. Obtén rendimientos y genera un impacto positivo en el planeta.",
-  "commitment_title": "Nuestro compromiso: Apoyando proyectos sostenibles verificables",
-  "commitment_text": "Solo colaboramos con iniciativas sostenibles certificadas y medibles alineadas con los objetivos climáticos globales. Cada proyecto es rigurosamente evaluado por su impacto y transparencia.",
-  "membership_perks": "¿Por qué unirse al Portal CO2e? Beneficios de la membresía:",
-  "perk1": "Mercado P2P DecarbXchange y Centro de Inversión Fraccionada con precio de prelanzamiento.",
-  "perk2": "Listados verificados de créditos de carbono.",
-  "month": "Mes",
-  "courses_description": "Accede a nuestra biblioteca completa de cursos de capacitación corporativa diseñados para mejorar el conocimiento y las habilidades de tu equipo en sostenibilidad y gestión del carbono.",
-  "note": "Nota",
-  "courses_access_note": "Necesitas comprar un plan Pro o Premium para acceder a nuestros cursos."
-},
-"signup": {
-  "title": "Registrarse",
-  "first_name": "Nombre",
-  "last_name": "Apellido",
-  "email": "Correo electrónico",
-  "password": "Contraseña",
-  "submit": "Registrarse",
-  "already_have_account": "¿Ya tienes una cuenta?",
-  "log_in_now": "Inicia sesión ahora"
-},
-    "login": {
-      "title": "Iniciar sesión",
-      "email": "Correo electrónico",
-      "password": "Contraseña",
-      "submit": "Iniciar sesión",
-      "not_member": "¿No eres miembro?",
-      "sign_up_now": "Regístrate ahora",
-      "forgot_password": "¿Olvidaste tu contraseña?",
-      "already_have_account": "¿Ya tienes una cuenta?",
-      "log_in_now": "Inicia sesión ahora",
-      "forgot_password_title": "Olvidaste tu contraseña",
-      "forgot_password_message": "Ingresa tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
-      "reset_password_title": "Restablece tu contraseña",
-      "reset_password_message": "Ingresa tu nueva contraseña a continuación",
-      "new_password": "Nueva contraseña",
-      "confirm_password": "Confirmar contraseña",
-      "reset_password": "Restablecer contraseña",
-      "resetting_password": "Restableciendo contraseña...",
-      "password_reset_success": "¡Contraseña restablecida exitosamente! Redirigiendo al inicio de sesión...",
-      "password_reset_error": "Error al restablecer la contraseña. Por favor, inténtalo de nuevo.",
-      "invalid_reset_link": "Enlace de restablecimiento inválido. Por favor, solicita un nuevo restablecimiento de contraseña.",
-      "back_to_login": "Volver al inicio de sesión",
-      "reset_email_sent": "Si ese correo electrónico existe, se ha enviado un enlace de restablecimiento.",
-      "reset_email_error": "Error al enviar el correo de restablecimiento."
-    },
-"counter": {
-  "heading": "Impacto global de carbono en tiempo real",
-  "since": "Desde",
-  "emissions_label": "Emisiones de CO₂",
-  "emissions_unit": "Toneladas métricas emitidas",
-  "credits_label": "Créditos de carbono emitidos",
-  "credits_unit": "Toneladas métricas compensadas"
-},
-"blog": {
-  "subscribePlaceholder": "Ingresa tu correo para suscribirte a nuestro boletín",
-  "subscribe": "Suscribirse",
-  "start": "Comienza con nuestras",
-  "news": "Noticias",
-  "readMore": "Leer más"
-},
+    "subtitle": "Nuestro Compromiso",
+    "title": "Con un",
+    "strong": "Mundo Sostenible",
+    "paragraph": "Creemos en un futuro donde las prácticas sostenibles estén en el centro de cada acción empresarial e individual. Somos una plataforma integral dedicada a acelerar la transición global hacia una economía baja en carbono. Ofrecemos capacitación experta en gestión del carbono, un mercado transparente de créditos de carbono basado en blockchain y oportunidades de inversión fraccionada de alto impacto para ayudar a nuestros clientes a reducir y compensar su huella ambiental.",
+    "services": "Servicios",
+    "our": "Nuestros",
+    "servicesStrong": "Servicios",
+    "join": "Unirse",
+    "learnMore": "Saber más",
+    "events": [
+      {
+        "day": "01",
+        "title": "Capacitación",
+        "heading": "Capacitación y Educación en Gestión del Carbono:",
+        "paragraph": "Brindamos capacitación corporativa para mejorar la comprensión de los mercados de carbono, la reducción de emisiones y las mejores prácticas."
+      },
+      {
+        "day": "02",
+        "title": "Mercado",
+        "heading": "Mercado P2P DecarbXchange:",
+        "paragraph": "Nuestro mercado entre pares basado en blockchain permite el intercambio seguro y transparente de créditos de carbono verificados."
+      },
+      {
+        "day": "03",
+        "title": "Inversión",
+        "heading": "Centro de Inversión Fraccionada:",
+        "paragraph": "Facilitamos la participación en proyectos sostenibles de alto impacto mediante inversiones accesibles."
+      }
+    ]
+  },
+  "footer": {
+    "subscribe_heading": "Suscríbete a nuestro boletín",
+    "subscribe_placeholder": "Suscríbete a nuestro boletín",
+    "subscribe_button": "Suscribirse",
+    "portal_name": "Portal CO2e",
+    "copyright": "Derechos de autor@2025 | Portal CO2e",
+    "nav_links": "INICIO | SERVICIO | COMERCIO | PRECIOS | NOTICIAS"
+  },
+  "trading": {
+    "coming_soon": "Próximamente",
+    "carbon_guides_title": "Guías de compensación de carbono",
+    "untitled": "Sin título",
+    "no_description": "Sin descripción disponible",
+    "learn_more": "Aprende más",
+    "calculator_title": "Calcula tus emisiones de CO2",
+    "democratizing_title": "Democratizando la inversión verde: un nuevo paradigma",
+    "democratizing_text": "La urgencia de la acción climática ha impulsado una revolución global en las estrategias de inversión, llevando las finanzas sostenibles de un nicho a una prioridad central. En esta transformación, la propiedad fraccionada surge como una innovación que permite una participación más amplia más allá de los grandes institucionales y los ricos.",
+    "partners_title": "Socios"
+  },
+  "plan": {
+    "choose_membership_title": "💼 Elige tu paquete de membresía",
+    "current": "ACTUAL",
+    "free_plan": "Plan Gratis",
+    "free": "Gratis",
+    "free_desc": "Perfecto para individuos o startups que quieren comenzar",
+    "free_listed_directory": "Listado en el directorio (como texto plano)",
+    "free_no_courses": "Sin acceso a cursos",
+    "free_no_discounts": "Sin descuentos",
+    "free_no_featured": "Sin listado destacado (sin imagen ni resaltado)",
+    "activating": "Activando...",
+    "start_free": "Comenzar gratis",
+    "pro_plan": "Plan Pro",
+    "pro_desc": "Ideal para empresas en crecimiento que buscan más exposición y oportunidades de aprendizaje",
+    "pro_listed_directory": "Listado en el directorio con:",
+    "pro_bold_text": "Texto en negrita",
+    "pro_color": "Color",
+    "pro_larger_font": "Fuente más grande",
+    "pro_access_courses": "Acceso a todos los cursos dirigidos por instructores",
+    "pro_no_discounts": "Sin descuentos en cursos",
+    "pro_no_featured": "Sin listado destacado en la página principal",
+    "redirecting": "Redirigiendo...",
+    "upgrade_now": "Mejorar ahora",
+    "premium_plan": "Plan Premium",
+    "premium_desc": "Obtén máxima visibilidad, descuentos exclusivos y acceso completo a cursos",
+    "premium_all_pro_features": "Todas las características del Plan Pro más:",
+    "premium_featured_homepage": "Listado destacado en la página principal (imagen de la empresa mostrada)",
+    "premium_discounts_courses": "Descuentos en todos los cursos",
+    "premium_access_courses": "Acceso a todos los cursos dirigidos por instructores",
+    "premium_listed_directory": "Listado en el directorio con:",
+    "go_premium": "Hazte Premium",
+    "blockchain_title": "Descubre nuestro mercado P2P seguro basado en blockchain",
+    "blockchain_text": "Compra y vende créditos de carbono verificados con total transparencia. Toma el control de tu impacto climático, seas empresa o particular.",
+    "investment_hub_title": "Centro de Inversión Fraccionada: Invierte en Sostenibilidad",
+    "investment_hub_text": "Comienza a invertir en proyectos sostenibles reales con tan solo $X. Obtén rendimientos y genera un impacto positivo en el planeta.",
+    "commitment_title": "Nuestro compromiso: Apoyando proyectos sostenibles verificables",
+    "commitment_text": "Solo colaboramos con iniciativas sostenibles certificadas y medibles alineadas con los objetivos climáticos globales. Cada proyecto es rigurosamente evaluado por su impacto y transparencia.",
+    "membership_perks": "¿Por qué unirse al Portal CO2e? Beneficios de la membresía:",
+    "perk1": "Mercado P2P DecarbXchange y Centro de Inversión Fraccionada con precio de prelanzamiento.",
+    "perk2": "Listados verificados de créditos de carbono.",
+    "month": "Mes",
+    "courses_description": "Accede a nuestra biblioteca completa de cursos de capacitación corporativa diseñados para mejorar el conocimiento y las habilidades de tu equipo en sostenibilidad y gestión del carbono.",
+    "note": "Nota",
+    "courses_access_note": "Necesitas comprar un plan Pro o Premium para acceder a nuestros cursos."
+  },
+  "signup": {
+    "title": "Registrarse",
+    "first_name": "Nombre",
+    "last_name": "Apellido",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "submit": "Registrarse",
+    "already_have_account": "¿Ya tienes una cuenta?",
+    "log_in_now": "Inicia sesión ahora"
+  },
+  "login": {
+    "title": "Iniciar sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "submit": "Iniciar sesión",
+    "not_member": "¿No eres miembro?",
+    "sign_up_now": "Regístrate ahora",
+    "forgot_password": "¿Olvidaste tu contraseña?",
+    "already_have_account": "¿Ya tienes una cuenta?",
+    "log_in_now": "Inicia sesión ahora",
+    "forgot_password_title": "Olvidaste tu contraseña",
+    "forgot_password_message": "Ingresa tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
+    "reset_password_title": "Restablece tu contraseña",
+    "reset_password_message": "Ingresa tu nueva contraseña a continuación",
+    "new_password": "Nueva contraseña",
+    "confirm_password": "Confirmar contraseña",
+    "reset_password": "Restablecer contraseña",
+    "resetting_password": "Restableciendo contraseña...",
+    "password_reset_success": "¡Contraseña restablecida exitosamente! Redirigiendo al inicio de sesión...",
+    "password_reset_error": "Error al restablecer la contraseña. Por favor, inténtalo de nuevo.",
+    "invalid_reset_link": "Enlace de restablecimiento inválido. Por favor, solicita un nuevo restablecimiento de contraseña.",
+    "back_to_login": "Volver al inicio de sesión",
+    "reset_email_sent": "Si ese correo electrónico existe, se ha enviado un enlace de restablecimiento.",
+    "reset_email_error": "Error al enviar el correo de restablecimiento."
+  },
+  "counter": {
+    "heading": "Impacto global de carbono en tiempo real",
+    "since": "Desde",
+    "emissions_label": "Emisiones de CO₂",
+    "emissions_unit": "Toneladas métricas emitidas",
+    "credits_label": "Créditos de carbono emitidos",
+    "credits_unit": "Toneladas métricas compensadas"
+  },
+  "blog": {
+    "subscribePlaceholder": "Ingresa tu correo para suscribirte a nuestro boletín",
+    "subscribe": "Suscribirse",
+    "start": "Comienza con nuestras",
+    "news": "Noticias",
+    "readMore": "Leer más"
+  },
   "recent": {
     "seeWhat": "Mira lo que hemos",
     "blogs": "Blogs",
@@ -457,8 +455,8 @@
     "form": {
       "company_name": "Nombre de la Empresa",
       "email": "Correo Electrónico",
-      "phone": "Teléfono",
-      "address": "Dirección",
+      "phone": "Número de teléfono",
+      "address": "Contacto",
       "city": "Ciudad",
       "state": "Estado/Provincia",
       "country": "País",
@@ -516,6 +514,4 @@
       "login_required_message": "Por favor inicia sesión para enviar un listado."
     }
   }
-
-
 }

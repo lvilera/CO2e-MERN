@@ -15,7 +15,7 @@ gsap.registerPlugin(ScrollTrigger);
 const DirectoryListing = () => {
   const { t } = useTranslation();
   const [user, setUser] = useState(null); // { package: 'free'|'pro'|'premium', ... }
-  
+
   // Refs for animations
   const titleRef = useRef(null);
   const formRef = useRef(null);
@@ -23,7 +23,7 @@ const DirectoryListing = () => {
   const errorRef = useRef(null);
   const successRef = useRef(null);
   const iphoneMsgRef = useRef(null);
-  
+
   const [form, setForm] = useState({
     company: '',
     email: '',
@@ -64,16 +64,16 @@ const DirectoryListing = () => {
       });
       setIsLoggedIn(loginStatus);
     };
-    
+
     // Initial check
     checkLogin();
-    
+
     // Listen for storage changes from other tabs
     window.addEventListener('storage', checkLogin);
-    
+
     // Check for login changes in the same tab every 500ms
     const interval = setInterval(checkLogin, 500);
-    
+
     return () => {
       window.removeEventListener('storage', checkLogin);
       clearInterval(interval);
@@ -110,9 +110,9 @@ const DirectoryListing = () => {
     if (titleRef.current) {
       gsap.fromTo(titleRef.current,
         { opacity: 0, y: 50 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
@@ -128,9 +128,9 @@ const DirectoryListing = () => {
     if (formRef.current) {
       gsap.fromTo(formRef.current,
         { opacity: 0, x: -50 },
-        { 
-          opacity: 1, 
-          x: 0, 
+        {
+          opacity: 1,
+          x: 0,
           duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
@@ -146,9 +146,9 @@ const DirectoryListing = () => {
     if (submitButtonRef.current) {
       gsap.fromTo(submitButtonRef.current,
         { opacity: 0, scale: 0.8 },
-        { 
-          opacity: 1, 
-          scale: 1, 
+        {
+          opacity: 1,
+          scale: 1,
           duration: 0.6,
           ease: "back.out(1.7)",
           scrollTrigger: {
@@ -164,12 +164,12 @@ const DirectoryListing = () => {
     if (errorRef.current) {
       gsap.fromTo(errorRef.current,
         { opacity: 0, scale: 0.8, y: -20 },
-        { 
-          opacity: 1, 
-          scale: 1, 
-          y: 0, 
-          duration: 0.5, 
-          ease: "back.out(1.7)" 
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.5,
+          ease: "back.out(1.7)"
         }
       );
     }
@@ -178,12 +178,12 @@ const DirectoryListing = () => {
     if (successRef.current) {
       gsap.fromTo(successRef.current,
         { opacity: 0, scale: 0.8, y: -20 },
-        { 
-          opacity: 1, 
-          scale: 1, 
-          y: 0, 
-          duration: 0.5, 
-          ease: "back.out(1.7)" 
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.5,
+          ease: "back.out(1.7)"
         }
       );
     }
@@ -210,7 +210,7 @@ const DirectoryListing = () => {
       { value: 'Instagram', label: t('directory.social_platforms.instagram') },
     ];
   }, [t]);
-  
+
   const industryOptions = useMemo(() => {
     return [
       { value: '', label: t('directory.select_industry') },
@@ -260,7 +260,7 @@ const DirectoryListing = () => {
     } else {
       setForm(f => ({ ...f, [name]: value }));
     }
-    
+
     setError('');
     setSuccess('');
   };
@@ -307,7 +307,7 @@ const DirectoryListing = () => {
         setError(t('directory.errors.fill_required_fields'));
         return;
       }
-      
+
       // If "Other" is selected, require custom contractor type
       if (form.contractorType === 'other' && !form.customContractorType) {
         setError(t('directory.errors.specify_contractor_type'));
@@ -323,29 +323,29 @@ const DirectoryListing = () => {
         if ((key === 'contractorType' || key === 'customContractorType') && form.industry !== 'Local Contractors') {
           return;
         }
-        
+
         // Skip image field - it's handled separately
         if (key === 'image') {
           return;
         }
-        
+
         if (key === "city" || key === "state" || key === "country") {
           formData.append(key, form[key] || "");
         } else if (form[key] !== null && form[key] !== undefined && form[key] !== '') {
           formData.append(key, form[key]);
         }
       });
-      
+
       // Handle image file separately
       if (user.package === 'premium' && form.image) {
         formData.append('image', form.image);
       }
-      
+
       // Handle contractor type - if "Other" is selected, use customContractorType
       if (form.industry === 'Local Contractors' && form.contractorType === 'other') {
         formData.set('contractorType', form.customContractorType);
       }
-      
+
       // Add userPackage to the form data
       formData.append('userPackage', user.package);
 
@@ -401,7 +401,7 @@ const DirectoryListing = () => {
         method: 'GET',
         credentials: 'include',
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         if (data.userLocation && data.userLocation.city !== 'Unknown') {
@@ -478,7 +478,7 @@ const DirectoryListing = () => {
   return (
     <>
       <Header />
-      <div style={{ margin:'120px',background: '#fff', minHeight: '100vh', padding: '180px 0 60px 0' }}>
+      <div style={{ margin: '120px', background: '#fff', minHeight: '100vh', padding: '180px 0 60px 0' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}>
           <h1 ref={titleRef} style={{ textAlign: 'center', marginBottom: 40, color: '#333' }}>{t('directory.page_title')}</h1>
           {isIPhoneSafari() ? (
@@ -489,9 +489,9 @@ const DirectoryListing = () => {
               animation: 'fadeIn 1s',
             }}>
               <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginBottom: 24 }}>
-                <circle cx="12" cy="12" r="12" fill="#2196f3" fillOpacity="0.1"/>
-                <path d="M8 17h8M8 13h8M8 9h8" stroke="#2196f3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <rect x="6" y="5" width="12" height="14" rx="2" stroke="#2196f3" strokeWidth="2"/>
+                <circle cx="12" cy="12" r="12" fill="#2196f3" fillOpacity="0.1" />
+                <path d="M8 17h8M8 13h8M8 9h8" stroke="#2196f3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <rect x="6" y="5" width="12" height="14" rx="2" stroke="#2196f3" strokeWidth="2" />
               </svg>
               <h2 style={{ color: '#1976d2', marginBottom: 16, fontWeight: 700, fontSize: 28 }}>{t('directory.desktop_only')}</h2>
               <p style={{ color: '#1976d2', fontSize: 18, textAlign: 'center', maxWidth: 400 }}>
@@ -501,10 +501,10 @@ const DirectoryListing = () => {
           ) : (
             <>
               {isIPhoneSafari() && (
-                <div style={{ 
-                  background: '#e3f2fd', 
-                  padding: '15px', 
-                  borderRadius: '8px', 
+                <div style={{
+                  background: '#e3f2fd',
+                  padding: '15px',
+                  borderRadius: '8px',
                   marginBottom: '20px',
                   border: '1px solid #2196f3',
                   textAlign: 'center'
@@ -514,7 +514,7 @@ const DirectoryListing = () => {
                   </p>
                 </div>
               )}
-              
+
               {!isLoggedIn ? (
                 <div style={{ textAlign: 'center', marginBottom: 40 }}>
                   <p style={{ color: '#666', fontSize: 18 }}>
@@ -531,45 +531,45 @@ const DirectoryListing = () => {
                     <p>localStorage.isAdmin: {localStorage.getItem('isAdmin')}</p>
                     <p>localStorage.isInstructor: {localStorage.getItem('isInstructor')}</p>
                     <p>API_BASE: {API_BASE}</p>
-                    <button 
+                    <button
                       onClick={() => {
                         localStorage.setItem('isLoggedIn', 'true');
                         setIsLoggedIn(true);
                         console.log('Manual override: Set isLoggedIn to true');
                       }}
-                      style={{ 
-                        marginTop: 10, 
-                        padding: '8px 16px', 
-                        background: '#007bff', 
-                        color: 'white', 
-                        border: 'none', 
+                      style={{
+                        marginTop: 10,
+                        padding: '8px 16px',
+                        background: '#007bff',
+                        color: 'white',
+                        border: 'none',
                         borderRadius: 4,
                         cursor: 'pointer'
                       }}
                     >
                       Force Login State (Debug)
                     </button>
-                    <button 
+                    <button
                       onClick={() => {
                         console.log('Current localStorage contents:');
                         Object.keys(localStorage).forEach(key => {
                           console.log(`${key}: ${localStorage.getItem(key)}`);
                         });
                       }}
-                      style={{ 
-                        marginTop: 10, 
+                      style={{
+                        marginTop: 10,
                         marginLeft: 10,
-                        padding: '8px 16px', 
-                        background: '#28a745', 
-                        color: 'white', 
-                        border: 'none', 
+                        padding: '8px 16px',
+                        background: '#28a745',
+                        color: 'white',
+                        border: 'none',
                         borderRadius: 4,
                         cursor: 'pointer'
                       }}
                     >
                       Log localStorage
                     </button>
-                    <button 
+                    <button
                       onClick={() => {
                         console.log('Testing login process...');
                         console.log('API_BASE:', API_BASE);
@@ -577,21 +577,21 @@ const DirectoryListing = () => {
                         fetch(`${API_BASE}/api/me`, {
                           credentials: 'include'
                         })
-                        .then(res => res.json())
-                        .then(data => {
-                          console.log('API response:', data);
-                        })
-                        .catch(err => {
-                          console.error('API error:', err);
-                        });
+                          .then(res => res.json())
+                          .then(data => {
+                            console.log('API response:', data);
+                          })
+                          .catch(err => {
+                            console.error('API error:', err);
+                          });
                       }}
-                      style={{ 
-                        marginTop: 10, 
+                      style={{
+                        marginTop: 10,
                         marginLeft: 10,
-                        padding: '8px 16px', 
-                        background: '#ffc107', 
-                        color: 'black', 
-                        border: 'none', 
+                        padding: '8px 16px',
+                        background: '#ffc107',
+                        color: 'black',
+                        border: 'none',
                         borderRadius: 4,
                         cursor: 'pointer'
                       }}
@@ -620,8 +620,18 @@ const DirectoryListing = () => {
                             style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
                           />
                         </div>
-                        
+
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
+                          <div>
+                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>{t('directory.form.address')}</label>
+                            <input
+                              type="text"
+                              name="address"
+                              value={form.address}
+                              onChange={handleChange}
+                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
+                            />
+                          </div>
                           <div>
                             <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>{t('directory.form.email')} *</label>
                             <input
@@ -633,29 +643,19 @@ const DirectoryListing = () => {
                               style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
                             />
                           </div>
-                          <div>
-                            <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>{t('directory.form.phone')}</label>
-                            <input
-                              type="tel"
-                              name="phone"
-                              value={form.phone}
-                              onChange={handleChange}
-                              style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
-                            />
-                          </div>
                         </div>
-                        
+
                         <div>
-                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>{t('directory.form.address')}</label>
+                          <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>{t('directory.form.phone')}</label>
                           <input
-                            type="text"
-                            name="address"
-                            value={form.address}
+                            type="tel"
+                            name="phone"
+                            value={form.phone}
                             onChange={handleChange}
                             style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
                           />
                         </div>
-                        
+
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
                           <div>
                             <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>{t('directory.form.city')} *</label>
@@ -680,7 +680,7 @@ const DirectoryListing = () => {
                             />
                           </div>
                         </div>
-                        
+
                         <div>
                           <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>{t('directory.form.country')} *</label>
                           <input
@@ -692,7 +692,7 @@ const DirectoryListing = () => {
                             style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5 }}
                           />
                         </div>
-                        
+
                         <div style={{ marginBottom: 20 }}>
                           <button
                             type="button"
@@ -714,7 +714,7 @@ const DirectoryListing = () => {
                             {t('directory.form.auto_detect_note')}
                           </span>
                         </div>
-                        
+
                         <div>
                           <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>{t('directory.form.website_social_links')}</label>
                           <div style={{ display: 'flex', gap: 10 }}>
@@ -741,7 +741,7 @@ const DirectoryListing = () => {
                             />
                           </div>
                         </div>
-                        
+
                         <div>
                           <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>{t('directory.form.industry_category')}</label>
                           <select
@@ -756,7 +756,7 @@ const DirectoryListing = () => {
                             ))}
                           </select>
                         </div>
-                        
+
                         {/* Conditional fields for Local Contractors */}
                         {form.industry === 'Local Contractors' && (
                           <>
@@ -777,7 +777,7 @@ const DirectoryListing = () => {
                                 {t('directory.other_option_note')}
                               </small>
                             </div>
-                            
+
                             {/* Show text input when "Other" is selected */}
                             {form.contractorType === 'other' && (
                               <div>
@@ -795,7 +795,7 @@ const DirectoryListing = () => {
                             )}
                           </>
                         )}
-                        
+
                         <div>
                           <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>{t('directory.form.short_description')}</label>
                           <textarea
@@ -806,7 +806,7 @@ const DirectoryListing = () => {
                             style={{ width: '100%', padding: 10, border: '1px solid #ddd', borderRadius: 5, resize: 'vertical' }}
                           />
                         </div>
-                        
+
                         {user.package === 'premium' && (
                           <div>
                             <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>{t('directory.form.logo_image')}</label>
@@ -819,7 +819,7 @@ const DirectoryListing = () => {
                             />
                           </div>
                         )}
-                        
+
                         <button
                           ref={submitButtonRef}
                           type="submit"
