@@ -1,170 +1,235 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DynamicHeader from './components/DynamicHeader';
-import Footer2 from './Home/Footer2';
-import { API_BASE } from './config';
+import { API_BASE_URL } from './config';
+import axios from 'axios';
 
 const AdminCourseUpload = () => {
-  const [title, setTitle] = useState('');
-  const [videos, setVideos] = useState([]);
-  const [driveLinks, setDriveLinks] = useState([]);
-  const [uploading, setUploading] = useState(false);
+  const [form, setForm] = useState({ title: '', description: '', professor: '', commencing: '', image: null, fileURL: '' });
   const [courses, setCourses] = useState([]);
-  const [message, setMessage] = useState({ text: '', type: '' });
-  const [durationWeeks, setDurationWeeks] = useState('');
-  const videoInputRef = useRef();
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [editCourseId, setEditCourseId] = useState(null);
 
-  const showMessage = (text, type = 'success') => {
-    setMessage({ text, type });
-    setTimeout(() => setMessage({ text: '', type: '' }), 3000);
+  const fileInputRef = useRef(null);
+
+  const fetchCourses = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/courses`);
+      setCourses(res.data);
+    } catch (err) {
+      setError('Failed to fetch courses');
+    }
   };
 
   useEffect(() => {
     fetchCourses();
   }, []);
 
-  const fetchCourses = async () => {
-    const res = await fetch(`${API_BASE}/api/courses`);
-    const data = await res.json();
-    setCourses(data);
-  };
+  const handleChange = (e) => {
+    const { name, type, files, value } = e.target;
 
-  const handleVideoChange = (e) => {
-    const files = [...e.target.files];
-    setVideos(files);
-    setDriveLinks(Array(files.length).fill(''));
-  };
+    if (type === 'file') {
+      const file = files[0];
+      if (file) {
+        setForm(prevForm => ({ ...prevForm, [name]: file }));
+      }
+    } else {
+      setForm(prevForm => ({ ...prevForm, [name]: value }));
+    }
 
-  const handleDriveLinkChange = (idx, value) => {
-    setDriveLinks(prev => {
-      const arr = [...prev];
-      arr[idx] = value;
-      return arr;
-    });
+    setError('');
+    setMessage('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || videos.length === 0) {
-      showMessage('Title and at least one video are required.', 'error');
-      return;
-    }
-    setUploading(true);
+    setLoading(true);
+    setError('');
+    setMessage('');
     const formData = new FormData();
-    formData.append('title', title);
-    videos.forEach((file) => formData.append('videos', file));
-    driveLinks.forEach((link) => formData.append('driveLinks', link));
-    formData.append('durationWeeks', durationWeeks);
+    formData.append("title", form.title);
+    formData.append("description", form.description);
+    formData.append("professor", form.professor);
+    formData.append("commencing", form.commencing);
+    if (form.image && form.image instanceof File) {
+      formData.append("image", form.image);
+    }
+    formData.append("fileURL", form.fileURL);
+
     try {
-      const res = await fetch(`${API_BASE}/api/courses/upload`, {
-        method: 'POST',
-        body: formData,
-      });
-      if (!res.ok) throw new Error('Upload failed');
-      setTitle('');
-      setVideos([]);
-      setDriveLinks([]);
-      videoInputRef.current.value = '';
+      if (editCourseId) {
+        await axios.put(`${API_BASE_URL}/api/courses/${editCourseId}`, formData);
+        setMessage('Course updated successfully!');
+        setEditCourseId(null);
+      } else {
+        await axios.post(`${API_BASE_URL}/api/courses`, formData);
+        setMessage('Course added successfully!');
+      }
+      setForm({ title: '', description: '', professor: '', commencing: '', image: null, fileURL: '' });
+      if (fileInputRef.current) {
+        fileInputRef.current.value = null;
+      }
       fetchCourses();
-      showMessage('Course uploaded!');
     } catch (err) {
-      showMessage('Upload failed: ' + err.message, 'error');
+      setError(err.response?.data?.message || 'Something went wrong');
     } finally {
-      setUploading(false);
+      setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this course?')) return;
     try {
-      const res = await fetch(`${API_BASE}/api/courses/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Delete failed');
+      await axios.delete(`${API_BASE_URL}/api/courses/${id}`);
+      setMessage('Course deleted successfully!');
       fetchCourses();
-      showMessage('Course deleted!');
     } catch (err) {
-      showMessage('Delete failed: ' + err.message, 'error');
+      setError('Failed to delete course');
     }
   };
 
-  return (
-    <>
-      <DynamicHeader />
-      <div style={{ maxWidth: 700, margin: '340px auto', background: '#fff', borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.08)', padding: 32 }}>
-        <h2 style={{ textAlign: 'center', marginBottom: 24 }}>Admin: Upload Course Videos & Drive Links</h2>
-        
-        {/* Message Display */}
-        {message.text && (
-          <div style={{
-            textAlign: 'center',
-            marginBottom: '20px',
-            padding: '12px 20px',
-            borderRadius: '8px',
-            fontWeight: '500',
-            backgroundColor: message.type === 'error' ? '#fee' : '#efe',
-            color: message.type === 'error' ? '#c33' : '#363',
-            border: `1px solid ${message.type === 'error' ? '#fcc' : '#cfc'}`
-          }}>
-            {message.text}
-          </div>
-        )}
+  const handleEdit = (course) => {
+    setMessage("");
+    setError("");
+    if (course._id === editCourseId) {
+      setEditCourseId(null);
+      setForm({ title: '', description: '', professor: '', commencing: '', image: null, fileURL: '' });
+      if (fileInputRef.current) {
+        fileInputRef.current.value = null;
+      }
+    } else {
+      setEditCourseId(course._id);
+      setForm({
+        title: course.title,
+        description: course.description,
+        professor: course.professor,
+        commencing: course.commencing?.split("T")[0],
+        image: course.imageURL,
+        fileURL: course.fileURL
+      })
+    }
+  };
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-          <label style={{ fontWeight: 500 }}>Course Title</label>
-          <input type="text" value={title} onChange={e => setTitle(e.target.value)} required style={{ padding: 10, borderRadius: 8, border: '1px solid #ccc' }} />
-          <label style={{ fontWeight: 500 }}>Course Videos (multiple allowed)</label>
-          <input type="file" accept="video/*" multiple ref={videoInputRef} onChange={handleVideoChange} required style={{ padding: 10, borderRadius: 8, border: '1px solid #ccc' }} />
-          {videos.length > 0 && (
-            <div style={{ marginTop: 10 }}>
-              <b>Drive Link for each video (optional):</b>
-              {videos.map((file, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '8px 0' }}>
-                  <span style={{ flex: 1, fontSize: 15 }}>{file.name}</span>
-                  <input
-                    type="url"
-                    placeholder="Google Drive link for slides"
-                    value={driveLinks[idx] || ''}
-                    onChange={e => handleDriveLinkChange(idx, e.target.value)}
-                    style={{ flex: 2, padding: 6, borderRadius: 6, border: '1px solid #ccc' }}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-          <div style={{ marginBottom: 16 }}>
-            <label>Duration (weeks):</label>
-            <input type="number" min={1} value={durationWeeks} onChange={e => setDurationWeeks(e.target.value)} placeholder="e.g. 6" style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #ccc' }} />
+  const handleUploadNew = () => {
+    setForm((prevState) => ({ ...prevState, image: null }));
+
+    // Delay click until after re-render
+    setTimeout(() => {
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
+    }, 0);
+  };
+
+  return (
+    <div>
+      <DynamicHeader />
+      <div id="TTw" style={{ maxWidth: 500, margin: '10rem auto', padding: 20, background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #eee' }}>
+        <h2>{editCourseId ? "Edit" : "Add"} Course</h2>
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: 10 }}>
+            <input
+              type="text"
+              name="title"
+              placeholder="Title"
+              value={form.title}
+              onChange={handleChange}
+              required
+              style={{ width: '100%', padding: 8, marginBottom: 8 }}
+            />
+            <textarea
+              name="description"
+              placeholder="Description"
+              value={form.description}
+              onChange={handleChange}
+              required
+              style={{ width: '100%', padding: 8, marginBottom: 8 }}
+            />
+            <input
+              type="text"
+              name="professor"
+              placeholder="Professor"
+              value={form.professor}
+              onChange={handleChange}
+              required
+              style={{ width: '100%', padding: 8, marginBottom: 8 }}
+            />
+            <input
+              type="date"
+              name="commencing"
+              placeholder="Commencing"
+              value={form.commencing}
+              onChange={handleChange}
+              required
+              style={{ width: '100%', padding: 8, marginBottom: 8 }}
+            />
+            {(form.image && !(form.image instanceof File)) ?
+              <div>
+                <img src={form.image} alt='course' style={{ width: '100%', maxHeight: 350, marginBottom: 8 }} />
+                <button onClick={handleUploadNew} style={{ padding: 10, background: '#007bff', color: '#fff', border: 'none', borderRadius: 4, marginBottom: 8 }}>Upload New</button>
+              </div>
+              :
+              <input
+                type="file"
+                ref={fileInputRef}
+                name="image"
+                accept="image/*"
+                onChange={handleChange}
+                required
+                style={{ width: '100%', padding: 8, marginBottom: 8 }}
+              />
+            }
+            <input
+              type="text"
+              name="fileURL"
+              placeholder="File URL"
+              value={form.fileURL}
+              onChange={handleChange}
+              required
+              style={{ width: '100%', padding: 8, marginBottom: 8 }}
+            />
           </div>
-          <button type="submit" disabled={uploading} style={{ background: '#90be55', color: 'white', border: 'none', borderRadius: 8, padding: 14, fontWeight: 600, fontSize: 18, marginTop: 10 }}>
-            {uploading ? 'Uploading...' : 'Upload Course'}
+          <button id="insb" type="submit" disabled={loading} style={{ width: '100%', padding: 10, background: '#007bff', color: '#fff', border: 'none', borderRadius: 4 }}>
+            {loading ? (editCourseId ? "Updating..." : 'Adding...') : (editCourseId ? "Update Course" : 'Add Course')}
           </button>
         </form>
-        <hr style={{ margin: '32px 0' }} />
-        <h3 style={{ textAlign: 'center', marginBottom: 16 }}>Uploaded Courses</h3>
-        <div style={{ maxHeight: 350, overflowY: 'auto' }}>
-          {courses.length === 0 && <div style={{ textAlign: 'center', color: '#888' }}>No courses uploaded yet.</div>}
-          {courses.map(course => (
-            <div key={course._id} style={{ border: '1px solid #eee', borderRadius: 10, marginBottom: 18, padding: 18, position: 'relative' }}>
-              <h4 style={{ marginBottom: 8 }}>{course.title}</h4>
-              <button onClick={() => handleDelete(course._id)} style={{ position: 'absolute', top: 12, right: 12, background: '#e74c3c', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 12px', cursor: 'pointer', fontWeight: 600 }}>Delete</button>
-              <div style={{ marginBottom: 8 }}>
-                <b>Videos:</b>
-                <ul>
-                  {course.videos.map((v, i) => (
-                    <li key={i} style={{ marginBottom: 6 }}>
-                      <a href={v.url} target="_blank" rel="noopener noreferrer">{v.name}</a>
-                      {v.driveLink && (
-                        <a href={v.driveLink} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 12, color: '#90be55', fontWeight: 500 }}>Drive Link</a>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
-        </div>
+        {message && <div style={{ color: 'green', marginTop: 10 }}>{message}</div>}
+        {error && <div style={{ color: 'red', marginTop: 10 }}>{error}</div>}
       </div>
-      <Footer2 />
-    </>
+      <div style={{ maxWidth: 700, margin: '2rem auto', padding: 20, background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #eee' }}>
+        <h3>Courses List</h3>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ background: '#f5f5f5' }}>
+              <th style={{ padding: 8, border: '1px solid #ddd' }}>Title</th>
+              <th style={{ padding: 8, border: '1px solid #ddd' }}>Professor</th>
+              <th style={{ padding: 8, border: '1px solid #ddd' }}>Image URL</th>
+              <th style={{ padding: 8, border: '1px solid #ddd' }}>File URL</th>
+              <th style={{ padding: 8, border: '1px solid #ddd' }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {courses.map((inst) => (
+              <tr key={inst._id}>
+                <td style={{ padding: 8, border: '1px solid #ddd' }}>{inst.title}</td>
+                <td style={{ padding: 8, border: '1px solid #ddd' }}>{inst.professor}</td>
+                <td style={{ padding: 8, border: '1px solid #ddd', maxWidth: 200, textOverflow: 'ellipsis', overflow: "hidden" }}>{inst.imageURL}</td>
+                <td style={{ padding: 8, border: '1px solid #ddd', maxWidth: 200, textOverflow: 'ellipsis', overflow: "hidden" }}>{inst.fileURL}</td>
+                <td style={{ padding: 8, border: '1px solid #ddd', display: "flex", gap: "8px" }}>
+                  <button onClick={() => handleEdit(inst)} style={{ background: editCourseId === inst._id ? "#6c757d" : '#ffc107', color: editCourseId === inst._id ? "#fff" : '#000', border: 'none', borderRadius: 4, padding: '6px 18px' }}>{editCourseId === inst._id ? "Cancel" : "Edit"}</button>
+                  <button onClick={() => handleDelete(inst._id)} style={{ background: '#dc3545', color: '#fff', border: 'none', borderRadius: 4, padding: '6px 12px' }}>Delete</button>
+                </td>
+              </tr>
+            ))}
+            {courses.length === 0 && (
+              <tr><td colSpan={3} style={{ textAlign: 'center', padding: 20 }}>No courses found.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
 
-export default AdminCourseUpload; 
+export default AdminCourseUpload;

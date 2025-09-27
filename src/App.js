@@ -33,6 +33,7 @@ import DirectoryListing from './DirectoryListing';
 import Contact from './Contact';
 import AdminAddInstructor from './AdminAddInstructor';
 import AdminManageUser from "./AdminManageUser";
+import AdminManageGuide from "./AdminManageGuide";
 import AdminDirectoryUpload from './AdminDirectoryUpload';
 import Slots from './Slots';
 import GSAPProvider from './components/GSAPProvider';
@@ -148,6 +149,7 @@ function AppContent() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin/add-instructor" element={<AdminRoute><AdminAddInstructor /></AdminRoute>} />
           <Route path="/admin/manage-user" element={<AdminRoute><AdminManageUser /></AdminRoute>} />
+          <Route path="/admin/manage-guide" element={<AdminRoute><AdminManageGuide /></AdminRoute>} />
           <Route path="/admin/directory-upload" element={<AdminRoute><AdminDirectoryUpload /></AdminRoute>} />
           <Route path="/admin/featured-listing" element={<AdminRoute><AdminFeaturedListing /></AdminRoute>} />
           <Route path="/admin/service-images" element={<AdminRoute><AdminServiceImages /></AdminRoute>} />
