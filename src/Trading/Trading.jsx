@@ -30,8 +30,8 @@ const Trading = () => {
   const fetchCards = async () => {
     try {
       // Get the selected language from localStorage
-      const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
-      const data = await get(`${API_BASE_URL}/card/cards?lang=${selectedLanguage}`, 'Loading trading cards...');
+      // const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+      const data = await get(`${API_BASE_URL}/api/guides`, 'Loading trading cards...');
       setCards(data);
     } catch (err) {
       console.error("Error fetching cards:", err);
@@ -41,15 +41,15 @@ const Trading = () => {
   useEffect(() => {
     fetchCards();
     // Listen for language changes
-    const handleLanguageChange = () => {
-      fetchCards();
-    };
-    window.addEventListener('storage', handleLanguageChange);
-    window.addEventListener('languageChanged', handleLanguageChange);
-    return () => {
-      window.removeEventListener('storage', handleLanguageChange);
-      window.removeEventListener('languageChanged', handleLanguageChange);
-    };
+    // const handleLanguageChange = () => {
+    //   fetchCards();
+    // };
+    // window.addEventListener('storage', handleLanguageChange);
+    // window.addEventListener('languageChanged', handleLanguageChange);
+    // return () => {
+    //   window.removeEventListener('storage', handleLanguageChange);
+    //   window.removeEventListener('languageChanged', handleLanguageChange);
+    // };
   }, []);
 
   // Handle anchor navigation when page loads
@@ -89,7 +89,7 @@ const Trading = () => {
   const initializeAnimations = () => {
     // Logo and coming soon animation
     if (logoRef.current) {
-      gsap.fromTo(logoRef.current, 
+      gsap.fromTo(logoRef.current,
         { opacity: 0, y: 50 },
         { opacity: 1, y: 0, duration: 1, ease: "power2.out" }
       );
@@ -98,10 +98,10 @@ const Trading = () => {
     if (comingSoonRef.current) {
       gsap.fromTo(comingSoonRef.current,
         { opacity: 0, scale: 0.8 },
-        { 
-          opacity: 1, 
-          scale: 1, 
-          duration: 0.8, 
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
           delay: 0.3,
           ease: "back.out(1.7)"
         }
@@ -112,9 +112,9 @@ const Trading = () => {
     if (guidesTitleRef.current) {
       gsap.fromTo(guidesTitleRef.current,
         { opacity: 0, y: 30 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
@@ -130,9 +130,9 @@ const Trading = () => {
       const guideCards = guidesContainerRef.current.querySelectorAll('.guide-card');
       gsap.fromTo(guideCards,
         { opacity: 0, y: 50, scale: 0.9 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           scale: 1,
           duration: 0.8,
           stagger: 0.15,
@@ -150,9 +150,9 @@ const Trading = () => {
     if (calculatorTitleRef.current) {
       gsap.fromTo(calculatorTitleRef.current,
         { opacity: 0, y: 30 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
@@ -167,9 +167,9 @@ const Trading = () => {
     if (calculatorContainerRef.current) {
       gsap.fromTo(calculatorContainerRef.current,
         { opacity: 0, scale: 0.95 },
-        { 
-          opacity: 1, 
-          scale: 1, 
+        {
+          opacity: 1,
+          scale: 1,
           duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
@@ -185,9 +185,9 @@ const Trading = () => {
     if (democratizingRef.current) {
       gsap.fromTo(democratizingRef.current,
         { opacity: 0, x: -50 },
-        { 
-          opacity: 1, 
-          x: 0, 
+        {
+          opacity: 1,
+          x: 0,
           duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
@@ -203,9 +203,9 @@ const Trading = () => {
     if (partnersTitleRef.current) {
       gsap.fromTo(partnersTitleRef.current,
         { opacity: 0, y: 30 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
@@ -221,9 +221,9 @@ const Trading = () => {
       const partnerLogos = partnersLogosRef.current.querySelectorAll('.partner-logo');
       gsap.fromTo(partnerLogos,
         { opacity: 0, y: 30, rotation: -5 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           rotation: 0,
           duration: 0.6,
           stagger: 0.2,
@@ -248,11 +248,11 @@ const Trading = () => {
         <div id="logp2a" style={{ position: 'relative', padding: '40px 20px', minHeight: '200px' }}>
           {/* Anchor div for navbar navigation - ensures section appears from start */}
           <div id="logp2a-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
-          
+
           <img src="./Logo2.webp" alt="Logo" ref={logoRef} style={{ maxWidth: '100%', height: 'auto' }} />
           <button id="ttr4" ref={comingSoonRef}>{t("trading.coming_soon")}</button>
         </div>
-        
+
         {/* Carbon Offsetting Guides Section */}
         <div id="carbon-guides-section" style={{ position: 'relative' }}>
           <h1 ref={guidesTitleRef} style={{ position: 'relative' }}>
@@ -262,10 +262,11 @@ const Trading = () => {
           </h1>
           <div id="guides-container" ref={guidesContainerRef}>
             {cards.map((card, idx) => (
-              <div className="guide-card" key={idx} onClick={() => window.open(card.link, "_blank")}>
+              <div className="guide-card" key={idx} onClick={() => window.open(card.fileURL, "_blank")}>
                 <div className="guide-card-content">
+                  <img className='guide-image' src={card.imageURL} alt='guide-image' />
                   <h3>{card.title || t("trading.untitled")}</h3>
-                  <p>{card.description || t("trading.no_description")}</p>
+                  {/* <p>{card.description || t("trading.no_description")}</p> */}
                   <button className="guide-button">{t("trading.learn_more")}</button>
                 </div>
               </div>
@@ -282,8 +283,8 @@ const Trading = () => {
               {t("trading.calculator_title")}
             </h1>
             <div id="calculator-container" ref={calculatorContainerRef}>
-              <iframe 
-                style={{ height: '730px', width: '100%' }} 
+              <iframe
+                style={{ height: '730px', width: '100%' }}
                 src="https://plugin.sustainabletravel.com/?api_key=STIKEY_687aad94750ee556806795&primary_color=%23008370&secondary_color=%23f7961f&light_primary_color=%2366e9d6&sort_order=Flight%2CHotel%2CCar%2CBoat"
                 title="CO2 Emissions Calculator"
               />
@@ -316,11 +317,11 @@ const Trading = () => {
             <div className="partner-logo">
               <img src="./pi3.webp" alt="PH-PLUS Kids" />
             </div>
-           
+
           </div>
         </div>
 
-      
+
         <Footer2 />
       </div>
     </>

@@ -26,6 +26,7 @@ const Services = () => {
   const [subCategories, setSubCategories] = useState([]);
   const [serviceImages, setServiceImages] = useState([]);
   const [featuredListings, setFeaturedListings] = useState([]);
+  const [courses, setCourses] = useState([]);
 
   // Debug: Log when categories change
   useEffect(() => {
@@ -52,6 +53,7 @@ const Services = () => {
     fetchServiceImages();
     fetchFeaturedListings();
     fetchUser();
+    fetchCourses();
   }, [i18n]);
 
   useEffect(() => {
@@ -343,6 +345,15 @@ const Services = () => {
     }
   };
 
+  const fetchCourses = async () => {
+    try {
+      const data = await get(`${API_BASE}/api/courses`, 'Loading courses...');
+      setCourses(data);
+    } catch (err) {
+      console.error("Error fetching courses:", err);
+    }
+  };
+
   const handleImageUpload = async (listingId, file) => {
     setUploadingId(listingId);
     setUploadError('');
@@ -467,6 +478,11 @@ const Services = () => {
   };
 
   const filteredListings = getFilteredListings();
+
+  const normalizeUrl = (url) => {
+    if (!url) return '';
+    return url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+  }
 
   return (
     <>
@@ -901,14 +917,14 @@ const Services = () => {
                                   width: '150px',
                                   minWidth: '150px'
                                 }}>
-                                  {l.socialType && l.socialLink ? (
+                                  {l.website || (l.socialType && l.socialLink) ? (
                                     <div style={{
                                       display: 'flex',
                                       justifyContent: 'center',
                                       alignItems: 'center',
                                       width: '100%'
                                     }}>
-                                      <a href={l.socialLink} target="_blank" rel="noopener noreferrer" style={{
+                                      <a href={l.website ? normalizeUrl(l.website) : normalizeUrl(l.socialLink)} target="_blank" rel="noopener noreferrer" style={{
                                         textDecoration: 'none'
                                       }}>
                                         <button id="" style={{
@@ -933,7 +949,7 @@ const Services = () => {
                                           textOverflow: 'ellipsis',
                                           marginRight: '8px',
                                           boxSizing: 'border-box'
-                                        }}>{l.socialType}</button>
+                                        }}>{l.website ? "URL" : l.socialType}</button>
                                       </a>
                                     </div>
                                   ) : ''}
@@ -1205,18 +1221,19 @@ const Services = () => {
             {/* Anchor div for navbar navigation - ensures course cards appear from start */}
             <div id="fcourse-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
             <div id="totalscard">
-              {[1, 2, 3, 4].map((_, i) => (
-                <div id="scard" key={i}>
-                  <img src={`./s${i + 1}.png`} />
-                  <h1>{t(`services.cards.${i}.title`)}</h1>
-                  <p>{t(`services.cards.${i}.desc`)}</p>
+              {courses.map((course, i) => (
+                <div id="scard" key={i} onClick={() => window.open(course.fileURL, "_blank")}>
+                  <img src={course.imageURL} />
+                  <h1>{course.title}</h1>
+                  <p>{course.description}</p>
                   <div id="innerh1s">
                     <h1>{t("services.professor")}</h1>
-                    <p>Marie Curie</p>
+                    <p>{course.professor}</p>
                   </div>
                   <div id="innerh1ss">
                     <h1>{t("services.commencing")}</h1>
-                    <p>01/01/2024</p>
+                    {/* <p>01/01/2024</p> */}
+                    <p>{new Date(course.commencing).toLocaleDateString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit' })}</p>
                   </div>
                 </div>
               ))}
