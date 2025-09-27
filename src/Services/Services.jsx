@@ -479,6 +479,11 @@ const Services = () => {
 
   const filteredListings = getFilteredListings();
 
+  const normalizeUrl = (url) => {
+    if (!url) return '';
+    return url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+  }
+
   return (
     <>
       <div id="cover">
@@ -912,14 +917,14 @@ const Services = () => {
                                   width: '150px',
                                   minWidth: '150px'
                                 }}>
-                                  {l.socialType && l.socialLink ? (
+                                  {l.website || (l.socialType && l.socialLink) ? (
                                     <div style={{
                                       display: 'flex',
                                       justifyContent: 'center',
                                       alignItems: 'center',
                                       width: '100%'
                                     }}>
-                                      <a href={l.socialLink} target="_blank" rel="noopener noreferrer" style={{
+                                      <a href={l.website ? normalizeUrl(l.website) : normalizeUrl(l.socialLink)} target="_blank" rel="noopener noreferrer" style={{
                                         textDecoration: 'none'
                                       }}>
                                         <button id="" style={{
@@ -944,7 +949,7 @@ const Services = () => {
                                           textOverflow: 'ellipsis',
                                           marginRight: '8px',
                                           boxSizing: 'border-box'
-                                        }}>{l.socialType}</button>
+                                        }}>{l.website ? "URL" : l.socialType}</button>
                                       </a>
                                     </div>
                                   ) : ''}
