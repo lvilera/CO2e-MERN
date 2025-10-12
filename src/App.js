@@ -42,51 +42,9 @@ import ResetPassword from './ResetPassword';
 
 function SuccessRedirect() {
   useEffect(() => {
-    const packageName = localStorage.getItem('purchasedPackage');
-    const bookingId = localStorage.getItem('bookingId');
-    if (packageName) {
-      fetch(`${API_BASE_URL}/api/stripe-success`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ packageName, bookingId })
-      })
-        .then(res => res.json())
-        .then(data => {
-          setTimeout(() => {
-            if (packageName.startsWith('course:')) {
-              window.location.href = '/buy-courses';
-            } else {
-              window.location.href = '/login';
-            }
-          }, 2000);
-        })
-        .catch((err) => {
-          setTimeout(() => {
-            if (packageName.startsWith('course:')) {
-              window.location.href = '/buy-courses';
-            } else {
-              window.location.href = '/login';
-            }
-          }, 2000);
-        });
-    } else {
-      setTimeout(() => {
-        window.location.href = '/login';
-      }, 2000);
-    }
-
-    // Booking confirmation logic
-    const pendingBooking = localStorage.getItem('pendingBooking');
-    if (pendingBooking) {
-      fetch(`${API_BASE_URL}/api/booking/confirm`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: pendingBooking
-      }).then(() => {
-        localStorage.removeItem('pendingBooking');
-      });
-    }
+    setTimeout(() => {
+      window.location.href = '/pricing';
+    }, 3000);
   }, []);
   return <div style={{ textAlign: 'center', marginTop: 100 }}><h1>Payment Successful!</h1><p>Redirecting...</p></div>;
 }

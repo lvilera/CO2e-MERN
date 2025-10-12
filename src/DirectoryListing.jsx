@@ -51,17 +51,17 @@ const DirectoryListing = () => {
     // Monitor login state changes (same as Header component)
     const checkLogin = () => {
       const loginStatus = localStorage.getItem('isLoggedIn') === 'true';
-      console.log('DirectoryListing: Login status check:', loginStatus);
-      console.log('DirectoryListing: Raw localStorage value:', localStorage.getItem('isLoggedIn'));
-      console.log('DirectoryListing: All localStorage keys:', Object.keys(localStorage));
-      console.log('DirectoryListing: localStorage contents:', {
-        isLoggedIn: localStorage.getItem('isLoggedIn'),
-        isAdmin: localStorage.getItem('isAdmin'),
-        isInstructor: localStorage.getItem('isInstructor'),
-        userEmail: localStorage.getItem('userEmail'),
-        userId: localStorage.getItem('userId'),
-        package: localStorage.getItem('package')
-      });
+      // console.log('DirectoryListing: Login status check:', loginStatus);
+      // console.log('DirectoryListing: Raw localStorage value:', localStorage.getItem('isLoggedIn'));
+      // console.log('DirectoryListing: All localStorage keys:', Object.keys(localStorage));
+      // console.log('DirectoryListing: localStorage contents:', {
+      //   isLoggedIn: localStorage.getItem('isLoggedIn'),
+      //   isAdmin: localStorage.getItem('isAdmin'),
+      //   isInstructor: localStorage.getItem('isInstructor'),
+      //   userEmail: localStorage.getItem('userEmail'),
+      //   userId: localStorage.getItem('userId'),
+      //   package: localStorage.getItem('package')
+      // });
       setIsLoggedIn(loginStatus);
     };
 
@@ -194,7 +194,7 @@ const DirectoryListing = () => {
       console.log('DirectoryListing: Attempting to fetch user from:', `${API_BASE}/api/me`);
       const data = await get(`${API_BASE}/api/me`, 'Loading user info...');
       console.log('DirectoryListing: User data received:', data);
-      setUser({ ...data, package: (data.package || '').toLowerCase().replace(' plan', '').trim() });
+      setUser({ ...data });
     } catch (err) {
       console.error('DirectoryListing: Error fetching user:', err);
       setUser(null);
@@ -336,8 +336,20 @@ const DirectoryListing = () => {
         }
       });
 
+      let userPackage = "free";
+      if (user?.subscriptionInfo && user?.subscriptionInfo?.status) {
+        let planName = user.subscriptionInfo?.planName;
+        if (planName) {
+          if (planName.toLowerCase().includes("pro")) {
+            userPackage = "pro";
+          } else if (planName.toLowerCase().includes("premium")) {
+            userPackage = "premium";
+          }
+        }
+      }
+
       // Handle image file separately
-      if (user.package === 'premium' && form.image) {
+      if (userPackage === 'premium' && form.image) {
         formData.append('image', form.image);
       }
 
@@ -347,7 +359,7 @@ const DirectoryListing = () => {
       }
 
       // Add userPackage to the form data
-      formData.append('userPackage', user.package);
+      formData.append('userPackage', userPackage);
 
       console.log("📋 FormData contents:");
       for (let [key, value] of formData.entries()) {
@@ -807,7 +819,7 @@ const DirectoryListing = () => {
                           />
                         </div>
 
-                        {user.package === 'premium' && (
+                        {(user?.subscriptionInfo?.planName?.toLowerCase()?.includes("premium")) && (
                           <div>
                             <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>{t('directory.form.logo_image')}</label>
                             <input
