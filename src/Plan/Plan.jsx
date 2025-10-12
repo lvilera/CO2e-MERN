@@ -17,8 +17,10 @@ const Plan = () => {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
   const [loading, setLoading] = useState(null); // Track which button is loading
-  const [currentPackage, setCurrentPackage] = useState('');
+  const [subscriptionInfo, setSubscriptionInfo] = useState(null);
   const [message, setMessage] = useState({ text: '', type: '' }); // For success/error messages
+
+  const subscriptionInfoRef = useRef(subscriptionInfo);
 
   // Refs for animations
   const messageRef = useRef(null);
@@ -28,35 +30,39 @@ const Plan = () => {
   const investmentRef = useRef(null);
   const commitmentRef = useRef(null);
 
-  // Fetch user's current package
   useEffect(() => {
+    subscriptionInfoRef.current = subscriptionInfo;
+  }, [subscriptionInfo]);
+
+  const fetchMe = async () => {
     if (isLoggedIn) {
       fetch(`${API_BASE}/api/me`, {
         credentials: 'include'
       })
-      .then(res => res.json())
-      .then(data => {
-        const packageName = (data.package || '').toLowerCase().replace(' plan', '').trim();
-        // If user doesn't have a pro or premium plan, set current package to 'free'
-        if (packageName === 'pro' || packageName === 'premium') {
-          setCurrentPackage(packageName);
-        } else {
-          setCurrentPackage('free');
-        }
-      })
-      .catch(() => {
-        setCurrentPackage('free');
-      });
+        .then(res => res.json())
+        .then(data => {
+          if (data.subscriptionInfo) {
+            setSubscriptionInfo(data.subscriptionInfo);
+          }
+        })
+        .catch(() => {
+          setSubscriptionInfo(null);
+        });
     } else {
-      setCurrentPackage('');
+      setSubscriptionInfo(null);
     }
+  };
+
+  // Fetch user's current package
+  useEffect(() => {
+    fetchMe();
   }, [isLoggedIn]);
 
   // Handle hash navigation when page loads
   useEffect(() => {
     if (window.location.hash) {
       const anchorId = window.location.hash.substring(1);
-      
+
       const scrollWithHeaderOffset = () => {
         const anchor = document.getElementById(anchorId);
         if (anchor) {
@@ -80,7 +86,7 @@ const Plan = () => {
   useEffect(() => {
     // Initialize animations
     initializeAnimations();
-  }, [currentPackage, message]);
+  }, [message]);
 
   const initializeAnimations = () => {
 
@@ -97,9 +103,9 @@ const Plan = () => {
       const cards = cardsRef.current.querySelectorAll('#Cards1, #Cards, #Cards3');
       gsap.fromTo(cards,
         { opacity: 0, y: 50, scale: 0.9 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           scale: 1,
           duration: 0.8,
           stagger: 0.2,
@@ -117,9 +123,9 @@ const Plan = () => {
     if (perksRef.current) {
       gsap.fromTo(perksRef.current,
         { opacity: 0, y: 30 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
@@ -136,9 +142,9 @@ const Plan = () => {
       const elements = blockchainRef.current.querySelectorAll('div, img');
       gsap.fromTo(elements,
         { opacity: 0, x: -50 },
-        { 
-          opacity: 1, 
-          x: 0, 
+        {
+          opacity: 1,
+          x: 0,
           duration: 0.8,
           stagger: 0.2,
           ease: "power2.out",
@@ -156,9 +162,9 @@ const Plan = () => {
       const elements = investmentRef.current.querySelectorAll('div, img');
       gsap.fromTo(elements,
         { opacity: 0, x: 50 },
-        { 
-          opacity: 1, 
-          x: 0, 
+        {
+          opacity: 1,
+          x: 0,
           duration: 0.8,
           stagger: 0.2,
           ease: "power2.out",
@@ -176,9 +182,9 @@ const Plan = () => {
       const elements = commitmentRef.current.querySelectorAll('div, img');
       gsap.fromTo(elements,
         { opacity: 0, y: 30 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           duration: 0.8,
           stagger: 0.2,
           ease: "power2.out",
@@ -197,77 +203,85 @@ const Plan = () => {
     setTimeout(() => setMessage({ text: '', type: '' }), 5000);
   };
 
-  const handleBuyNow = async (item) => {
+  const handleCancelSubscription = async () => {
+
+  };
+
+  const pollSubscriptionUpdate = async (newPriceId, attempts = 10, interval = 3000) => {
+    for (let i = 0; i < attempts; i++) {
+      await new Promise(resolve => setTimeout(resolve, interval));
+      await fetchMe();
+
+      if (subscriptionInfoRef.current?.priceId === newPriceId) {
+        showMessage("Subscription updated successfully!");
+        return;
+      }
+    }
+
+    showMessage("Subscription update may be delayed. Please refresh later.", "info");
+  };
+
+  const handleSubscribe = async (priceId) => {
+    console.log("Price ID: ", priceId);
     if (!isLoggedIn) {
       navigate('/login');
       return;
     }
 
-    // Don't allow purchasing the same package
-    if (currentPackage === item.id) {
-      showMessage('You already have this package!', 'error');
-      return;
-    }
-
-    // Handle free plan differently
-    if (item.id === 'free') {
-      // For free plan, just update the user's package directly
-      try {
-        const response = await fetch(`${API_BASE}/api/stripe-success`, {
+    // For paid plans, proceed with Stripe checkout
+    setLoading(priceId);
+    try {
+      if (subscriptionInfo?.status) {
+        const response = await fetch(`${API_BASE}/api/stripe/update-subscription`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ packageName: item.name })
+          body: JSON.stringify({
+            newPriceId: priceId
+          })
         });
-        
-        if (response.ok) {
-          localStorage.setItem('package', 'free');
-          showMessage('Free plan activated successfully!');
-          navigate('/');
-        } else {
-          showMessage('Failed to activate free plan. Please try again.', 'error');
+
+        if (!response.ok) {
+          return showMessage('Failed to update subscription. Please try again.', 'error');
         }
-      } catch (error) {
-        console.error('Error activating free plan:', error);
-        showMessage('Error activating free plan. Please try again.', 'error');
-      }
-      return;
-    }
 
-    // For paid plans, proceed with Stripe checkout
-    setLoading(item.id);
-    try {
-      const response = await fetch(`${API_BASE}/api/create-checkout-session`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ 
-          cart: [{ 
-            name: item.name, 
-            price: item.price, 
-            quantity: 1 
-          }] 
-        })
-      });
-
-      const data = await response.json();
-      
-      if (data.url) {
-        localStorage.setItem('purchasedPackage', item.name);
-        window.location.href = data.url;
+        const data = await response.json();
+        console.log("Data: ", data);
+        await pollSubscriptionUpdate(priceId);
       } else {
-        showMessage('Failed to start checkout. Please try again.', 'error');
+        const response = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            priceId
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          showMessage('Failed to start checkout. Please try again.', 'error');
+        }
       }
     } catch (error) {
-      console.error('Checkout error:', error);
+      console.error('Subscription error:', error);
       showMessage('Error connecting to payment gateway. Please try again.', 'error');
     } finally {
       setLoading(null);
     }
   };
 
-  const getCardStyle = (planId) => {
-    if (currentPackage === planId) {
+  const getCardStyle = (priceId) => {
+    if (!priceId && (!subscriptionInfo || !subscriptionInfo.status)) {
+      return {
+        border: '3px solid #90be55',
+        boxShadow: '0 0 20px rgba(144, 190, 85, 0.3)',
+        position: 'relative'
+      };
+    } else if (subscriptionInfo?.priceId === priceId) {
       return {
         border: '3px solid #90be55',
         boxShadow: '0 0 20px rgba(144, 190, 85, 0.3)',
@@ -275,28 +289,6 @@ const Plan = () => {
       };
     }
     return {};
-  };
-
-  const getButtonStyle = (planId) => {
-    if (currentPackage === planId) {
-      return {
-        background: '#90be55',
-        color: 'white',
-        cursor: 'not-allowed',
-        opacity: 0.8
-      };
-    }
-    return {};
-  };
-
-  const getButtonText = (planId) => {
-    if (currentPackage === planId) {
-      return 'Current Package';
-    }
-    if (planId === 'free') {
-      return loading === 'free' ? 'Activating...' : 'Get Started';
-    }
-    return loading === planId ? 'Redirecting...' : t("plan.buy_now");
   };
 
   return (
@@ -333,10 +325,10 @@ const Plan = () => {
             )}
 
             <div id="totalCards" ref={cardsRef}>
-              
+
               {/* INDIVIDUAL PLAN */}
-              <div id="Cards1" style={getCardStyle('free')}>
-                {currentPackage === 'free' && (
+              <div id="Cards1" style={getCardStyle(null)}>
+                {(!subscriptionInfo || !subscriptionInfo.status) && (
                   <div style={{
                     position: 'absolute',
                     top: '-10px',
@@ -362,22 +354,23 @@ const Plan = () => {
                     <p>❌ {t("plan.free_no_discounts")}</p>
                     <p>❌ {t("plan.free_no_featured")}</p>
                   </div>
-                  <button 
-                    onClick={() => handleBuyNow({id: 'free', name: 'Free Plan', price: 0})}
-                    disabled={loading === 'free' || currentPackage === 'free'}
-                    style={{ 
-                      opacity: loading === 'free' ? 0.7 : 1,
-                      ...getButtonStyle('free')
-                    }}
-                  >
-                    {loading === 'free' ? t("plan.activating") : t("plan.start_free")}
-                  </button>
+                  {(subscriptionInfo && subscriptionInfo.status) &&
+                    <button
+                      onClick={() => handleCancelSubscription()}
+                      disabled={loading === 'cancel'}
+                      style={{
+                        opacity: loading === 'cancel' ? 0.7 : 1,
+                      }}
+                    >
+                      {loading === 'cancel' ? t("plan.activating") : t("plan.start_free")}
+                    </button>
+                  }
                 </div>
               </div>
 
               {/* PROFESSIONAL PLAN */}
-              <div id="Cards" style={getCardStyle('pro')}>
-                {currentPackage === 'pro' && (
+              <div id="Cards" style={getCardStyle(t("plan.pro_price_id"))}>
+                {(subscriptionInfo?.priceId === t("plan.pro_price_id")) && (
                   <div style={{
                     position: 'absolute',
                     top: '-10px',
@@ -406,22 +399,23 @@ const Plan = () => {
                     <p>❌ {t("plan.pro_no_discounts")}</p>
                     <p>❌ {t("plan.pro_no_featured")}</p>
                   </div>
-                  <button 
-                    onClick={() => handleBuyNow({id: 'pro', name: 'Pro Plan', price: 29.99})}
-                    disabled={loading === 'pro' || currentPackage === 'pro'}
-                    style={{ 
-                      opacity: loading === 'pro' ? 0.7 : 1,
-                      ...getButtonStyle('pro')
-                    }}
-                  >
-                    {loading === 'pro' ? t("plan.redirecting") : t("plan.upgrade_now")}
-                  </button>
+                  {subscriptionInfo?.priceId !== t("plan.pro_price_id") &&
+                    <button
+                      onClick={() => handleSubscribe(t("plan.pro_price_id"))}
+                      disabled={loading === t("plan.pro_price_id")}
+                      style={{
+                        opacity: loading === t("plan.pro_price_id") ? 0.7 : 1,
+                      }}
+                    >
+                      {loading === t("plan.pro_price_id") ? t("plan.redirecting") : t("plan.go_pro")}
+                    </button>
+                  }
                 </div>
               </div>
 
               {/* PREMIUM PLAN */}
-              <div id="Cards3" style={getCardStyle('premium')}>
-                {currentPackage === 'premium' && (
+              <div id="Cards3" style={getCardStyle(t("plan.premium_price_id"))}>
+                {(subscriptionInfo?.priceId === t("plan.premium_price_id")) && (
                   <div style={{
                     position: 'absolute',
                     top: '-10px',
@@ -451,16 +445,17 @@ const Plan = () => {
                     <p style={{ marginLeft: '20px' }}>• {t("plan.pro_color")}</p>
                     <p style={{ marginLeft: '20px' }}>• {t("plan.pro_larger_font")}</p>
                   </div>
-                  <button 
-                    onClick={() => handleBuyNow({id: 'premium', name: 'Premium Plan', price: 49.99})}
-                    disabled={loading === 'premium' || currentPackage === 'premium'}
-                    style={{ 
-                      opacity: loading === 'premium' ? 0.7 : 1,
-                      ...getButtonStyle('premium')
-                    }}
-                  >
-                    {loading === 'premium' ? t("plan.redirecting") : t("plan.go_premium")}
-                  </button>
+                  {subscriptionInfo?.priceId !== t("plan.premium_price_id") &&
+                    <button
+                      onClick={() => handleSubscribe(t("plan.premium_price_id"))}
+                      disabled={loading === t("plan.premium_price_id")}
+                      style={{
+                        opacity: loading === t("plan.premium_price_id") ? 0.7 : 1,
+                      }}
+                    >
+                      {loading === t("plan.premium_price_id") ? t("plan.redirecting") : t("plan.go_premium")}
+                    </button>
+                  }
                 </div>
               </div>
             </div>
