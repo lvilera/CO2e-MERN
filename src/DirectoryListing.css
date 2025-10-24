@@ -6,6 +6,7 @@
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -17,6 +18,7 @@
         opacity: 0;
         transform: translateX(-50px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -28,6 +30,7 @@
         opacity: 0;
         transform: translateX(50px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -39,6 +42,7 @@
         opacity: 0;
         transform: scale(0.8);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -46,42 +50,60 @@
 }
 
 @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-10px);
     }
 }
 
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.05);
     }
 }
 
 @keyframes glow {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 5px rgba(144, 190, 85, 0.3);
     }
+
     50% {
         box-shadow: 0 0 20px rgba(144, 190, 85, 0.6);
     }
 }
 
 @keyframes bounce {
-    0%, 20%, 53%, 80%, 100% {
+
+    0%,
+    20%,
+    53%,
+    80%,
+    100% {
         transform: translate3d(0, 0, 0);
     }
-    40%, 43% {
+
+    40%,
+    43% {
         transform: translate3d(0, -8px, 0);
     }
+
     70% {
         transform: translate3d(0, -4px, 0);
     }
+
     90% {
         transform: translate3d(0, -2px, 0);
     }
@@ -91,6 +113,7 @@
     0% {
         background-position: -200px 0;
     }
+
     100% {
         background-position: calc(200px + 100%) 0;
     }
@@ -156,44 +179,44 @@
 }
 
 /* Enhanced form styling */
-form {
+.directory-listing form {
     animation: fadeInUp 0.8s ease-out;
 }
 
-form input,
-form select,
-form textarea {
+.directory-listing form input,
+.directory-listing form select,
+.directory-listing form textarea {
     transition: all 0.3s ease;
     border: 2px solid #e0e0e0;
 }
 
-form input:focus,
-form select:focus,
-form textarea:focus {
+.directory-listing form input:focus,
+.directory-listing form select:focus,
+.directory-listing form textarea:focus {
     border-color: #90be55;
     box-shadow: 0 0 10px rgba(144, 190, 85, 0.3);
     transform: translateY(-2px);
 }
 
 /* Submit button animations */
-button[type="submit"] {
+.directory-listing button[type="submit"] {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
     animation: pulse 3s ease-in-out infinite;
 }
 
-button[type="submit"]:hover {
+.directory-listing button[type="submit"]:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(144, 190, 85, 0.4);
 }
 
-button[type="submit"]:active {
+.directory-listing button[type="submit"]:active {
     transform: translateY(-1px);
 }
 
 /* Shimmer effect for submit button */
-button[type="submit"]::before {
+.directory-listing button[type="submit"]::before {
     content: '';
     position: absolute;
     top: 0;
@@ -243,11 +266,11 @@ div[style*="color: green"]:hover {
 }
 
 /* Form labels animations */
-label {
+.directory-listing label {
     transition: all 0.3s ease;
 }
 
-label:hover {
+.directory-listing label:hover {
     color: #90be55;
     transform: translateX(5px);
 }
@@ -263,33 +286,53 @@ div[style*="display: flex"] {
 }
 
 /* Continuous floating animation for form elements */
-form > div:nth-child(1) { animation-delay: 0.1s; }
-form > div:nth-child(2) { animation-delay: 0.2s; }
-form > div:nth-child(3) { animation-delay: 0.3s; }
-form > div:nth-child(4) { animation-delay: 0.4s; }
-form > div:nth-child(5) { animation-delay: 0.5s; }
-form > div:nth-child(6) { animation-delay: 0.6s; }
-form > div:nth-child(7) { animation-delay: 0.7s; }
+.directory-listing form>div:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.directory-listing form>div:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.directory-listing form>div:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.directory-listing form>div:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.directory-listing form>div:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.directory-listing form>div:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+.directory-listing form>div:nth-child(7) {
+    animation-delay: 0.7s;
+}
 
 /* Responsive animations */
 @media (max-width: 768px) {
-    form {
+    .directory-listing form {
         animation: fadeInUp 0.6s ease-out;
     }
-    
+
     div[style*="background: #f9f9f9"] {
         animation: fadeInUp 0.6s ease-out;
     }
-    
+
     h1 {
         animation: fadeInUp 0.8s ease-out;
     }
-    
+
     .alphabet-nav {
         gap: 3px;
         padding: 10px;
     }
-    
+
     .alphabet-nav button {
         padding: 6px 8px;
         font-size: 14px;
@@ -302,13 +345,13 @@ form > div:nth-child(7) { animation-delay: 0.7s; }
         gap: 2px;
         padding: 8px;
     }
-    
+
     .alphabet-nav button {
         padding: 5px 6px;
         font-size: 12px;
         min-width: 30px;
     }
-    
+
     .no-listings-message {
         padding: 20px;
         font-size: 16px;
@@ -316,21 +359,21 @@ form > div:nth-child(7) { animation-delay: 0.7s; }
 }
 
 /* Enhanced hover effects */
-input:hover,
-select:hover,
-textarea:hover {
+.directory-listing input:hover,
+.directory-listing select:hover,
+.directory-listing textarea:hover {
     background-color: #f8f9fa;
 }
 
 /* Focus states with glow effect */
-input:focus,
-select:focus,
-textarea:focus {
+.directory-listing input:focus,
+.directory-listing select:focus,
+.directory-listing textarea:focus {
     animation: glow 2s ease-in-out infinite;
 }
 
 /* Loading state animations */
-button[type="submit"]:disabled {
+.directory-listing button[type="submit"]:disabled {
     animation: none;
     opacity: 0.7;
     cursor: not-allowed;
@@ -344,4 +387,4 @@ div[style*="color: green"] {
 /* Error state animations */
 div[style*="color: red"] {
     animation: bounce 0.6s ease-out, pulse 2s ease-in-out infinite;
-} 
+}
