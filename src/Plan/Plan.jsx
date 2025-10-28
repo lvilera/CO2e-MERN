@@ -254,7 +254,10 @@ const Plan = () => {
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
-            priceId
+            priceId,
+            mode: "subscription",
+            type: "subscription",
+            quantity: 1
           })
         });
 

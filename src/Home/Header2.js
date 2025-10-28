@@ -57,6 +57,7 @@ const Header2 = () => {
                 "AddNews",
                 "AddBlog",
                 "Add Instructor",
+                "Add Product",
                 "Manage User",
                 "Manage Guide",
                 "Upload Courses",
@@ -68,13 +69,15 @@ const Header2 = () => {
                     ? "/admin/featured-listing"
                     : item === "Add Instructor"
                       ? "/admin/add-instructor"
-                      : item === "Manage User"
-                        ? "/admin/manage-user"
-                        : item === "Manage Guide"
-                          ? "/admin/manage-guide"
-                          : item === "Directory Upload"
-                            ? "/admin/directory-upload"
-                            : `/${item.toLowerCase().replace(/ /g, '-')}`;
+                      : item === "Add Product"
+                        ? "/admin/add-product"
+                        : item === "Manage User"
+                          ? "/admin/manage-user"
+                          : item === "Manage Guide"
+                            ? "/admin/manage-guide"
+                            : item === "Directory Upload"
+                              ? "/admin/directory-upload"
+                              : `/${item.toLowerCase().replace(/ /g, '-')}`;
                 const isActive = location.pathname === to;
                 return (
                   <li key={idx}>
