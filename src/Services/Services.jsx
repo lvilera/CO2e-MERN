@@ -7,6 +7,7 @@ import { useApi } from '../hooks/useApi';
 import { API_BASE } from '../config';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Audit from './Audit';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -1244,6 +1245,11 @@ const Services = () => {
             <div id="bottomtexter">
               <p>{t("services.trainingSummary")}</p>
             </div>
+          </div>
+
+          <div style={{ position: 'relative', display: "flex", justifyContent: "center", marginTop: "50px" }}>
+            <div id='carbon-footprint-anchor' style={{ position: 'absolute', top: '0', visibility: 'hidden', height: '0', width: '0' }}></div>
+            <Audit />
           </div>
 
           <div id="bottomone" ref={bottomCardsRef}>

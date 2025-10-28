@@ -252,6 +252,17 @@ const Header = () => {
                   }} style={{ cursor: 'pointer' }}>{t("navbar.submenu.courses")}</span></li>
                 </ul>
               </li>
+              {/* Products Dropdown */}
+              <li className="dropdown">
+                <span className="navbar-link" onClick={() => { setNavOpen(false); window.location.href = '/products'; }} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                  <span id="hos" style={location.pathname === '/products' ? { borderBottom: '2px solid #90be55', display: 'inline-block' } : {}}>
+                    {t("navbar.products")}
+                  </span>
+                  <IoChevronForwardOutline style={{ marginLeft: 6 }} />
+                </span>
+                <ul className="dropdown-menu">
+                </ul>
+              </li>
               {/* News Dropdown */}
               <li className="dropdown">
                 <span className="navbar-link" onClick={() => { setNavOpen(false); window.location.href = '/news'; }} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>

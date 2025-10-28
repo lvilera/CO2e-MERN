@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import './i18n'; // 👈 import your i18n setup
 import { useEffect } from 'react';
@@ -12,6 +12,7 @@ import Home from "./Home/Home";
 import Signup from "./Signup/Signup";
 import Trading from "./Trading/Trading";
 import Plan from "./Plan/Plan";
+import Product from "./Product/Product";
 import Services from "./Services/Services";
 import Blog from "./Blog/Blog";
 import Blog2 from "./Blog2/Blog2";
@@ -39,20 +40,34 @@ import Slots from './Slots';
 import GSAPProvider from './components/GSAPProvider';
 import IPhoneTest from './components/IPhoneTest';
 import ResetPassword from './ResetPassword';
+import AdminAddProduct from "./AdminAddProduct";
+
+const redirectRoutes = {
+  subscription: "/pricing",
+  product: "/products",
+};
 
 function SuccessRedirect() {
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get("type");
+
   useEffect(() => {
+    const redirectURL = redirectRoutes[type] || "/";
     setTimeout(() => {
-      window.location.href = '/pricing';
+      window.location.href = redirectURL;
     }, 3000);
   }, []);
   return <div style={{ textAlign: 'center', marginTop: 100 }}><h1>Payment Successful!</h1><p>Redirecting...</p></div>;
 }
 
 function CancelRedirect() {
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get("type");
+
   useEffect(() => {
+    const redirectURL = redirectRoutes[type] || "/";
     setTimeout(() => {
-      window.location.href = '/pricing';
+      window.location.href = redirectURL;
     }, 3000);
   }, []);
   return (
@@ -92,6 +107,7 @@ function AppContent() {
           <Route path="/service" element={<Services />} />
           <Route path="/news" element={<Blog2 />} />
           <Route path="/pricing" element={<Plan />} />
+          <Route path="/products" element={<Product />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/news/:id" element={<NewsDetails />} />
           <Route path="/blogs/:id" element={<BlogDetails />} />
@@ -106,6 +122,7 @@ function AppContent() {
           <Route path="/iphone-test" element={<IPhoneTest />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin/add-instructor" element={<AdminRoute><AdminAddInstructor /></AdminRoute>} />
+          <Route path="/admin/add-product" element={<AdminRoute><AdminAddProduct /></AdminRoute>} />
           <Route path="/admin/manage-user" element={<AdminRoute><AdminManageUser /></AdminRoute>} />
           <Route path="/admin/manage-guide" element={<AdminRoute><AdminManageGuide /></AdminRoute>} />
           <Route path="/admin/directory-upload" element={<AdminRoute><AdminDirectoryUpload /></AdminRoute>} />

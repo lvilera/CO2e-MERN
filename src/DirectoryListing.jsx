@@ -488,7 +488,7 @@ const DirectoryListing = () => {
   // filteredListings, selectedLetter, getRowStyle - REMOVED
 
   return (
-    <>
+    <div className='directory-listing'>
       <Header />
       <div style={{ margin: '120px', background: '#fff', minHeight: '100vh', padding: '180px 0 60px 0' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}>
@@ -865,7 +865,7 @@ const DirectoryListing = () => {
         </div>
       </div>
       <Footer2 />
-    </>
+    </div>
   );
 };
 
