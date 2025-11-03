@@ -1,44 +1,42 @@
-#dashf{
-
-    background-color: #90be55;
+#dashf {
+  background-color: #90be55;
 }
 
-#dh{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 40px;
-    padding-top: 120px;
-    font-weight: 400;
+#dh {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  padding-top: 120px;
+  font-weight: 400;
 }
 
-
-#dashf input{
-    width: 400px;
-    border: 1px solid black;
-    border-radius: 20px;
-    padding: 10px;
+#dashf input {
+  width: 400px;
+  border: 1px solid black;
+  border-radius: 20px;
+  padding: 10px;
 }
 
-#dashf button{
-    padding: 10px;
-    background-color: black;
-    padding-left: 20px;
+#dashf button {
+  padding: 10px;
+  background-color: black;
+  padding-left: 20px;
 }
 
-#formerd{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding-top: 50px;
+#formerd {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 50px;
 }
 
-#formerd button{
-    color: white;
-    padding-right: 30px;
-    padding-left: 30px;
-    border-radius: 10px;
+#formerd button {
+  color: white;
+  padding-right: 30px;
+  padding-left: 30px;
+  border-radius: 10px;
 }
 
 /* Multi-language form styling */
@@ -99,100 +97,111 @@
   }
 }
 
-#dh{
-    padding-top: 300px;
+#dh {
+  padding-top: 300px;
 }
 
-#ttqa{
-    text-align: center;
-    padding-top: 60px;
-    font-size: 40px;
-    font-weight: 400;
+#ttqa {
+  text-align: center;
+  padding-top: 60px;
+  font-size: 40px;
+  font-weight: 400;
 }
 
-#inputerqad{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+#inputerqad {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-#pppu{
-    display: flex;
-    align-items: center;
-justify-content: space-around;
-    background-color: black;
-    color: white;
-    width: 600px;
-    padding: 30px;
-    border-radius: 30px;
-margin-bottom: 30px;
-
+#pppu {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: black;
+  color: white;
+  width: 600px;
+  padding: 30px;
+  border-radius: 30px;
+  margin-bottom: 30px;
 }
 
-#pppu button{
-    color: white;
-    background-color: red;
-    padding-right: 20px;
-    border-radius: 10px;
+#pppu button {
+  color: white;
+  background-color: red;
+  padding-right: 20px;
+  border-radius: 10px;
 }
 
 #pppu a {
-    color: white;
-    text-decoration: none;
-    background-color: #90be55;
-    padding: 8px 16px;
-    border-radius: 8px;
-    margin-right: 10px;
-    transition: background-color 0.3s ease;
+  color: white;
+  text-decoration: none;
+  background-color: #90be55;
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin-right: 10px;
+  transition: background-color 0.3s ease;
 }
 
 #pppu a:hover {
-    background-color: #7da94a;
+  background-color: #7da94a;
 }
 
-#cced{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-margin-top: 50px;
+#cced {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
 }
-
 
 @media screen and (max-width: 423px) {
+  #dashf input {
+    width: 300px;
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 10px;
+  }
 
-    #dashf input{
-        width: 300px;
-        border: 1px solid black;
-        border-radius: 20px;
-        padding: 10px;
-    }
-
-    #formerd input[type="text"],
-    #formerd textarea {
-        max-width: 280px;
-    }
-
+  #formerd input[type="text"],
+  #formerd textarea {
+    max-width: 280px;
+  }
 }
 
-
-#color{
-    background-color: #90be55;
+#color {
+  background-color: #90be55;
 }
 
-#inputerc{
-    background-color:#90be55;
-    margin: auto;
+#inputerc {
+  background-color: #90be55;
+  margin: auto;
 }
 
-
-#inputerci{
-    background-color:#90be55;
-display: flex;
-align-items: center;
-justify-content: center;
-
+#inputerci {
+  background-color: #90be55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-#inputerc textarea{
-width: 400px;
+#inputerc textarea {
+  width: 400px;
+}
+
+ul.navbar-list {
+  display: flex;
+  flex-wrap: wrap;
+  line-height: normal;
+}
+
+ul.navbar-list li {
+  border-bottom: 1px solid #222;
+  padding: 0px;
+}
+
+ul.navbar-list li a span#hos {
+  font-size: 14px !important;
+}
+
+ul.navbar-list li a.navbar-link {
+  padding: 5px;
 }

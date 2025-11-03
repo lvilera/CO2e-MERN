@@ -1,46 +1,43 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, useSearchParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import './i18n'; // 👈 import your i18n setup
 import { useEffect } from 'react';
-import { API_BASE_URL } from './config';
+import { useTranslation } from "react-i18next";
+import { Route, BrowserRouter as Router, Routes, useSearchParams } from "react-router-dom";
+import './i18n'; // 👈 import your i18n setup
 import { setupIPhoneDetection } from './utils/iphoneFix';
 
-import Header from "./Home/Header";
-import Login from "./Login/Login";
+import AdminAddInstructor from './AdminAddInstructor';
+import AdminAddProduct from "./AdminAddProduct";
+import AdminCourseUpload from './AdminCourseUpload';
+import AdminDirectoryUpload from './AdminDirectoryUpload';
+import AdminFeaturedListing from './AdminFeaturedListing';
+import AdminManageGuide from "./AdminManageGuide";
+import AdminManageUser from "./AdminManageUser";
+import AdminRoute from "./AdminRoute";
+import AdminServiceImages from './AdminServiceImages';
+import CO2ePortalAuditToolkit from './AuditToolkit';
+import Blog2 from "./Blog2/Blog2";
+import BlogDetails from "./Blog2/BlogDetails";
+import NewsDetails from "./Blog2/NewsDetails";
+import BlogDashboard from "./BlogDashboard/BlogDashboard";
+import BuyCourses from './BuyCourses';
+import { CartProvider } from "./CartContext";
+import Contact from './Contact';
+import Courses from './Courses';
+import Dashboard from "./Dashboard/Dashboard";
+import DirectoryListing from './DirectoryListing';
 import Home from "./Home/Home";
-import Signup from "./Signup/Signup";
-import Trading from "./Trading/Trading";
+import { LoadingProvider, useLoading } from "./LoadingContext";
+import Login from "./Login/Login";
+import NewsDashboard from "./NewsDashboard/NewsDashboard";
 import Plan from "./Plan/Plan";
 import Product from "./Product/Product";
+import ResetPassword from './ResetPassword';
 import Services from "./Services/Services";
-import Blog from "./Blog/Blog";
-import Blog2 from "./Blog2/Blog2";
-import Dashboard from "./Dashboard/Dashboard";
-import NewsDashboard from "./NewsDashboard/NewsDashboard";
-import BlogDashboard from "./BlogDashboard/BlogDashboard";
-import AdminRoute from "./AdminRoute";
-import NewsDetails from "./Blog2/NewsDetails";
-import BlogDetails from "./Blog2/BlogDetails";
-import { CartProvider } from "./CartContext";
-import { LoadingProvider, useLoading } from "./LoadingContext";
-import LoadingSpinner from "./components/LoadingSpinner";
-import AdminCourseUpload from './AdminCourseUpload';
-import Courses from './Courses';
-import AdminFeaturedListing from './AdminFeaturedListing';
-import AdminServiceImages from './AdminServiceImages';
-import BuyCourses from './BuyCourses';
-import DirectoryListing from './DirectoryListing';
-import Contact from './Contact';
-import AdminAddInstructor from './AdminAddInstructor';
-import AdminManageUser from "./AdminManageUser";
-import AdminManageGuide from "./AdminManageGuide";
-import AdminDirectoryUpload from './AdminDirectoryUpload';
+import Signup from "./Signup/Signup";
 import Slots from './Slots';
+import Trading from "./Trading/Trading";
 import GSAPProvider from './components/GSAPProvider';
 import IPhoneTest from './components/IPhoneTest';
-import ResetPassword from './ResetPassword';
-import AdminAddProduct from "./AdminAddProduct";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 const redirectRoutes = {
   subscription: "/pricing",
@@ -113,7 +110,7 @@ function AppContent() {
           <Route path="/blogs/:id" element={<BlogDetails />} />
           <Route path="/upload-courses" element={<AdminCourseUpload />} />
           <Route path="/courses" element={<Courses />} />
-          <Route path="/admin/featured-listing" element={<AdminFeaturedListing />} />
+          
           <Route path="/success" element={<SuccessRedirect />} />
           <Route path="/buy-courses" element={<BuyCourses />} />
           <Route path="/directory" element={<DirectoryListing />} />
@@ -121,8 +118,12 @@ function AppContent() {
           <Route path="/cancel" element={<CancelRedirect />} />
           <Route path="/iphone-test" element={<IPhoneTest />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+
+          {/* Admin Routes */}
+          {/* <Route path="/admin/featured-listing" element={<AdminFeaturedListing />} /> */}
           <Route path="/admin/add-instructor" element={<AdminRoute><AdminAddInstructor /></AdminRoute>} />
           <Route path="/admin/add-product" element={<AdminRoute><AdminAddProduct /></AdminRoute>} />
+          <Route path="/admin/audit-toolkit" element={<AdminRoute><CO2ePortalAuditToolkit /></AdminRoute>} />
           <Route path="/admin/manage-user" element={<AdminRoute><AdminManageUser /></AdminRoute>} />
           <Route path="/admin/manage-guide" element={<AdminRoute><AdminManageGuide /></AdminRoute>} />
           <Route path="/admin/directory-upload" element={<AdminRoute><AdminDirectoryUpload /></AdminRoute>} />
@@ -130,7 +131,7 @@ function AppContent() {
           <Route path="/admin/service-images" element={<AdminRoute><AdminServiceImages /></AdminRoute>} />
           <Route path="/slots" element={<Slots />} />
 
-          {/* Admin Routes */}
+          
           <Route
             path="/Articles"
             element={<AdminRoute><Dashboard /></AdminRoute>}

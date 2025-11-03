@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import "./Plan.css";
-import Header from '../Home/Header';
-import Footer2 from '../Home/Footer2';
-import { useNavigate } from 'react-router-dom';
-import { IoBulbOutline, IoRibbonOutline, IoAirplaneOutline } from 'react-icons/io5';
-import { API_BASE } from '../config';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { API_BASE } from '../config';
+import Footer2 from '../Home/Footer2';
+import Header from '../Home/Header';
+import "./Plan.css";
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -450,7 +449,7 @@ const Plan = () => {
                   </div>
                   {subscriptionInfo?.priceId !== t("plan.premium_price_id") &&
                     <button
-                      onClick={() => handleSubscribe(t("plan.premium_price_id"))}
+                      onClick={() => handleSubscribe('price_1SPWzLQqlrTjfVZHK5nmE43A')}
                       disabled={loading === t("plan.premium_price_id")}
                       style={{
                         opacity: loading === t("plan.premium_price_id") ? 0.7 : 1,
