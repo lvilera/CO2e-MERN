@@ -266,7 +266,7 @@ const CO2ePortalAuditToolkit = () => {
   return (
     <>
       <style>{`
-        .tabs { margin-top:225px; display:flex; background:#f3f4f6; border-bottom:2px solid #e5e7eb; overflow-x:auto; }
+        .tabs { margin-top:95px; display:flex; background:#f3f4f6; border-bottom:2px solid #e5e7eb; overflow-x:auto; }
         .tab { padding:20px 30px; border:none; background:transparent; cursor:pointer; font-weight:600; color:#6b7280; border-bottom:4px solid transparent; white-space:nowrap; }
         .tab.active { background:#fff; color:#9333ea; border-bottom-color:#9333ea; }
         .content { padding:40px; min-height:500px; }
