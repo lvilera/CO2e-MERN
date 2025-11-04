@@ -730,7 +730,7 @@ const CO2ePortalAuditToolkit = () => {
       </div>
 
       {/* Admin list */}
-      <div className="admin-list">
+      <div className="admin-list no-print">
         <h3>{t.listTitle}</h3>
         <table>
           <thead>

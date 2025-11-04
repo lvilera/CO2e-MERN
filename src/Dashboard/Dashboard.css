@@ -193,7 +193,7 @@ ul.navbar-list.auth-nav {
   line-height: normal;
 }
 
-ul.navbar-list li {
+ul.navbar-list li:not(.dropdown) {
   border-bottom: 1px solid #222;
   padding: 0px;
 }

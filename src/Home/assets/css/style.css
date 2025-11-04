@@ -2112,7 +2112,7 @@ body {
   }
 }
 #logoo {
-  width: 140px !important; /* Increased further for a bigger logo */
+  width: 75px !important; /* Increased further for a bigger logo */
   height: auto !important;
 }
 

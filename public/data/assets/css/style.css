@@ -972,8 +972,11 @@ body.active {
 
   .search-btn,
   .header .btn {
-    --fs-6: 1.8rem;
-    padding: 6px 20px;
+    height: 75px;
+    width: 72px;
+    line-height: 18px;
+    font-size: 18px;
+    padding: 0;
   }
 
   .search-btn {
@@ -1139,5 +1142,10 @@ body.active {
   .footer-brand {
     grid-column: auto;
     padding-inline-end: 100px;
+  }
+}
+@media print {
+  .no-print {
+    display: none !important;
   }
 }
