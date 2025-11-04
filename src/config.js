@@ -1,5 +1,6 @@
 // API Configuration
-  export const API_BASE_URL = 'https://co-2e-mern-back-end.vercel.app';
+  //export const API_BASE_URL = 'https://co-2e-mern-back-end.vercel.app';
+  export const API_BASE_URL = 'https://co-2e-mern-back-end-git-main-luismis-projects-885dd17e.vercel.app/';
 
   //export const API_BASE_URL = "http://localhost:5001";
 
