@@ -449,7 +449,7 @@ const Plan = () => {
                   </div>
                   {subscriptionInfo?.priceId !== t("plan.premium_price_id") &&
                     <button
-                      onClick={() => handleSubscribe('price_1SPWzLQqlrTjfVZHK5nmE43A')}
+                      onClick={() => handleSubscribe(t("plan.premium_price_id"))}
                       disabled={loading === t("plan.premium_price_id")}
                       style={{
                         opacity: loading === t("plan.premium_price_id") ? 0.7 : 1,
