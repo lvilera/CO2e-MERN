@@ -145,7 +145,7 @@ const CO2ePortalAuditToolkit = () => {
     try {
       if (!API_BASE_URL) throw new Error("API_BASE_URL is not defined");
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/audits?limit=100`,
+        `${API_BASE_URL}/api/audit?limit=100`,
         { withCredentials: false }
       );
       setAudits(Array.isArray(data.items) ? data.items : []);
@@ -210,14 +210,14 @@ const CO2ePortalAuditToolkit = () => {
       if (!API_BASE_URL) throw new Error("API_BASE_URL is not defined");
       if (editAuditId) {
         const { data } = await axios.put(
-          `${API_BASE_URL}/api/audits/${editAuditId}`,
+          `${API_BASE_URL}/api/audit/${editAuditId}`,
           payload()
         );
         hydrateFromDoc(data);
         setMsg("Audit updated successfully.");
       } else {
         const { data } = await axios.post(
-          `${API_BASE_URL}/api/audits`,
+          `${API_BASE_URL}/api/audit`,
           payload()
         );
         setEditAuditId(data._id);
@@ -248,7 +248,7 @@ const CO2ePortalAuditToolkit = () => {
     setErr("");
     try {
       if (!API_BASE_URL) throw new Error("API_BASE_URL is not defined");
-      await axios.delete(`${API_BASE_URL}/api/audits/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/audit/${id}`);
       if (editAuditId === id) resetForm();
       setMsg("Audit deleted.");
       await fetchAudits();

@@ -1,21 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import {
+  IoChevronForwardOutline,
+  IoCloseOutline,
+  IoMenuOutline
+} from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom";
 import "./assets/css/style.css";
-import {
-  IoMenuOutline,
-  IoCloseOutline,
-  IoChevronForwardOutline,
-  IoSearchOutline,
-  IoHeartOutline
-} from "react-icons/io5";
-import Hero from "./Hero";
-import Features from "./Features";
-import About from "./About";
-import CTA from "./CTA";
-import Service from "./Service";
-import PartnerSection from "./PartnerSection";
-import DonateSection from "./Donate";
-import TestimonialsPartnerEventInsta from "./TestimonialsPartnerEventInsta";
 
 const Header2 = () => {
   const [navOpen, setNavOpen] = useState(false);
@@ -62,7 +52,8 @@ const Header2 = () => {
                 "Manage Guide",
                 "Upload Courses",
                 "Featured Listing",
-                "Directory Upload"
+                "Directory Upload",
+                "Audit Toolkit"
               ].map((item, idx) => {
                 let to =
                   item === "Featured Listing"
@@ -77,6 +68,8 @@ const Header2 = () => {
                             ? "/admin/manage-guide"
                             : item === "Directory Upload"
                               ? "/admin/directory-upload"
+                              : item === "Audit Toolkit"
+                              ? "/admin/audit-toolkit"
                               : `/${item.toLowerCase().replace(/ /g, '-')}`;
                 const isActive = location.pathname === to;
                 return (

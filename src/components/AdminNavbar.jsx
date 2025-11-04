@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { IoBookOutline, IoCloseOutline, IoDocumentTextOutline, IoHomeOutline, IoLogOutOutline, IoMenuOutline, IoNewspaperOutline, IoPersonOutline, IoStarOutline } from 'react-icons/io5';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { IoMenuOutline, IoCloseOutline, IoLogOutOutline, IoHomeOutline, IoPersonOutline, IoBookOutline, IoStarOutline, IoNewspaperOutline, IoDocumentTextOutline } from 'react-icons/io5';
 
 const AdminNavbar = () => {
   const [navOpen, setNavOpen] = useState(false);
