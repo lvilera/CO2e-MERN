@@ -1,5 +1,5 @@
 import { useLoading } from '../LoadingContext';
-import { isIPhoneSafari, createIPhoneSafeRequest, handleIPhoneError } from '../utils/iphoneFix';
+import { createIPhoneSafeRequest, handleIPhoneError } from '../utils/iphoneFix';
 
 export const useApi = () => {
   const { startLoading, stopLoading } = useLoading();
@@ -47,6 +47,8 @@ export const useApi = () => {
         // Retry with fallback token
         try {
           const fallbackToken = localStorage.getItem('fallbackToken');
+          console.log(fallbackToken);
+          
           if (fallbackToken) {
             const retryOptions = {
               ...options,
