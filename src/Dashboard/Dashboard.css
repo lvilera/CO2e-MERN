@@ -187,7 +187,7 @@
   width: 400px;
 }
 
-ul.navbar-list {
+ul.navbar-list.auth-nav {
   display: flex;
   flex-wrap: wrap;
   line-height: normal;
@@ -198,9 +198,9 @@ ul.navbar-list li {
   padding: 0px;
 }
 
-ul.navbar-list li a span#hos {
+/* ul.navbar-list li a span#hos {
   font-size: 14px !important;
-}
+} */
 
 ul.navbar-list li a.navbar-link {
   padding: 5px;

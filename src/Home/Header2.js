@@ -41,7 +41,7 @@ const Header2 = () => {
 
             <a href="#" className="logo">C02e PORTAL</a>
 
-            <ul className="navbar-list">
+            <ul className="navbar-list auth-nav">
               {[
                 "Articles",
                 "AddNews",
