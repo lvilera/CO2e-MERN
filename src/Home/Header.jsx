@@ -258,10 +258,9 @@ const Header = () => {
                   <span id="hos" style={location.pathname === '/products' ? { borderBottom: '2px solid #90be55', display: 'inline-block' } : {}}>
                     {t("navbar.products")}
                   </span>
-                  <IoChevronForwardOutline style={{ marginLeft: 6 }} />
+                   
                 </span>
-                <ul className="dropdown-menu">
-                </ul>
+                
               </li>
               {/* News Dropdown */}
               <li className="dropdown">
