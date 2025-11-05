@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import DynamicHeader from "./components/DynamicHeader";
 import { API_BASE_URL } from "./config";
-
+import Header from './Home/Header';
 const CO2ePortalAuditToolkit = () => {
   // ---------- STATE ----------
   const [lang, setLang] = useState("en");
@@ -307,7 +306,7 @@ const CO2ePortalAuditToolkit = () => {
         @media (max-width: 768px) { .grid-2 { grid-template-columns:1fr; } }
       `}</style>
 
-      <DynamicHeader />
+     <Header />
 
       {/* Tabs */}
       <div className="tabs">
