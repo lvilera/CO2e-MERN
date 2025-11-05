@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import "./assets/css/style.css";
 import {
-  IoMenuOutline,
-  IoCloseOutline,
   IoChevronForwardOutline,
-  IoHeartOutline
+  IoCloseOutline,
+  IoHeartOutline,
+  IoMenuOutline
 } from "react-icons/io5";
+import { Link, useLocation } from "react-router-dom";
 import { API_BASE } from '../config';
+import "./assets/css/style.css";
 
 const COURSE_TITLE = "Net Zero Carbon Strategy for Business";
 
@@ -336,6 +336,16 @@ const Header = () => {
                 </ul>
               </li>
 
+              {/* Resources Dropdown (was Trade) */}
+             {isLoggedIn && (<li className="dropdown" style={{ whiteSpace: 'nowrap' }}>
+                <span className="navbar-link" onClick={() => { setNavOpen(false); window.location.href = '/audit-toolkit'; }} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                  <span id="hos" style={location.pathname === '/audit-toolkit' ? { borderBottom: '2px solid #90be55', display: 'inline-block' } : {}}>
+                    {t("navbar.auditToolkit")}
+                  </span>
+                   
+                </span>
+                 
+              </li>)}
               {/* Show 'BCourses' for Pro/Premium users, never show 'Courses' */}
               {isLoggedIn && (userPackage === 'pro' || userPackage === 'premium') && (
                 <li>
@@ -344,8 +354,8 @@ const Header = () => {
                     <IoChevronForwardOutline />
                   </Link>
                 </li>
-              )}
-
+              
+                )}
               {isLoggedIn && localStorage.getItem('isInstructor') !== 'true' && (
                 <li>
                   <Link to="/directory" className="navbar-link" onClick={() => setNavOpen(false)}>

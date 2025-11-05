@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import DynamicHeader from "./components/DynamicHeader";
 import { API_BASE_URL } from "./config";
 
-const CO2ePortalAuditToolkit = () => {
+const CO2ePortalAdminAuditToolkit = () => {
   // ---------- STATE ----------
   const [lang, setLang] = useState("en");
   const [activeTab, setActiveTab] = useState(0);
@@ -729,9 +729,54 @@ const CO2ePortalAuditToolkit = () => {
         {err && <div className="err">{err}</div>}
       </div>
 
-       
+      {/* Admin list */}
+      <div className="admin-list no-print">
+        <h3>{t.listTitle}</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Org</th>
+              <th>Lang</th>
+              <th>Period</th>
+              <th>Total (tCO2e)</th>
+              <th>Updated</th>
+              <th style={{ width: 190 }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {audits.map((a) => {
+              const total = Number(a?.totalTonnes ?? 0);
+              const updated = a?.updatedAt
+                ? new Date(a.updatedAt).toLocaleString()
+                : "-";
+              const start = a?.reportStart ? String(a.reportStart).slice(0, 10) : "";
+              const end = a?.reportEnd ? String(a.reportEnd).slice(0, 10) : "";
+              return (
+                <tr key={a._id}>
+                  <td>{a.orgName || "-"}</td>
+                  <td>{a.lang ? String(a.lang).toUpperCase() : "-"}</td>
+                  <td>{start} → {end}</td>
+                  <td>{Number.isFinite(total) ? total.toFixed(2) : "0.00"}</td>
+                  <td>{updated}</td>
+                  <td className="actions">
+                    <button className="btn btn-secondary" onClick={() => handleEdit(a)}>Edit</button>
+                    <button className="btn" style={{ background: "#dc2626" }} onClick={() => handleDelete(a._id)}>Delete</button>
+                  </td>
+                </tr>
+              );
+            })}
+            {audits.length === 0 && (
+              <tr>
+                <td colSpan={6} style={{ textAlign: "center", padding: 20 }}>
+                  No audits yet.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };
 
-export default CO2ePortalAuditToolkit;
+export default CO2ePortalAdminAuditToolkit;

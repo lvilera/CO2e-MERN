@@ -6,6 +6,7 @@ import { setupIPhoneDetection } from './utils/iphoneFix';
 
 import AdminAddInstructor from './AdminAddInstructor';
 import AdminAddProduct from "./AdminAddProduct";
+import CO2ePortalAdminAuditToolkit from './AdminAuditToolkit';
 import AdminCourseUpload from './AdminCourseUpload';
 import AdminDirectoryUpload from './AdminDirectoryUpload';
 import AdminFeaturedListing from './AdminFeaturedListing';
@@ -118,12 +119,14 @@ function AppContent() {
           <Route path="/cancel" element={<CancelRedirect />} />
           <Route path="/iphone-test" element={<IPhoneTest />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/audit-toolkit" element={ <CO2ePortalAuditToolkit /> }/>
+
 
           {/* Admin Routes */}
           {/* <Route path="/admin/featured-listing" element={<AdminFeaturedListing />} /> */}
           <Route path="/admin/add-instructor" element={<AdminRoute><AdminAddInstructor /></AdminRoute>} />
           <Route path="/admin/add-product" element={<AdminRoute><AdminAddProduct /></AdminRoute>} />
-          <Route path="/admin/audit-toolkit" element={<AdminRoute><CO2ePortalAuditToolkit /></AdminRoute>} />
+          <Route path="/admin/audit-toolkit" element={<AdminRoute><CO2ePortalAdminAuditToolkit /></AdminRoute>} />
           <Route path="/admin/manage-user" element={<AdminRoute><AdminManageUser /></AdminRoute>} />
           <Route path="/admin/manage-guide" element={<AdminRoute><AdminManageGuide /></AdminRoute>} />
           <Route path="/admin/directory-upload" element={<AdminRoute><AdminDirectoryUpload /></AdminRoute>} />
