@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import Header from '../Home/Header';
-import Footer2 from '../Home/Footer2';
-import './Services.css';
-import { useApi } from '../hooks/useApi';
-import { API_BASE } from '../config';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { API_BASE } from '../config';
+import Footer2 from '../Home/Footer2';
+import Header from '../Home/Header';
+import { useApi } from '../hooks/useApi';
 import Audit from './Audit';
+import './Services.css';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -853,8 +853,9 @@ const Services = () => {
                             if (effectivePackage === 'premium') {
                               style = {
                                 ...style,
+                                color: 'blue',
                                 fontWeight: 700,
-                                fontSize: '14px'
+                                fontSize: '15px'
                               };
                             }
                             return (
