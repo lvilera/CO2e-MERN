@@ -355,14 +355,14 @@ const Header = () => {
                 </li>
               
                 )}
-              {isLoggedIn && localStorage.getItem('isInstructor') !== 'true' && (
+              {/* {isLoggedIn && localStorage.getItem('isInstructor') !== 'true' && (
                 <li>
                   <Link to="/directory" className="navbar-link" onClick={() => setNavOpen(false)}>
                     <span id="hos" style={location.pathname === '/directory' ? { borderBottom: '2px solid #90be55', display: 'inline-block' } : {}}>{t("navbar.submenu.directory")}</span>
                     <IoChevronForwardOutline />
                   </Link>
                 </li>
-              )}
+              )} */}
               {(isLoggedIn && localStorage.getItem('isInstructor') === 'true') && (
                 <li>
                   <Link to="/slots" className="navbar-link" onClick={() => setNavOpen(false)}>

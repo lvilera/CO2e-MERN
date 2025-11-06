@@ -872,7 +872,7 @@ const Services = () => {
                                 }}>
                                   {l.package === 'premium' && l.imageUrl ? (
                                     <img
-                                      src={l.imageUrl}
+                                      src={l.originalFileName}
                                       alt={l.company}
                                       style={{
                                         width: '60px',

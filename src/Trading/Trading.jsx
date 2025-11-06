@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import Header from '../Home/Header';
-import Footer2 from '../Home/Footer2';
-import './Trading.css';
-import { useApi } from '../hooks/useApi';
-import { API_BASE_URL } from '../config';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Calculator from './Calculator';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { API_BASE_URL } from '../config';
+import Footer2 from '../Home/Footer2';
+import Header from '../Home/Header';
+import { useApi } from '../hooks/useApi';
+import CarbonEmissionsCalculator from './CarbonEmissionsCalculator';
+import './Trading.css';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -278,18 +278,14 @@ const Trading = () => {
         {/* CO2 Emissions Calculator and Democratizing Section */}
         <div id="calculator-democratizing-container">
           <div id="calculator-section">
-            <h1 ref={calculatorTitleRef} style={{ position: 'relative' }}>
-              {/* Anchor div for navbar navigation - ensures heading appears from start */}
-              <div id="calculator-section-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
-              {t("trading.calculator_title")}
-            </h1>
+            
             <div id="calculator-container" ref={calculatorContainerRef}>
               {/* <iframe
                 style={{ height: '730px', width: '100%' }}
                 src="https://plugin.sustainabletravel.com/?api_key=STIKEY_687aad94750ee556806795&primary_color=%23008370&secondary_color=%23f7961f&light_primary_color=%2366e9d6&sort_order=Flight%2CHotel%2CCar%2CBoat"
                 title="CO2 Emissions Calculator"
               /> */}
-              <Calculator />
+              <CarbonEmissionsCalculator />
             </div>
           </div>
 
