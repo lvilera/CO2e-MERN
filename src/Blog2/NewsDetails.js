@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useApi } from '../hooks/useApi';
 import Header from '../Home/Header';
+import Footer from '../Home/Footer';
 import Footer2 from '../Home/Footer2';
 import { API_BASE_URL } from '../config';
 
@@ -12,7 +13,7 @@ const NewsDetails = () => {
   const [error, setError] = useState(null);
   const { get } = useApi();
 
-  const fetchPost = useCallback(async () => {
+  const fetchPost = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -25,7 +26,7 @@ const NewsDetails = () => {
     } finally {
       setLoading(false);
     }
-  }, [get, id]);
+  };
 
   useEffect(() => {
     fetchPost();
@@ -39,7 +40,7 @@ const NewsDetails = () => {
       window.removeEventListener('storage', handleLanguageChange);
       window.removeEventListener('languageChanged', handleLanguageChange);
     };
-  }, [fetchPost]);
+  }, [id]);
 
   if (loading) return <div style={{ padding: "2rem", textAlign: "center" }}>Loading...</div>;
   if (error) return <div style={{ padding: "2rem", textAlign: "center", color: "red" }}>{error}</div>;

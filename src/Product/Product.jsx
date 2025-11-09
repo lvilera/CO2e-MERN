@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import "./Product.css";
 import Header from '../Home/Header';
 import Footer2 from '../Home/Footer2';
@@ -22,7 +21,7 @@ const Product = () => {
     const messageRef = useRef(null);
     const cardsRef = useRef(null);
 
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         fetch(`${API_BASE}/api/products`)
             .then(res => res.json())
             .then(data => {
@@ -33,12 +32,12 @@ const Product = () => {
             .catch(() => {
                 setProducts([]);
             });
-    };
+    }, []);
 
     // Fetch user's current package
     useEffect(() => {
         fetchProducts();
-    }, [isLoggedIn]);
+    }, [fetchProducts]);
 
     // Handle hash navigation when page loads
     useEffect(() => {

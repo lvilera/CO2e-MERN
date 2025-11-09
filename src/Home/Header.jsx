@@ -17,7 +17,6 @@ const Header = () => {
   const location = useLocation();
   const [navOpen, setNavOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
-  // eslint-disable-next-line no-unused-vars
   const [hasCourse, setHasCourse] = useState(false);
   const [userPackage, setUserPackage] = useState('');
 
@@ -110,7 +109,7 @@ const Header = () => {
       <header id="hhw" className="header">
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <h1>
-            <a href="/" className="logo"><img id="logoo" src="/Logo.png" alt="CO2ePortal Logo" /></a>
+            <a href="#" className="logo"><img id="logoo" src="/Logo.png" /></a>
           </h1>
 
           {/* Language Dropdown */}
@@ -144,7 +143,7 @@ const Header = () => {
               <IoCloseOutline />
             </button>
 
-            <a href="/" className="logo">{t("navbar.logo")}</a>
+            <a href="#" className="logo">{t("navbar.logo")}</a>
 
             <ul className="navbar-list">
               {/* Home Dropdown */}

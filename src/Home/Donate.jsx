@@ -2,9 +2,11 @@ import React, { useEffect, useRef } from "react";
 import { IoHeartOutline } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import "./assets/css/style.css";
-import {
-  scrollTriggerAnimation,
-  slideInUp,
+import { 
+  scrollTriggerAnimation, 
+  slideInUp, 
+  staggerAnimation,
+  continuousCardFloat,
   continuousCardPulse,
   scaleIn,
   floatingAnimation

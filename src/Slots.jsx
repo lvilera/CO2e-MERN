@@ -68,8 +68,7 @@ const Slots = () => {
     if (savedLang && savedLang !== i18n.language) {
       i18n.changeLanguage(savedLang);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate, email, instructorId, i18n]);
+  }, [navigate, email, fetchPendingBookings, instructorId, i18n]);
 
   const fetchProfile = async () => {
     try {
@@ -149,7 +148,6 @@ const Slots = () => {
     }
   };
 
-  // eslint-disable-next-line no-unused-vars
   const handleEditSlot = async (day, idx, start, end) => {
     // Debug log
     console.log('Edit slot params:', { email, day, idx, start, end });
@@ -194,7 +192,6 @@ const Slots = () => {
     }
   };
 
-  // eslint-disable-next-line no-unused-vars
   const handleDeleteBooking = async (idx) => {
     try {
       await axios.delete(`${API_BASE_URL}/api/instructors/booking/${email}/${idx}`);

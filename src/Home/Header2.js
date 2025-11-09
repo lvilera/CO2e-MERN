@@ -16,7 +16,7 @@ const Header2 = () => {
       <header id="wqeq" className="header">
         <div className="container">
           <h1>
-            <a href="/" className="logo"><img id="logoo" src="/Logo.png" alt="CO2ePortal Logo"></img></a>
+            <a href="#" className="logo"><img id="logoo" src="/Logo.png"></img></a>
           </h1>
 
 
@@ -39,7 +39,7 @@ const Header2 = () => {
               <IoCloseOutline />
             </button>
 
-            <a href="/" className="logo">C02e PORTAL</a>
+            <a href="#" className="logo">C02e PORTAL</a>
 
             <ul className="navbar-list auth-nav">
               {[

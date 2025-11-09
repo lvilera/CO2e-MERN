@@ -38,7 +38,7 @@ const Signup = () => {
     setError('');
     setSuccess('');
     try {
-      await post(`${API_BASE}/api/signup`, formData, 'Signing up...');
+      const data = await post(`${API_BASE}/api/signup`, formData, 'Signing up...');
       setSuccess('Signup successful!');
       localStorage.setItem('userEmail', formData.email); // Save user email for booking
       setTimeout(() => navigate('/login'), 1500);

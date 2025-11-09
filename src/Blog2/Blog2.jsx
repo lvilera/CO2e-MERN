@@ -50,7 +50,7 @@ const Blog2 = () => {
       window.removeEventListener('storage', handleLanguageChange);
       window.removeEventListener('languageChanged', handleLanguageChange);
     };
-  }, [i18n]);
+  }, []);
 
   // Truncate description
   const truncate = (text, wordLimit) => {
@@ -74,6 +74,7 @@ const Blog2 = () => {
         setSubscribed(true);
         setEmail('');
       } else {
+        const data = await res.json();
         // Optionally handle error (do nothing for now)
       }
     } catch (err) {
