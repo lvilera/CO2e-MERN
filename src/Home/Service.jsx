@@ -7,6 +7,7 @@ import {
 } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 
+import subtitleImage from "./assets/images/subtitle-img-green.png";
 import serviceBg from "./assets/images/service-map.png";
 import "./assets/css/style.css";
 import { 
@@ -48,9 +49,14 @@ const Service = () => {
         cards.forEach((card, index) => {
           // Scroll trigger for each card
           scrollTriggerAnimation(card, scaleIn, "top 85%");
-
+          
+          const icon = card.querySelector('.card-icon');
+          const title = card.querySelector('.card-title');
+          const text = card.querySelector('.card-text');
+          const link = card.querySelector('.btn-link');
+          
           // Text elements are now static - no scroll animations
-
+          
           // Only keep subtle continuous card float (no disappear/reappear)
           setTimeout(() => {
             continuousCardFloat(card, index * 0.5);

@@ -7,7 +7,7 @@ import {
 } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import "./assets/css/style.css";
-import { staggerAnimation, floatingAnimation } from "../utils/gsapAnimations";
+import { staggerAnimation, scaleIn, floatingAnimation } from "../utils/gsapAnimations";
 
 const Features = () => {
   const { t, i18n } = useTranslation();

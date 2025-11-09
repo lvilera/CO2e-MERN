@@ -71,8 +71,8 @@ const Audit = () => {
                         <div id="results" className="">
                             <h2>Audit Complete!</h2>
                             <p>View your reports below:</p>
-                            <p><a href={API_BASE + data?.htmlPath} target="_blank" rel="noreferrer">View HTML Report</a></p>
-                            <p><a href={API_BASE + data?.pdfPath} target="_blank" rel="noreferrer">Download PDF Report</a></p>
+                            <p><a href={API_BASE + data?.htmlPath} target="_blank">View HTML Report</a></p>
+                            <p><a href={API_BASE + data?.pdfPath} target="_blank">Download PDF Report</a></p>
                         </div>
                         :
                         <></>

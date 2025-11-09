@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import "./Product.css";
 import Header from '../Home/Header';
@@ -12,6 +12,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const Product = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const [loading, setLoading] = useState(null); // Track which button is loading
@@ -65,7 +66,12 @@ const Product = () => {
         }
     }, []);
 
-    const initializeAnimations = useCallback(() => {
+    useEffect(() => {
+        // Initialize animations
+        initializeAnimations();
+    }, [message]);
+
+    const initializeAnimations = () => {
 
         // Message animation
         if (messageRef.current && message.text) {
@@ -95,12 +101,7 @@ const Product = () => {
                 }
             );
         }
-    }, [message]);
-
-    useEffect(() => {
-        // Initialize animations
-        initializeAnimations();
-    }, [initializeAnimations]);
+    };
 
     const showMessage = (text, type = 'success') => {
         setMessage({ text, type });

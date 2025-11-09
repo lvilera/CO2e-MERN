@@ -17,19 +17,14 @@ const BuyCourses = () => {
   const { t, i18n } = useTranslation();
   const [date, setDate] = useState('');
   const [people, setPeople] = useState(8);
-  // eslint-disable-next-line no-unused-vars
   const [checking, setChecking] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [available, setAvailable] = useState(null);
   const [error, setError] = useState('');
   const [stripeLoading, setStripeLoading] = useState(false);
   const [city, setCity] = useState('');
   const [instructors, setInstructors] = useState([]);
-  // eslint-disable-next-line no-unused-vars
   const [selectedInstructor, setSelectedInstructor] = useState('');
-  // eslint-disable-next-line no-unused-vars
   const [availableSlots, setAvailableSlots] = useState([]);
-  // eslint-disable-next-line no-unused-vars
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [message, setMessage] = useState('');
   const userPackage = (localStorage.getItem('package') || '').toLowerCase();
@@ -39,7 +34,6 @@ const BuyCourses = () => {
   const [preferredEnd, setPreferredEnd] = useState('');
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
-  // eslint-disable-next-line no-unused-vars
   const { get, post } = useApi();
   const [area, setArea] = useState('');
   const [bookingId, setBookingId] = useState(null);
@@ -199,7 +193,6 @@ const BuyCourses = () => {
     }
   }, [instructors, date, preferredStart, preferredEnd, selectedCourse]);
 
-  // eslint-disable-next-line no-unused-vars
   const checkAvailability = async () => {
     setChecking(true);
     setError('');
@@ -366,7 +359,7 @@ const BuyCourses = () => {
       setBookingStatus('');
       setAutofilled(false);
     }
-  }, [autofilled, bookingStatus, hasCourse]);
+  }, [hasCourse]);
 
   // Show booking confirmation after payment
   useEffect(() => {

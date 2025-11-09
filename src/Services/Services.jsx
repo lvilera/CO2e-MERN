@@ -18,16 +18,12 @@ const Services = () => {
   const [directoryListings, setDirectoryListings] = useState([]);
   const [selectedLetter, setSelectedLetter] = useState('A');
   const [user, setUser] = useState(null);
-  // eslint-disable-next-line no-unused-vars
   const [uploadingId, setUploadingId] = useState(null);
-  // eslint-disable-next-line no-unused-vars
   const [uploadError, setUploadError] = useState('');
   const [viewMode, setViewMode] = useState('alphabetical'); // 'alphabetical' or 'category'
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('Local Contractors'); // Default to Local Contractors
-  // eslint-disable-next-line no-unused-vars
   const [showSubCategories, setShowSubCategories] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [subCategories, setSubCategories] = useState([]);
   const [serviceImages, setServiceImages] = useState([]);
   const [featuredListings, setFeaturedListings] = useState([]);
@@ -59,7 +55,6 @@ const Services = () => {
     fetchFeaturedListings();
     fetchUser();
     fetchCourses();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i18n]);
 
   useEffect(() => {
@@ -360,7 +355,6 @@ const Services = () => {
     }
   };
 
-  // eslint-disable-next-line no-unused-vars
   const handleImageUpload = async (listingId, file) => {
     setUploadingId(listingId);
     setUploadError('');

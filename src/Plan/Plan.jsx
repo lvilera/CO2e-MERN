@@ -1,6 +1,6 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../config';
@@ -33,7 +33,7 @@ const Plan = () => {
     subscriptionInfoRef.current = subscriptionInfo;
   }, [subscriptionInfo]);
 
-  const fetchMe = useCallback(async () => {
+  const fetchMe = async () => {
     if (isLoggedIn) {
       fetch(`${API_BASE}/api/me`, {
         credentials: 'include'
@@ -50,12 +50,12 @@ const Plan = () => {
     } else {
       setSubscriptionInfo(null);
     }
-  }, [isLoggedIn]);
+  };
 
   // Fetch user's current package
   useEffect(() => {
     fetchMe();
-  }, [fetchMe]);
+  }, [isLoggedIn]);
 
   // Handle hash navigation when page loads
   useEffect(() => {
@@ -82,7 +82,12 @@ const Plan = () => {
     }
   }, []);
 
-  const initializeAnimations = useCallback(() => {
+  useEffect(() => {
+    // Initialize animations
+    initializeAnimations();
+  }, [message]);
+
+  const initializeAnimations = () => {
 
     // Message animation
     if (messageRef.current && message.text) {
@@ -190,12 +195,7 @@ const Plan = () => {
         }
       );
     }
-  }, [message]);
-
-  useEffect(() => {
-    // Initialize animations
-    initializeAnimations();
-  }, [initializeAnimations]);
+  };
 
   const showMessage = (text, type = 'success') => {
     setMessage({ text, type });
@@ -491,11 +491,11 @@ const Plan = () => {
               <h1>{t("plan.blockchain_title")}</h1>
               <p>{t("plan.blockchain_text")}</p>
             </div>
-            <img id="imager" src="https://static.vecteezy.com/system/resources/previews/055/135/329/non_2x/3d-gold-coin-stacks-with-a-rising-arrow-representing-business-growth-investment-success-and-positive-financial-trends-free-png.png" alt="Gold coins representing growth" />
+            <img id="imager" src="https://static.vecteezy.com/system/resources/previews/055/135/329/non_2x/3d-gold-coin-stacks-with-a-rising-arrow-representing-business-growth-investment-success-and-positive-financial-trends-free-png.png" />
           </div>
 
           <div id="yyy" ref={investmentRef}>
-            <img id="imager2" src="https://www.tunley-environmental.com/hs-fs/hubfs/Website%20Sized%20Images/Graphics/Embodied%20Carbon%20Assessment-03.png?width=500&height=439&name=Embodied%20Carbon%20Assessment-03.png" alt="Carbon assessment graphic" />
+            <img id="imager2" src="https://www.tunley-environmental.com/hs-fs/hubfs/Website%20Sized%20Images/Graphics/Embodied%20Carbon%20Assessment-03.png?width=500&height=439&name=Embodied%20Carbon%20Assessment-03.png" />
             <div id="Blockchain2">
               <h1>{t("plan.investment_hub_title")}</h1>
               <p>{t("plan.investment_hub_text")}</p>
@@ -507,7 +507,7 @@ const Plan = () => {
               <h1>{t("plan.commitment_title")}</h1>
               <p>{t("plan.commitment_text")}</p>
             </div>
-            <img id="lasterimg" src="https://static.vecteezy.com/system/resources/thumbnails/040/735/326/small/ai-generated-silhouette-two-hand-holding-soil-with-growing-sprout-black-color-only-png.png" alt="Hands holding soil with sprout" />
+            <img id="lasterimg" src="https://static.vecteezy.com/system/resources/thumbnails/040/735/326/small/ai-generated-silhouette-two-hand-holding-soil-with-growing-sprout-black-color-only-png.png" />
           </div>
         </div>
 

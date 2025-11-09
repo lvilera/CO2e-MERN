@@ -23,7 +23,7 @@ const CarbonCounter = () => {
     const intervalId = setInterval(updateCounters, 1000);
 
     return () => clearInterval(intervalId);
-  }, [startDate]);
+  }, []);
 
   return (
     <div style={styles.container}>
