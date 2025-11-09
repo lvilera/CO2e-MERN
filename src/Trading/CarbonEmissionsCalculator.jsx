@@ -135,7 +135,7 @@ const CarbonEmissionsCalculator = () => {
 
   // -------------------- STATE --------------------
   const [lang, setLang] = useState("en");
-  const t = useMemo(() => STRINGS[lang] || STRINGS.en, [lang]);
+  const t = useMemo(() => STRINGS[lang] || STRINGS.en, [lang, STRINGS]);
 
   const [activeTab, setActiveTab] = useState("sme");
 

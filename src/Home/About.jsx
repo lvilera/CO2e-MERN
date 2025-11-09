@@ -8,21 +8,19 @@ import {
 import subtitleImage from "./assets/images/subtitle-img-green.png";
 import decoImg from "./assets/images/deco-img.png";
 import "./assets/css/style.css";
-import { 
-  slideInLeft, 
-  slideInRight, 
-  parallaxEffect, 
-  staggerAnimation, 
+import {
+  slideInRight,
+  parallaxEffect,
+  staggerAnimation,
   scaleIn,
-  floatingAnimation 
+  floatingAnimation
 } from "../utils/gsapAnimations";
 
 const About = () => {
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState("mission");
-  
+
   // Refs for animations
-  const aboutRef = useRef(null);
   const bannerRef = useRef(null);
   const contentRef = useRef(null);
   const imagesRef = useRef(null);
@@ -90,7 +88,7 @@ const About = () => {
       <div className="container">
         {/* ABOUT BANNER */}
         <div className="about-banner" ref={bannerRef}>
-          <h2 className="deco-title"></h2>
+          <h2 className="deco-title" aria-hidden="true"></h2>
           <img src={decoImg} width="58" height="261" alt="" className="deco-img" />
 
           <div className="banner-row" ref={imagesRef}>

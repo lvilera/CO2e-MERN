@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import Header from './Home/Header';
 import Footer2 from './Home/Footer2';
@@ -6,7 +6,7 @@ import { useApi } from './hooks/useApi';
 import { API_BASE } from './config';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { setupIPhoneDetection, isIPhoneSafari, getAuthHeaders } from './utils/iphoneFix';
+import { setupIPhoneDetection, isIPhoneSafari } from './utils/iphoneFix';
 import './DirectoryListing.css';
 
 // Register GSAP plugins
@@ -44,6 +44,7 @@ const DirectoryListing = () => {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const { get, post } = useApi();
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
 
@@ -103,7 +104,7 @@ const DirectoryListing = () => {
       console.log('DirectoryListing: Login status changed to false, clearing user data');
       setUser(null);
     }
-  }, [isLoggedIn]);
+  }, [fetchUser, isLoggedIn]);
 
   const initializeAnimations = () => {
     // Title animation
@@ -189,7 +190,7 @@ const DirectoryListing = () => {
     }
   };
 
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     try {
       console.log('DirectoryListing: Attempting to fetch user from:', `${API_BASE}/api/me`);
       const data = await get(`${API_BASE}/api/me`, 'Loading user info...');
@@ -199,7 +200,7 @@ const DirectoryListing = () => {
       console.error('DirectoryListing: Error fetching user:', err);
       setUser(null);
     }
-  };
+  }, [get]);
 
   const socialOptions = useMemo(() => {
     return [

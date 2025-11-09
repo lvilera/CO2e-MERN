@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import DynamicHeader from './components/DynamicHeader';
 import Footer2 from './Home/Footer2';
 import { API_BASE } from './config';
@@ -17,11 +17,7 @@ const AdminFeaturedListing = () => {
     setTimeout(() => setMessage({ text: '', type: '' }), 3000);
   };
 
-  useEffect(() => {
-    fetchListings();
-  }, []);
-
-  const fetchListings = async () => {
+  const fetchListings = useCallback(async () => {
     try {
       const res = await fetch(`${API_BASE}/api/featured-listings`);
       const data = await res.json();
@@ -30,7 +26,11 @@ const AdminFeaturedListing = () => {
       console.error('Error fetching listings:', err);
       showMessage('Error fetching listings', 'error');
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchListings();
+  }, [fetchListings]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];

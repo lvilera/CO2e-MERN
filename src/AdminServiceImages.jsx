@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import DynamicHeader from './components/DynamicHeader';
 import Footer2 from './Home/Footer2';
 import { API_BASE } from './config';
@@ -16,11 +16,7 @@ const AdminServiceImages = () => {
     setTimeout(() => setMessage({ text: '', type: '' }), 3000);
   };
 
-  useEffect(() => {
-    fetchImages();
-  }, []);
-
-  const fetchImages = async () => {
+  const fetchImages = useCallback(async () => {
     try {
       const res = await fetch(`${API_BASE}/api/service-images`);
       const data = await res.json();
@@ -29,7 +25,11 @@ const AdminServiceImages = () => {
       console.error('Error fetching images:', err);
       showMessage('Error fetching images', 'error');
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchImages();
+  }, [fetchImages]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];

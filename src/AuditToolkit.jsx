@@ -36,6 +36,7 @@ const CO2ePortalAuditToolkit = () => {
   const [totalTonnes, setTotalTonnes] = useState(0);
 
   // Admin list
+  // eslint-disable-next-line no-unused-vars
   const [audits, setAudits] = useState([]);
   const [editAuditId, setEditAuditId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -232,6 +233,7 @@ const CO2ePortalAuditToolkit = () => {
     }
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleEdit = (doc) => {
     setEditAuditId(doc._id);
     hydrateFromDoc(doc);
@@ -240,6 +242,7 @@ const CO2ePortalAuditToolkit = () => {
     setErr("");
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleDelete = async (id) => {
     if (window.confirm("Delete this audit?") === false) return;
     setLoading(true);

@@ -1,15 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import "./assets/css/style.css";
-import { 
-  scrollTriggerAnimation, 
-  slideInUp, 
-  staggerAnimation,
+import {
+  scrollTriggerAnimation,
+  slideInUp,
   continuousCardFloat,
   continuousCardPulse,
   scaleIn,
   floatingAnimation,
-  slideInLeft,
   slideInRight
 } from "../utils/gsapAnimations";
 

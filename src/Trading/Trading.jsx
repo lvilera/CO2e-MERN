@@ -1,6 +1,6 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { API_BASE_URL } from '../config';
 import Footer2 from '../Home/Footer2';
@@ -28,7 +28,7 @@ const Trading = () => {
   const partnersTitleRef = useRef(null);
   const partnersLogosRef = useRef(null);
 
-  const fetchCards = async () => {
+  const fetchCards = useCallback(async () => {
     try {
       // Get the selected language from localStorage
       // const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
@@ -37,7 +37,7 @@ const Trading = () => {
     } catch (err) {
       console.error("Error fetching cards:", err);
     }
-  };
+  }, [get]);
 
   useEffect(() => {
     fetchCards();
@@ -51,7 +51,7 @@ const Trading = () => {
     //   window.removeEventListener('storage', handleLanguageChange);
     //   window.removeEventListener('languageChanged', handleLanguageChange);
     // };
-  }, []);
+  }, [fetchCards]);
 
   // Handle anchor navigation when page loads
   useEffect(() => {
