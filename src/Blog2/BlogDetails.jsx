@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useApi } from '../hooks/useApi';
 import Header from '../Home/Header';
@@ -12,7 +12,7 @@ const BlogDetails = () => {
   const [error, setError] = useState(null);
   const { get } = useApi();
 
-  const fetchBlog = async () => {
+  const fetchBlog = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -25,7 +25,7 @@ const BlogDetails = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [get, id]);
 
   useEffect(() => {
     fetchBlog();
@@ -39,7 +39,7 @@ const BlogDetails = () => {
       window.removeEventListener('storage', handleLanguageChange);
       window.removeEventListener('languageChanged', handleLanguageChange);
     };
-  }, [id]);
+  }, [fetchBlog]);
 
   if (loading) return <div style={{ padding: "2rem", textAlign: "center" }}>Loading...</div>;
   if (error) return <div style={{ padding: "2rem", textAlign: "center", color: "red" }}>{error}</div>;

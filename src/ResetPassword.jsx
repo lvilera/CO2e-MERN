@@ -25,7 +25,7 @@ const ResetPassword = () => {
     } else {
       setMessage(t('login.invalid_reset_link'));
     }
-  }, [location.search]);
+  }, [location.search, t]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

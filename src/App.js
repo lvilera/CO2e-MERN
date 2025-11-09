@@ -54,7 +54,7 @@ function SuccessRedirect() {
     setTimeout(() => {
       window.location.href = redirectURL;
     }, 3000);
-  }, []);
+  }, [type]);
   return <div style={{ textAlign: 'center', marginTop: 100 }}><h1>Payment Successful!</h1><p>Redirecting...</p></div>;
 }
 
@@ -67,7 +67,7 @@ function CancelRedirect() {
     setTimeout(() => {
       window.location.href = redirectURL;
     }, 3000);
-  }, []);
+  }, [type]);
   return (
     <div style={{ textAlign: 'center', marginTop: 100 }}>
       <h1>Payment Cancelled</h1>
@@ -77,7 +77,6 @@ function CancelRedirect() {
 }
 
 function AppContent() {
-  const { i18n } = useTranslation();
   const { isLoading, loadingMessage } = useLoading();
 
   // Setup iPhone Safari detection on app startup
@@ -88,10 +87,6 @@ function AppContent() {
       setupIPhoneDetection();
     }
   }, []);
-
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
 
   return (
     <Router>

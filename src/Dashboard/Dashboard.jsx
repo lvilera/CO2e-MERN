@@ -66,8 +66,8 @@ const Dashboard = () => {
         const errorData = await res.json();
         throw new Error(errorData.error || 'Failed to create card');
       }
-      
-    const data = await res.json();
+
+      await res.json();
       showMessage('Card added successfully!');
     setForm({ 
       titleEn: '', titleFr: '', titleEs: '',

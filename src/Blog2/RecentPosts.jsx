@@ -34,7 +34,7 @@ const RecentPosts = () => {
       window.removeEventListener('storage', handleLanguageChange);
       window.removeEventListener('languageChanged', handleLanguageChange);
     };
-  }, []);
+  }, [i18n]);
 
   const truncate = (text, wordLimit) => {
     if (!text || typeof text !== 'string') return '';
