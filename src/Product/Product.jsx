@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import "./Product.css";
 import Header from '../Home/Header';
 import Footer2 from '../Home/Footer2';
@@ -12,7 +11,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const Product = () => {
-    const { t } = useTranslation();
     const navigate = useNavigate();
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const [loading, setLoading] = useState(null); // Track which button is loading
@@ -23,7 +21,7 @@ const Product = () => {
     const messageRef = useRef(null);
     const cardsRef = useRef(null);
 
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         fetch(`${API_BASE}/api/products`)
             .then(res => res.json())
             .then(data => {
@@ -34,12 +32,12 @@ const Product = () => {
             .catch(() => {
                 setProducts([]);
             });
-    };
+    }, []);
 
     // Fetch user's current package
     useEffect(() => {
         fetchProducts();
-    }, [isLoggedIn]);
+    }, [fetchProducts]);
 
     // Handle hash navigation when page loads
     useEffect(() => {
@@ -66,12 +64,7 @@ const Product = () => {
         }
     }, []);
 
-    useEffect(() => {
-        // Initialize animations
-        initializeAnimations();
-    }, [message]);
-
-    const initializeAnimations = () => {
+    const initializeAnimations = useCallback(() => {
 
         // Message animation
         if (messageRef.current && message.text) {
@@ -101,7 +94,12 @@ const Product = () => {
                 }
             );
         }
-    };
+    }, [message]);
+
+    useEffect(() => {
+        // Initialize animations
+        initializeAnimations();
+    }, [initializeAnimations]);
 
     const showMessage = (text, type = 'success') => {
         setMessage({ text, type });

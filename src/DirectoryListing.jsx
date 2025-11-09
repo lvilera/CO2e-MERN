@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import Header from './Home/Header';
 import Footer2 from './Home/Footer2';
@@ -6,7 +6,7 @@ import { useApi } from './hooks/useApi';
 import { API_BASE } from './config';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { setupIPhoneDetection, isIPhoneSafari, getAuthHeaders } from './utils/iphoneFix';
+import { setupIPhoneDetection, isIPhoneSafari } from './utils/iphoneFix';
 import './DirectoryListing.css';
 
 // Register GSAP plugins
@@ -44,6 +44,7 @@ const DirectoryListing = () => {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const { get, post } = useApi();
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
 
@@ -80,32 +81,7 @@ const DirectoryListing = () => {
     };
   }, []);
 
-  useEffect(() => {
-    setupIPhoneDetection();
-    if (isIPhoneSafari() && iphoneMsgRef.current) {
-      gsap.fromTo(iphoneMsgRef.current, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' });
-    }
-    // Auto-detect user location
-    detectUserLocation();
-  }, []);
-
-  useEffect(() => {
-    // Initialize animations
-    initializeAnimations();
-  }, [user]);
-
-  // Separate useEffect to fetch user data when login status changes
-  useEffect(() => {
-    if (isLoggedIn) {
-      console.log('DirectoryListing: Login status changed to true, fetching user data...');
-      fetchUser();
-    } else {
-      console.log('DirectoryListing: Login status changed to false, clearing user data');
-      setUser(null);
-    }
-  }, [isLoggedIn]);
-
-  const initializeAnimations = () => {
+  const initializeAnimations = useCallback(() => {
     // Title animation
     if (titleRef.current) {
       gsap.fromTo(titleRef.current,
@@ -187,9 +163,9 @@ const DirectoryListing = () => {
         }
       );
     }
-  };
+  }, []);
 
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     try {
       console.log('DirectoryListing: Attempting to fetch user from:', `${API_BASE}/api/me`);
       const data = await get(`${API_BASE}/api/me`, 'Loading user info...');
@@ -199,7 +175,111 @@ const DirectoryListing = () => {
       console.error('DirectoryListing: Error fetching user:', err);
       setUser(null);
     }
-  };
+  }, [get]);
+
+  const detectUserLocation = useCallback(async () => {
+    try {
+      // Try to get location from IP using the backend
+      const response = await fetch(`${API_BASE}/api/directory/nearby`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.userLocation && data.userLocation.city !== 'Unknown') {
+          setForm(prev => ({
+            ...prev,
+            city: data.userLocation.city || '',
+            state: data.userLocation.state || '',
+            country: data.userLocation.country || ''
+          }));
+          return;
+        }
+      }
+    } catch (error) {
+      console.log('Could not auto-detect location from backend:', error);
+    }
+
+    // Fallback: try browser geolocation
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            // Use a free reverse geocoding service
+            const { latitude, longitude } = position.coords;
+            const geoResponse = await fetch(
+              `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=YOUR_OPENCAGE_API_KEY`
+            );
+            if (geoResponse.ok) {
+              const geoData = await geoResponse.json();
+              if (geoData.results && geoData.results.length > 0) {
+                const result = geoData.results[0].components;
+                setForm(prev => ({
+                  ...prev,
+                  city: result.city || result.town || result.village || '',
+                  state: result.state || '',
+                  country: result.country || ''
+                }));
+              }
+            }
+          } catch (geoError) {
+            console.log('Geolocation reverse lookup failed:', geoError);
+            // Use a simple fallback
+            setForm(prev => ({
+              ...prev,
+              city: 'New York',
+              state: 'New York',
+              country: 'USA'
+            }));
+          }
+        },
+        (error) => {
+          console.log('Browser geolocation failed:', error);
+          // Use a simple fallback
+          setForm(prev => ({
+            ...prev,
+            city: 'New York',
+            state: 'New York',
+            country: 'USA'
+          }));
+        }
+      );
+    } else {
+      // Fallback for browsers without geolocation
+      setForm(prev => ({
+        ...prev,
+        city: 'New York',
+        state: 'New York',
+        country: 'USA'
+      }));
+    }
+  }, []);
+
+  useEffect(() => {
+    setupIPhoneDetection();
+    if (isIPhoneSafari() && iphoneMsgRef.current) {
+      gsap.fromTo(iphoneMsgRef.current, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' });
+    }
+    // Auto-detect user location
+    detectUserLocation();
+  }, [detectUserLocation]);
+
+  useEffect(() => {
+    // Initialize animations
+    initializeAnimations();
+  }, [initializeAnimations]);
+
+  // Separate useEffect to fetch user data when login status changes
+  useEffect(() => {
+    if (isLoggedIn) {
+      console.log('DirectoryListing: Login status changed to true, fetching user data...');
+      fetchUser();
+    } else {
+      console.log('DirectoryListing: Login status changed to false, clearing user data');
+      setUser(null);
+    }
+  }, [fetchUser, isLoggedIn]);
 
   const socialOptions = useMemo(() => {
     return [
@@ -402,86 +482,6 @@ const DirectoryListing = () => {
       // fetchListings(); // Refresh the listings - REMOVED
     } catch (err) {
       setError(err.message || t('directory.errors.submission_failed'));
-    }
-  };
-
-  // Add back the detectUserLocation function
-  const detectUserLocation = async () => {
-    try {
-      // Try to get location from IP using the backend
-      const response = await fetch(`${API_BASE}/api/directory/nearby`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.userLocation && data.userLocation.city !== 'Unknown') {
-          setForm(prev => ({
-            ...prev,
-            city: data.userLocation.city || '',
-            state: data.userLocation.state || '',
-            country: data.userLocation.country || ''
-          }));
-          return;
-        }
-      }
-    } catch (error) {
-      console.log('Could not auto-detect location from backend:', error);
-    }
-
-    // Fallback: try browser geolocation
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          try {
-            // Use a free reverse geocoding service
-            const { latitude, longitude } = position.coords;
-            const geoResponse = await fetch(
-              `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=YOUR_OPENCAGE_API_KEY`
-            );
-            if (geoResponse.ok) {
-              const geoData = await geoResponse.json();
-              if (geoData.results && geoData.results.length > 0) {
-                const result = geoData.results[0].components;
-                setForm(prev => ({
-                  ...prev,
-                  city: result.city || result.town || result.village || '',
-                  state: result.state || '',
-                  country: result.country || ''
-                }));
-              }
-            }
-          } catch (geoError) {
-            console.log('Geolocation reverse lookup failed:', geoError);
-            // Use a simple fallback
-            setForm(prev => ({
-              ...prev,
-              city: 'New York',
-              state: 'New York',
-              country: 'USA'
-            }));
-          }
-        },
-        (error) => {
-          console.log('Browser geolocation failed:', error);
-          // Use a simple fallback
-          setForm(prev => ({
-            ...prev,
-            city: 'New York',
-            state: 'New York',
-            country: 'USA'
-          }));
-        }
-      );
-    } else {
-      // Fallback for browsers without geolocation
-      setForm(prev => ({
-        ...prev,
-        city: 'New York',
-        state: 'New York',
-        country: 'USA'
-      }));
     }
   };
 

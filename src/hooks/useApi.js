@@ -1,10 +1,11 @@
+import { useCallback, useMemo } from 'react';
 import { useLoading } from '../LoadingContext';
 import { createIPhoneSafeRequest, handleIPhoneError } from '../utils/iphoneFix';
 
 export const useApi = () => {
   const { startLoading, stopLoading } = useLoading();
 
-  const apiCall = async (url, options = {}, loadingMessage = 'Loading...') => {
+  const apiCall = useCallback(async (url, options = {}, loadingMessage = 'Loading...') => {
     try {
       startLoading(loadingMessage);
       
@@ -80,43 +81,45 @@ export const useApi = () => {
     } finally {
       stopLoading();
     }
-  };
+  }, [startLoading, stopLoading]);
 
-  const get = (url, loadingMessage = 'Loading...') => {
+  const get = useCallback((url, loadingMessage = 'Loading...') => {
     return apiCall(url, { method: 'GET' }, loadingMessage);
-  };
+  }, [apiCall]);
 
-  const post = (url, body, loadingMessage = 'Saving...') => {
-    return apiCall(url, { 
-      method: 'POST', 
-      body: JSON.stringify(body) 
+  const post = useCallback((url, body, loadingMessage = 'Saving...') => {
+    return apiCall(url, {
+      method: 'POST',
+      body: JSON.stringify(body)
     }, loadingMessage);
-  };
+  }, [apiCall]);
 
-  const put = (url, body, loadingMessage = 'Updating...') => {
-    return apiCall(url, { 
-      method: 'PUT', 
-      body: JSON.stringify(body) 
+  const put = useCallback((url, body, loadingMessage = 'Updating...') => {
+    return apiCall(url, {
+      method: 'PUT',
+      body: JSON.stringify(body)
     }, loadingMessage);
-  };
+  }, [apiCall]);
 
-  const patch = (url, body, loadingMessage = 'Updating...') => {
-    return apiCall(url, { 
-      method: 'PATCH', 
-      body: JSON.stringify(body) 
+  const patch = useCallback((url, body, loadingMessage = 'Updating...') => {
+    return apiCall(url, {
+      method: 'PATCH',
+      body: JSON.stringify(body)
     }, loadingMessage);
-  };
+  }, [apiCall]);
 
-  const del = (url, loadingMessage = 'Deleting...') => {
+  const del = useCallback((url, loadingMessage = 'Deleting...') => {
     return apiCall(url, { method: 'DELETE' }, loadingMessage);
-  };
+  }, [apiCall]);
 
-  return {
+  // Return memoized API functions to prevent unnecessary re-renders
+  // and infinite loops when used as useEffect dependencies
+  return useMemo(() => ({
     apiCall,
     get,
     post,
     put,
     patch,
     del,
-  };
+  }), [apiCall, get, post, put, patch, del]);
 }; 
