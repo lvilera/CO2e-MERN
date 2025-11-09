@@ -4,6 +4,7 @@ import Header from '../Home/Header';
 import Footer2 from '../Home/Footer2';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../config';
+import { useApi } from '../hooks/useApi';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -16,23 +17,21 @@ const Product = () => {
     const [loading, setLoading] = useState(null); // Track which button is loading
     const [products, setProducts] = useState([]);
     const [message, setMessage] = useState({ text: '', type: '' }); // For success/error messages
+    const { get } = useApi();
 
     // Refs for animations
     const messageRef = useRef(null);
     const cardsRef = useRef(null);
 
     const fetchProducts = useCallback(async () => {
-        fetch(`${API_BASE}/api/products`)
-            .then(res => res.json())
-            .then(data => {
-                if (data) {
-                    setProducts(data);
-                }
-            })
-            .catch(() => {
-                setProducts([]);
-            });
-    }, []);
+        try {
+            const data = await get(`${API_BASE}/api/products`, 'Loading products...');
+            setProducts(data || []);
+        } catch (err) {
+            console.error('Error fetching products:', err);
+            setProducts([]);
+        }
+    }, [get]);
 
     // Fetch user's current package
     useEffect(() => {
