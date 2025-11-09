@@ -27,7 +27,7 @@ const CarbonCounter = () => {
 
   return (
     <div style={styles.container}>
-      <h1>🌿 {t("counter.heading")}</h1>
+      <h1 style={styles.heading}>🌿 {t("counter.heading")}</h1>
       <div style={styles.subtitle}>{t("counter.since")} January 1, 2025</div>
 
       <div style={styles.counterGrid}>
@@ -55,6 +55,14 @@ const styles = {
     textAlign: 'center',
     padding: '50px',
     borderRadius: '20px',
+  },
+  heading: {
+    color: '#fff',
+    fontSize: '2.5em',
+    fontWeight: 'bold',
+    marginBottom: '10px',
+    textShadow: '0 2px 10px rgba(255, 255, 255, 0.1)',
+    transition: 'all 0.3s ease',
   },
   subtitle: {
     fontSize: '2em',
