@@ -802,6 +802,13 @@ body {
   line-height: 2;
 }
 
+/* Ensure tab content text is visible */
+.tab-content .section-text {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
 .img-cover {
   width: 100%;
   height: 100%;
