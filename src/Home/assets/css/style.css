@@ -800,13 +800,30 @@ body {
 
 .section-text {
   line-height: 2;
+  color: var(--eerie-black-2);
 }
 
-/* Ensure tab content text is visible */
+/* Ensure tab content is visible with proper contrast */
+.tab-content {
+  background-color: transparent;
+  color: var(--eerie-black-2);
+}
+
 .tab-content .section-text {
   opacity: 1 !important;
   visibility: visible !important;
   display: block !important;
+  color: var(--eerie-black-2) !important;
+}
+
+.tab-content .tab-list {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.tab-content .tab-item {
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .img-cover {
@@ -1165,9 +1182,11 @@ body {
 }
 
 .tab-text {
-  color: var(--eerie-black-2);
+  color: var(--eerie-black-2) !important;
   font-size: var(--fs-8);
   font-weight: var(--fw-500);
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /*-----------------------------------*\
