@@ -8,13 +8,12 @@ import {
 import subtitleImage from "./assets/images/subtitle-img-green.png";
 import decoImg from "./assets/images/deco-img.png";
 import "./assets/css/style.css";
-import { 
-  slideInLeft, 
-  slideInRight, 
-  parallaxEffect, 
-  staggerAnimation, 
-  scaleIn,
-  floatingAnimation 
+import {
+  slideInLeft,
+  slideInRight,
+  parallaxEffect,
+  staggerAnimation,
+  floatingAnimation
 } from "../utils/gsapAnimations";
 
 const About = () => {
@@ -68,13 +67,7 @@ const About = () => {
   useEffect(() => {
     if (tabContentRef.current) {
       const tabItems = tabContentRef.current.querySelectorAll('.tab-item');
-      const sectionText = tabContentRef.current.querySelector('.section-text');
-      
-      // Animate text
-      if (sectionText) {
-        scaleIn(sectionText, 0.6);
-      }
-      
+
       // Stagger animate list items
       staggerAnimation(tabItems, null, 0.15);
     }
