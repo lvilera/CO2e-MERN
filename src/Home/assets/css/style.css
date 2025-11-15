@@ -1059,6 +1059,15 @@ body {
   margin-block-end: 30px;
 }
 
+/* Fix text visibility on dark hero background */
+.hero .h2,
+.hero h2,
+.hero .h3,
+.hero h3,
+.hero .section-text {
+  color: var(--white) !important;
+}
+
 /*-----------------------------------*\
   #FEATURES
 \*-----------------------------------*/
@@ -1097,6 +1106,15 @@ body {
   max-width: 25ch;
   color: var(--white_50);
   font-size: var(--fs-9);
+}
+
+/* Fix text visibility on dark features background */
+.features .h2,
+.features h2,
+.features .h3,
+.features h3,
+.features .section-text {
+  color: var(--white) !important;
 }
 
 /*-----------------------------------*\
@@ -1404,6 +1422,15 @@ body {
   color: var(--white);
 }
 
+/* Fix text visibility on dark testimonials background */
+.testi .h2,
+.testi h2,
+.testi .h3,
+.testi h3,
+.testi .section-text {
+  color: var(--white) !important;
+}
+
 .testi-text,
 .testi-name {
   font-size: var(--fs-8);
@@ -1589,6 +1616,15 @@ body {
   color: var(--white);
   font-family: var(--ff-inter);
   padding-block: 40px;
+}
+
+/* Fix text visibility on dark footer background */
+.footer .h2,
+.footer h2,
+.footer .h3,
+.footer h3,
+.footer .section-text {
+  color: var(--white) !important;
 }
 
 .footer .container {
