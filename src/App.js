@@ -6,7 +6,7 @@ import { setupIPhoneDetection } from './utils/iphoneFix';
 
 import AdminAddInstructor from './AdminAddInstructor';
 import AdminAddProduct from "./AdminAddProduct";
-import CO2ePortalAdminAuditToolkit from './AdminAuditToolkit';
+import CO2ePortalAdminAuditToolkit from './AdminAuditToolkit/AdminAuditToolkit';
 import AdminCourseUpload from './AdminCourseUpload';
 import AdminDirectoryUpload from './AdminDirectoryUpload';
 import AdminFeaturedListing from './AdminFeaturedListing';
@@ -14,7 +14,7 @@ import AdminManageGuide from "./AdminManageGuide";
 import AdminManageUser from "./AdminManageUser";
 import AdminRoute from "./AdminRoute";
 import AdminServiceImages from './AdminServiceImages';
-import CO2ePortalAuditToolkit from './AuditToolkit';
+import CO2ePortalAuditToolkit from './AuditToolkit/AuditToolkit';
 import Blog2 from "./Blog2/Blog2";
 import BlogDetails from "./Blog2/BlogDetails";
 import NewsDetails from "./Blog2/NewsDetails";

@@ -1,12 +1,25 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { API_BASE_URL } from "./config";
-import Header from './Home/Header';
-const CO2ePortalAuditToolkit = () => {
+import { useTranslation } from "react-i18next";
+import DynamicHeader from "../components/DynamicHeader";
+import { API_BASE_URL } from "../config";
+import "./AdminAuditToolkit.css";
+// ⬇️ Use the SAME translator helper you use in CarbonEmissionsCalculator
+// Adjust the path and name as needed (e.g. "./translator", "./i18n", etc.)
+ 
+ 
+const CO2ePortalAdminAuditToolkit = () => {
   // ---------- STATE ----------
-  const [lang, setLang] = useState("en");
+ 
   const [activeTab, setActiveTab] = useState(0);
+ const { t, i18n } = useTranslation();
 
+  const rawLang = i18n.language || "en";
+  const baseLang = rawLang.split("-")[0];
+  const uiLang =
+    baseLang === "fr" || baseLang === "es" || baseLang === "en"
+      ? baseLang
+      : "en";
   // Org info
   const [orgName, setOrgName] = useState("");
   const [siteAddresses, setSiteAddresses] = useState("");
@@ -42,61 +55,9 @@ const CO2ePortalAuditToolkit = () => {
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
 
-  // ---------- I18N ----------
-  const text = {
-    en: {
-      title: "CO2ePortal Audit Toolkit",
-      subtitle: "Master Questionnaire",
-      tabs: [
-        "Org Info",
-        "Energy",
-        "Transport",
-        "Refrigerants",
-        "Waste",
-        "Procurement",
-        "Travel",
-        "Summary",
-      ],
-      orgTitle: "Section A: Organization Context",
-      energyTitle: "Stationary Combustion (Scope 1)",
-      elecTitle: "Purchased Electricity (Scope 2)",
-      transTitle: "Company Fleet & Business Travel",
-      refTitle: "Refrigerants & Process Emissions",
-      wasteTitle: "Waste & Water",
-      procTitle: "Procurement",
-      travelTitle: "Travel & Commuting",
-      summaryTitle: "Summary & Results",
-      totalLabel: "Total GHG Emissions",
-      catLabel: "Emissions by Category",
-      intensityLabel: "Intensity Metrics",
-      perEmpLabel: "Emissions per Employee",
-      btnSave: editAuditId ? "Update Audit" : "Save Progress",
-      btnPrint: "Print / Save as PDF",
-      lbl1: "Legal name and subsidiaries 🔑",
-      lbl2: "All site addresses 🔑",
-      lbl3: "Reporting year start 🔑",
-      lbl4: "Reporting year end 🔑",
-      lbl5: "Primary contact - Name",
-      lbl6: "Contact - Email",
-      lbl7: "Contact - Phone",
-      lbl10: "Fuel Type 🔑",
-      lbl11: "Annual Volume",
-      lbl12: "Grid Region 🔑",
-      lbl13: "Annual Electricity (kWh) 🔑",
-      lbl20: "Number of company vehicles",
-      lbl21: "Total annual mileage (km)",
-      lbl30: "Do you have refrigeration/AC equipment?",
-      lbl40: "Annual waste (kg)",
-      lbl50: "Top supplier name",
-      lbl51: "Annual spend (CAD)",
-      lbl60: "Number of employees",
-      lbl61: "Average commute distance (km)",
-      listTitle: "Saved Audits",
-    },
-    fr: {},
-    es: {},
-  };
-  const t = text[lang] || text.en;
+  // ---------- TRANSLATOR WRAPPER ----------
+  // Same pattern as CarbonEmissionsCalculator – one function taking (lang, key)
+   
 
   // ---------- CALCULATION ----------
   useEffect(() => {
@@ -121,9 +82,12 @@ const CO2ePortalAuditToolkit = () => {
     setTotalTonnes(totalAll / 1000);
   }, [fuelFactor, fuelVol, gridFactor, kwh, mileage, waste, employees]);
 
+  const perEmployeeTonnes =
+    employees > 0 ? Number(totalTonnes || 0) / Number(employees || 1) : null;
+
   // ---------- API ----------
   const payload = () => ({
-    lang,
+    uiLang,
     orgName,
     siteAddresses,
     reportStart: reportStart || null,
@@ -152,9 +116,7 @@ const CO2ePortalAuditToolkit = () => {
     } catch (e) {
       console.error(e);
       setErr(
-        e?.response?.data?.message ||
-          e?.message ||
-          "Failed to fetch audits"
+        e?.response?.data?.message || e?.message || "Failed to fetch audits"
       );
     }
   };
@@ -181,10 +143,11 @@ const CO2ePortalAuditToolkit = () => {
     setMileage(0);
     setWaste(0);
     setEmployees(0);
+     
   };
 
   const hydrateFromDoc = (doc) => {
-    setLang(doc.lang || "en");
+     
     setOrgName(doc.orgName || "");
     setSiteAddresses(doc.siteAddresses || "");
     setReportStart(doc.reportStart ? doc.reportStart.slice(0, 10) : "");
@@ -261,56 +224,31 @@ const CO2ePortalAuditToolkit = () => {
 
   const handlePrint = () => window.print();
 
+  const handleLangChange = (newLang) => { 
+    i18n.changeLanguage(newLang)
+  };
+
   // ---------- UI ----------
   return (
     <>
       <style>{`
-        .tabs { margin-top:95px; display:flex; background:#f3f4f6; border-bottom:2px solid #e5e7eb; overflow-x:auto; }
-        .tab { padding:20px 30px; border:none; background:transparent; cursor:pointer; font-weight:600; color:#6b7280; border-bottom:4px solid transparent; white-space:nowrap; }
-        .tab.active { background:#fff; color:#9333ea; border-bottom-color:#9333ea; }
-        .content { padding:40px; min-height:500px; }
-        .tab-content { display:none; }
-        .tab-content.active { display:block; }
-        .section { margin-bottom:40px; }
-        .section h3 { font-size:1.8rem; color:#1f2937; margin-bottom:20px; border-bottom:2px solid #9333ea; padding-bottom:10px; }
-        .field { margin-bottom:20px; padding:15px; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; }
-        .field.key { background:#fef3c7; border:2px solid #fbbf24; }
-        .field label { display:block; font-weight:600; margin-bottom:8px; color:#1f2937; }
-        .field input, .field select, .field textarea { width:100%; padding:12px; border:2px solid #d1d5db; border-radius:6px; font-family:inherit; }
-        .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-        .result-box { background:#dcfce7; border:2px solid #16a34a; border-radius:8px; padding:20px; margin:20px 0; }
-        .result-value { font-size:1.5rem; font-weight:bold; color:#15803d; margin:10px 0; }
-        .summary-card { background:linear-gradient(135deg,#9333ea 0%,#7e22ce 100%); color:#fff; padding:30px; border-radius:12px; text-align:center; margin-bottom:30px; }
-        .summary-total { font-size:3rem; font-weight:bold; margin:10px 0; }
-        .scope-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:30px; }
-        .scope-box { padding:20px; border-radius:10px; text-align:center; }
-        .scope-box.s1 { background:#fef3c7; border:2px solid #f59e0b; color:#92400e; }
-        .scope-box.s2 { background:#dbeafe; border:2px solid #3b82f6; color:#1e40af; }
-        .scope-box.s3 { background:#d1fae5; border:2px solid #10b981; color:#065f46; }
-        .scope-value { font-size:2rem; font-weight:bold; margin:10px 0; }
-        .footerSec { display:flex; justify-content:center; gap:12px; padding:24px; }
-        .btn { background:#9333ea; color:#fff; padding:15px 40px; border:none; border-radius:8px; font-weight:700; cursor:pointer; box-shadow:0 4px 6px rgba(0,0,0,0.1); }
-        .btn:hover { background:#7e22ce; }
-        .btn-secondary { background:#4b5563; }
-        .btn-secondary:hover { background:#374151; }
-        .banner { max-width:1200px; margin:0 auto; background:#fff; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.1); overflow:hidden; position:relative; }
-        .admin-list { max-width:1200px; margin:1.5rem auto 3rem; background:#fff; border-radius:12px; box-shadow:0 2px 8px #eee; padding:20px; }
-        table { width:100%; border-collapse:collapse; }
-        th, td { padding:10px; border:1px solid #e5e7eb; text-align:left; }
-        thead tr { background:#f9fafb; }
-        .actions { display:flex; gap:8px; }
-        .pill { padding:2px 8px; border-radius:999px; background:#f1f5f9; font-size:.8rem; }
-        .status { margin:12px auto; max-width:1200px; }
-        .status .ok { color:#16a34a; }
-        .status .err { color:#dc2626; }
-        @media (max-width: 768px) { .grid-2 { grid-template-columns:1fr; } }
+        
       `}</style>
 
-     <Header />
+      <DynamicHeader />
 
       {/* Tabs */}
       <div className="tabs">
-        {t.tabs.map((tabLabel, i) => (
+        {[
+          t("audit.tab_org_info"),
+          t("audit.tab_energy"),
+          t("audit.tab_transport"),
+          t("audit.tab_refrigerants"),
+          t("audit.tab_waste"),
+          t("audit.tab_procurement"),
+          t("audit.tab_travel"),
+          t("audit.tab_summary"),
+        ].map((tabLabel, i) => (
           <button
             key={i}
             className={`tab ${activeTab === i ? "active" : ""}`}
@@ -370,14 +308,59 @@ const CO2ePortalAuditToolkit = () => {
       </div>
 
       <div className="banner">
+        {/* FULL header from HTML: logo + title + subtitle + caption + lang buttons */}
+        <div className="banner-header">
+          <div className="banner-left">
+            <img
+              src="/co2portal01.png"
+              alt="CO2ePortal Logo"
+              className="banner-logo"
+              onError={(e) => (e.target.style.display = "none")}
+            />
+            <div>
+              <div className="banner-title">
+                🌍 {t("audit.title")}
+              </div>
+              <div className="banner-subtitle">
+                {t("audit.subtitle")}
+              </div>
+              <div className="banner-caption">
+                {t("audit.caption") ||
+                  "GHG Protocol Corporate Standard | ISO 14064 Compatible"}
+              </div>
+            </div>
+          </div>
+
+          <div className="lang-buttons">
+            <button
+              className={`lang-btn ${uiLang === "en" ? "active" : ""}`}
+              onClick={() => handleLangChange("en")}
+            >
+              🇬🇧 EN
+            </button>
+            <button
+              className={`lang-btn ${uiLang === "fr" ? "active" : ""}`}
+              onClick={() => handleLangChange("fr")}
+            >
+              🇫🇷 FR
+            </button>
+            <button
+              className={`lang-btn ${uiLang === "es" ? "active" : ""}`}
+              onClick={() => handleLangChange("es")}
+            >
+              🇪🇸 ES
+            </button>
+          </div>
+        </div>
+ 
         <div className="content">
           {/* TAB 0: ORG INFO */}
           <div className={`tab-content ${activeTab === 0 ? "active" : ""}`} id="content0">
             <div className="section">
-              <h3 id="orgTitle">{t.orgTitle}</h3>
+              <h3 id="orgTitle">{t("audit.org_title")}</h3>
 
               <div className="field key">
-                <label id="lbl1">{t.lbl1}</label>
+                <label id="lbl1">{t("audit.lbl1")}</label>
                 <input
                   type="text"
                   placeholder="Full legal entity name..."
@@ -387,7 +370,7 @@ const CO2ePortalAuditToolkit = () => {
               </div>
 
               <div className="field key">
-                <label id="lbl2">{t.lbl2}</label>
+                <label id="lbl2">{t("audit.lbl2")}</label>
                 <textarea
                   placeholder="List all physical locations..."
                   value={siteAddresses}
@@ -397,7 +380,7 @@ const CO2ePortalAuditToolkit = () => {
 
               <div className="grid-2">
                 <div className="field key">
-                  <label id="lbl3">{t.lbl3}</label>
+                  <label id="lbl3">{t("audit.lbl3")}</label>
                   <input
                     type="date"
                     value={reportStart}
@@ -405,7 +388,7 @@ const CO2ePortalAuditToolkit = () => {
                   />
                 </div>
                 <div className="field key">
-                  <label id="lbl4">{t.lbl4}</label>
+                  <label id="lbl4">{t("audit.lbl4")}</label>
                   <input
                     type="date"
                     value={reportEnd}
@@ -415,7 +398,7 @@ const CO2ePortalAuditToolkit = () => {
               </div>
 
               <div className="field">
-                <label id="lbl5">{t.lbl5}</label>
+                <label id="lbl5">{t("audit.lbl5")}</label>
                 <input
                   type="text"
                   value={contactName}
@@ -425,7 +408,7 @@ const CO2ePortalAuditToolkit = () => {
 
               <div className="grid-2">
                 <div className="field">
-                  <label id="lbl6">{t.lbl6}</label>
+                  <label id="lbl6">{t("audit.lbl6")}</label>
                   <input
                     type="email"
                     value={contactEmail}
@@ -433,7 +416,7 @@ const CO2ePortalAuditToolkit = () => {
                   />
                 </div>
                 <div className="field">
-                  <label id="lbl7">{t.lbl7}</label>
+                  <label id="lbl7">{t("audit.lbl7")}</label>
                   <input
                     type="tel"
                     value={contactPhone}
@@ -447,16 +430,16 @@ const CO2ePortalAuditToolkit = () => {
           {/* TAB 1: ENERGY */}
           <div className={`tab-content ${activeTab === 1 ? "active" : ""}`} id="content1">
             <div className="section">
-              <h3 id="energyTitle">⚡ {t.energyTitle}</h3>
+              <h3 id="energyTitle">⚡ {t("audit.energy_title")}</h3>
 
               <div className="field key">
-                <label id="lbl10">{t.lbl10}</label>
+                <label id="lbl10">{t("audit.lbl10")}</label>
                 <select
                   id="fuelType"
                   value={fuelFactor || ""}
                   onChange={(e) => setFuelFactor(parseFloat(e.target.value) || 0)}
                 >
-                  <option value="">-- Select --</option>
+                  <option value="">{t("audit.select_placeholder") || "-- Select --"}</option>
                   <option value="1.879">Natural Gas (m³) - 1.879 kg CO2e/m³</option>
                   <option value="2.663">Diesel (L) - 2.663 kg CO2e/L</option>
                   <option value="1.512">LPG (L) - 1.512 kg CO2e/L</option>
@@ -466,7 +449,7 @@ const CO2ePortalAuditToolkit = () => {
               </div>
 
               <div className="field">
-                <label id="lbl11">{t.lbl11}</label>
+                <label id="lbl11">{t("audit.lbl11")}</label>
                 <input
                   type="number"
                   id="fuelVol"
@@ -477,7 +460,9 @@ const CO2ePortalAuditToolkit = () => {
               </div>
 
               <div className="result-box">
-                <strong style={{ color: "#15803d" }}>Calculated Emissions:</strong>
+                <strong style={{ color: "#15803d" }}>
+                  {t("audit.calc_label") || "Calculated Emissions:"}
+                </strong>
                 <div className="result-value" id="fuelResult">
                   {(fuelKg / 1000).toFixed(3)} tonnes CO2e
                 </div>
@@ -488,10 +473,10 @@ const CO2ePortalAuditToolkit = () => {
             </div>
 
             <div className="section">
-              <h3 id="elecTitle">💡 {t.elecTitle}</h3>
+              <h3 id="elecTitle">💡 {t("audit.elec_title")}</h3>
 
               <div className="field key">
-                <label id="lbl12">{t.lbl12}</label>
+                <label id="lbl12">{t("audit.lbl12")}</label>
                 <select
                   id="grid"
                   value={gridFactor || ""}
@@ -507,7 +492,7 @@ const CO2ePortalAuditToolkit = () => {
               </div>
 
               <div className="field key">
-                <label id="lbl13">{t.lbl13}</label>
+                <label id="lbl13">{t("audit.lbl13")}</label>
                 <input
                   type="number"
                   id="elecKwh"
@@ -518,7 +503,9 @@ const CO2ePortalAuditToolkit = () => {
               </div>
 
               <div className="result-box">
-                <strong style={{ color: "#15803d" }}>Calculated Emissions:</strong>
+                <strong style={{ color: "#15803d" }}>
+                  {t("audit.calc_label") || "Calculated Emissions:"}
+                </strong>
                 <div className="result-value" id="elecResult">
                   {(elecKg / 1000).toFixed(3)} tonnes CO2e
                 </div>
@@ -532,15 +519,15 @@ const CO2ePortalAuditToolkit = () => {
           {/* TAB 2: TRANSPORT */}
           <div className={`tab-content ${activeTab === 2 ? "active" : ""}`} id="content2">
             <div className="section">
-              <h3 id="transTitle">🚗 {t.transTitle}</h3>
+              <h3 id="transTitle">🚗 {t("audit.trans_title")}</h3>
 
               <div className="field">
-                <label id="lbl20">{t.lbl20}</label>
+                <label id="lbl20">{t("audit.lbl20")}</label>
                 <input type="number" placeholder="0" />
               </div>
 
               <div className="field">
-                <label id="lbl21">{t.lbl21}</label>
+                <label id="lbl21">{t("audit.lbl21")}</label>
                 <input
                   type="number"
                   id="mileage"
@@ -551,12 +538,15 @@ const CO2ePortalAuditToolkit = () => {
               </div>
 
               <div className="result-box">
-                <strong style={{ color: "#15803d" }}>Calculated Emissions:</strong>
+                <strong style={{ color: "#15803d" }}>
+                  {t("audit.calc_label") || "Calculated Emissions:"}
+                </strong>
                 <div className="result-value" id="transResult">
                   {(transKg / 1000).toFixed(3)} tonnes CO2e
                 </div>
                 <div style={{ color: "#047857", fontSize: "0.9rem" }}>
-                  Using average vehicle factor: 0.192 kg CO2e/km
+                  {t("audit.trans_factor_hint") ||
+                    "Using average vehicle factor: 0.192 kg CO2e/km"}
                 </div>
               </div>
             </div>
@@ -565,13 +555,13 @@ const CO2ePortalAuditToolkit = () => {
           {/* TAB 3: REFRIGERANTS */}
           <div className={`tab-content ${activeTab === 3 ? "active" : ""}`} id="content3">
             <div className="section">
-              <h3 id="refTitle">❄️ {t.refTitle}</h3>
+              <h3 id="refTitle">❄️ {t("audit.ref_title")}</h3>
               <div className="field">
-                <label id="lbl30">{t.lbl30}</label>
+                <label id="lbl30">{t("audit.lbl30")}</label>
                 <select>
-                  <option>-- Select --</option>
-                  <option>Yes</option>
-                  <option>No</option>
+                  <option>{t("audit.select_placeholder") || "-- Select --"}</option>
+                  <option>{t("audit.yes") || "Yes"}</option>
+                  <option>{t("audit.no") || "No"}</option>
                 </select>
               </div>
             </div>
@@ -580,9 +570,9 @@ const CO2ePortalAuditToolkit = () => {
           {/* TAB 4: WASTE */}
           <div className={`tab-content ${activeTab === 4 ? "active" : ""}`} id="content4">
             <div className="section">
-              <h3 id="wasteTitle">♻️ {t.wasteTitle}</h3>
+              <h3 id="wasteTitle">♻️ {t("audit.waste_title")}</h3>
               <div className="field">
-                <label id="lbl40">{t.lbl40}</label>
+                <label id="lbl40">{t("audit.lbl40")}</label>
                 <input
                   type="number"
                   id="waste"
@@ -593,12 +583,15 @@ const CO2ePortalAuditToolkit = () => {
               </div>
 
               <div className="result-box">
-                <strong style={{ color: "#15803d" }}>Calculated Emissions:</strong>
+                <strong style={{ color: "#15803d" }}>
+                  {t("audit.calc_label") || "Calculated Emissions:"}
+                </strong>
                 <div className="result-value" id="wasteResult">
                   {(wasteKg / 1000).toFixed(3)} tonnes CO2e
                 </div>
                 <div style={{ color: "#047857", fontSize: "0.9rem" }}>
-                  Using landfill factor: 0.456 kg CO2e/kg
+                  {t("audit.waste_factor_hint") ||
+                    "Using landfill factor: 0.456 kg CO2e/kg"}
                 </div>
               </div>
             </div>
@@ -607,13 +600,13 @@ const CO2ePortalAuditToolkit = () => {
           {/* TAB 5: PROCUREMENT */}
           <div className={`tab-content ${activeTab === 5 ? "active" : ""}`} id="content5">
             <div className="section">
-              <h3 id="procTitle">📦 {t.procTitle}</h3>
+              <h3 id="procTitle">📦 {t("audit.proc_title")}</h3>
               <div className="field">
-                <label id="lbl50">{t.lbl50}</label>
+                <label id="lbl50">{t("audit.lbl50")}</label>
                 <input type="text" />
               </div>
               <div className="field">
-                <label id="lbl51">{t.lbl51}</label>
+                <label id="lbl51">{t("audit.lbl51")}</label>
                 <input type="number" placeholder="0.00" />
               </div>
             </div>
@@ -622,9 +615,9 @@ const CO2ePortalAuditToolkit = () => {
           {/* TAB 6: TRAVEL */}
           <div className={`tab-content ${activeTab === 6 ? "active" : ""}`} id="content6">
             <div className="section">
-              <h3 id="travelTitle">✈️ {t.travelTitle}</h3>
+              <h3 id="travelTitle">✈️ {t("audit.travel_title")}</h3>
               <div className="field">
-                <label id="lbl60">{t.lbl60}</label>
+                <label id="lbl60">{t("audit.lbl60")}</label>
                 <input
                   type="number"
                   id="employees"
@@ -634,7 +627,7 @@ const CO2ePortalAuditToolkit = () => {
                 />
               </div>
               <div className="field">
-                <label id="lbl61">{t.lbl61}</label>
+                <label id="lbl61">{t("audit.lbl61")}</label>
                 <input type="number" placeholder="0.0" />
               </div>
             </div>
@@ -643,11 +636,14 @@ const CO2ePortalAuditToolkit = () => {
           {/* TAB 7: SUMMARY */}
           <div className={`tab-content ${activeTab === 7 ? "active" : ""}`} id="content7">
             <div className="section">
-              <h3 id="summaryTitle">📊 {t.summaryTitle}</h3>
+              <h3 id="summaryTitle">📊 {t("audit.summary_title")}</h3>
 
               <div className="summary-card">
-                <h2 style={{ margin: 0, fontSize: "1.2rem", opacity: 0.9 }} id="totalLabel">
-                  {t.totalLabel}
+                <h2
+                  style={{ margin: 0, fontSize: "1.2rem", opacity: 0.9 }}
+                  id="totalLabel"
+                >
+                  {t("audit.total_label")}
                 </h2>
                 <div className="summary-total" id="totalEmissions">
                   {Number(totalTonnes || 0).toFixed(2)}
@@ -659,7 +655,11 @@ const CO2ePortalAuditToolkit = () => {
               <div className="scope-grid">
                 <div className="scope-box s1">
                   <div style={{ fontSize: "0.9rem", fontWeight: 600 }}>SCOPE 1</div>
-                  <div style={{ fontSize: "0.8rem", marginBottom: "10px" }}>Direct Emissions</div>
+                  <div
+                    style={{ fontSize: "0.8rem", marginBottom: "10px" }}
+                  >
+                    {t("audit.scope1_desc") || "Direct Emissions"}
+                  </div>
                   <div className="scope-value" id="scope1">
                     {Number(scope1Tonnes || 0).toFixed(2)}
                   </div>
@@ -667,7 +667,11 @@ const CO2ePortalAuditToolkit = () => {
                 </div>
                 <div className="scope-box s2">
                   <div style={{ fontSize: "0.9rem", fontWeight: 600 }}>SCOPE 2</div>
-                  <div style={{ fontSize: "0.8rem", marginBottom: "10px" }}>Indirect - Electricity</div>
+                  <div
+                    style={{ fontSize: "0.8rem", marginBottom: "10px" }}
+                  >
+                    {t("audit.scope2_desc") || "Indirect - Electricity"}
+                  </div>
                   <div className="scope-value" id="scope2">
                     {Number(scope2Tonnes || 0).toFixed(2)}
                   </div>
@@ -675,7 +679,11 @@ const CO2ePortalAuditToolkit = () => {
                 </div>
                 <div className="scope-box s3">
                   <div style={{ fontSize: "0.9rem", fontWeight: 600 }}>SCOPE 3</div>
-                  <div style={{ fontSize: "0.8rem", marginBottom: "10px" }}>Other Indirect</div>
+                  <div
+                    style={{ fontSize: "0.8rem", marginBottom: "10px" }}
+                  >
+                    {t("audit.scope3_desc") || "Other Indirect"}
+                  </div>
                   <div className="scope-value" id="scope3">
                     {Number(scope3Tonnes || 0).toFixed(2)}
                   </div>
@@ -683,25 +691,124 @@ const CO2ePortalAuditToolkit = () => {
                 </div>
               </div>
 
-              <div style={{ background: "white", border: "2px solid #e5e7eb", borderRadius: "10px", padding: "25px" }}>
-                <h4 style={{ marginTop: 0, color: "#1f2937", borderBottom: "2px solid #9333ea", paddingBottom: "10px" }} id="catLabel">
-                  {t.catLabel}
+              <div
+                style={{
+                  background: "white",
+                  border: "2px solid #e5e7eb",
+                  borderRadius: "10px",
+                  padding: "25px",
+                }}
+              >
+                <h4
+                  style={{
+                    marginTop: 0,
+                    color: "#1f2937",
+                    borderBottom: "2px solid #9333ea",
+                    paddingBottom: "10px",
+                  }}
+                  id="catLabel"
+                >
+                  {t("audit.cat_label")}
                 </h4>
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #e5e7eb" }}>
-                  <span>⚡ Stationary Combustion</span>
-                  <strong id="catFuel">{(Number(fuelKg) / 1000).toFixed(2)} tonnes CO2e</strong>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "10px 0",
+                    borderBottom: "1px solid #e5e7eb",
+                  }}
+                >
+                  <span>⚡ {t("audit.cat_fuel") || "Stationary Combustion"}</span>
+                  <strong id="catFuel">
+                    {(Number(fuelKg) / 1000).toFixed(2)} tonnes CO2e
+                  </strong>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #e5e7eb" }}>
-                  <span>💡 Electricity</span>
-                  <strong id="catElec">{(Number(elecKg) / 1000).toFixed(2)} tonnes CO2e</strong>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "10px 0",
+                    borderBottom: "1px solid #e5e7eb",
+                  }}
+                >
+                  <span>💡 {t("audit.cat_elec") || "Electricity"}</span>
+                  <strong id="catElec">
+                    {(Number(elecKg) / 1000).toFixed(2)} tonnes CO2e
+                  </strong>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #e5e7eb" }}>
-                  <span>🚗 Transport</span>
-                  <strong id="catTrans">{(Number(transKg) / 1000).toFixed(2)} tonnes CO2e</strong>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "10px 0",
+                    borderBottom: "1px solid #e5e7eb",
+                  }}
+                >
+                  <span>🚗 {t("audit.cat_trans") || "Transport"}</span>
+                  <strong id="catTrans">
+                    {(Number(transKg) / 1000).toFixed(2)} tonnes CO2e
+                  </strong>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0" }}>
-                  <span>♻️ Waste</span>
-                  <strong id="catWaste">{(Number(wasteKg) / 1000).toFixed(2)} tonnes CO2e</strong>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "10px 0",
+                  }}
+                >
+                  <span>♻️ {t("audit.cat_waste") || "Waste"}</span>
+                  <strong id="catWaste">
+                    {(Number(wasteKg) / 1000).toFixed(2)} tonnes CO2e
+                  </strong>
+                </div>
+              </div>
+
+              {/* Intensity metrics block */}
+              <div
+                style={{
+                  background: "#f3f4f6",
+                  border: "2px solid #d1d5db",
+                  borderRadius: "10px",
+                  padding: "25px",
+                  marginTop: "30px",
+                }}
+              >
+                <h4
+                  style={{
+                    marginTop: 0,
+                    color: "#1f2937",
+                  }}
+                  id="intensityLabel"
+                >
+                  {t("audit.intensity_label")}
+                </h4>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr",
+                    gap: "15px",
+                  }}
+                >
+                  <div>
+                    <span
+                      style={{ color: "#6b7280", fontSize: "0.9rem" }}
+                      id="perEmpLabel"
+                    >
+                      {t("audit.per_emp_label")}
+                    </span>
+                    <div
+                      id="perEmployee"
+                      style={{
+                        fontSize: "1.5rem",
+                        fontWeight: "bold",
+                        color: "#1f2937",
+                      }}
+                    >
+                      {perEmployeeTonnes !== null
+                        ? `${perEmployeeTonnes.toFixed(2)} tonnes CO2e`
+                        : "- tonnes CO2e"}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -710,14 +817,31 @@ const CO2ePortalAuditToolkit = () => {
 
         {/* Footer actions */}
         <div className="footerSec">
-          <button className="btn" onClick={handleSave} id="btnSave" disabled={loading}>
-            {loading ? (editAuditId ? "Updating…" : "Saving…") : (editAuditId ? "Update Audit" : "Save Progress")}
+          <button
+            className="btn"
+            onClick={handleSave}
+            id="btnSave"
+            disabled={loading}
+          >
+            {loading
+              ? editAuditId
+                ? t("audit.btn_update")
+                : t("audit.btn_save")
+              : editAuditId
+              ? t("audit.btn_update")
+              : t("audit.btn_save")}
           </button>
-          <button className="btn btn-secondary" onClick={handlePrint} id="btnPrint">
-            🖨️ {t.btnPrint}
+          <button
+            className="btn btn-secondary"
+            onClick={handlePrint}
+            id="btnPrint"
+          >
+            🖨️ {t("audit.btn_print")}
           </button>
           {editAuditId && (
-            <button className="btn btn-secondary" onClick={resetForm}>Cancel Edit</button>
+            <button className="btn btn-secondary" onClick={resetForm}>
+              {t("audit.btn_cancel_edit") || "Cancel Edit"}
+            </button>
           )}
         </div>
       </div>
@@ -728,9 +852,71 @@ const CO2ePortalAuditToolkit = () => {
         {err && <div className="err">{err}</div>}
       </div>
 
-       
+      {/* Admin list */}
+      <div className="admin-list no-print">
+        <h3>{t("audit.list_title")}</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>{t("audit.col_org") || "Org"}</th>
+              <th>{t("audit.col_lang") || "Lang"}</th>
+              <th>{t("audit.col_period") || "Period"}</th>
+              <th>{t("audit.col_total") || "Total (tCO2e)"}</th>
+              <th>{t("audit.col_updated") || "Updated"}</th>
+              <th style={{ width: 190 }}>{t("audit.col_action") || "Action"}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {audits.map((a) => {
+              const total = Number(a?.totalTonnes ?? 0);
+              const updated = a?.updatedAt
+                ? new Date(a.updatedAt).toLocaleString()
+                : "-";
+              const start = a?.reportStart
+                ? String(a.reportStart).slice(0, 10)
+                : "";
+              const end = a?.reportEnd ? String(a.reportEnd).slice(0, 10) : "";
+              return (
+                <tr key={a._id}>
+                  <td>{a.orgName || "-"}</td>
+                  <td>{a.lang ? String(a.lang).toUpperCase() : "-"}</td>
+                  <td>
+                    {start} → {end}
+                  </td>
+                  <td>
+                    {Number.isFinite(total) ? total.toFixed(2) : "0.00"}
+                  </td>
+                  <td>{updated}</td>
+                  <td className="actions">
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => handleEdit(a)}
+                    >
+                      {t("audit.btn_edit") || "Edit"}
+                    </button>
+                    <button
+                      className="btn"
+                      style={{ background: "#dc2626" }}
+                      onClick={() => handleDelete(a._id)}
+                    >
+                      {t("audit.btn_delete") || "Delete"}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+            {audits.length === 0 && (
+              <tr>
+                <td colSpan={6} style={{ textAlign: "center", padding: 20 }}>
+                  {t("audit.no_audits") || "No audits yet."}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };
 
-export default CO2ePortalAuditToolkit;
+export default CO2ePortalAdminAuditToolkit;
