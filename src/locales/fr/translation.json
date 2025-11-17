@@ -518,5 +518,135 @@
       "premium_required_message": "Abonnement Premium requis pour soumettre des annonces.",
       "login_required_message": "Veuillez vous connecter pour soumettre une annonce."
     }
+  },
+
+  "carbon": {
+    "appTitle": "Calculateur d'émissions de carbone",
+    "subtitle": "Réussite durable grâce à la sensibilisation aux émissions de carbone et à l'impact climatique dans votre organisation...",
+    "print": "📄 Imprimer le rapport / Enregistrer en PDF",
+    "totalLabel": "Émissions totales de CO₂e",
+    "resultPlaceholder": "Le résultat de votre calcul de CO₂e apparaîtra ici.",
+
+    "tabs": {
+      "sme": "PME",
+      "micro": "Micro rassemblements",
+      "macro": "Macro rassemblements",
+      "other": "Autres calculateurs"
+    },
+
+    "errors": {
+      "smeCompanyNameRequired": "Veuillez saisir un nom d'entreprise.",
+      "smeZeroValues": "Veuillez saisir des valeurs d'énergie ou de carburant non nulles pour calculer les émissions des PME.",
+      "microEventNameRequired": "Veuillez saisir un nom d'événement pour le micro rassemblement.",
+      "microInvalidInput": "Veuillez saisir des nombres valides et non négatifs pour tous les champs du micro événement.",
+      "microZeroValues": "Veuillez fournir des valeurs non nulles pour les participants, les déplacements ou les repas afin de calculer les émissions du micro événement.",
+      "macroEventNameRequired": "Veuillez saisir un nom d'événement pour le macro rassemblement.",
+      "macroInvalidInput": "Veuillez saisir des nombres valides et non négatifs pour tous les champs du macro rassemblement.",
+      "macroZeroValues": "Veuillez fournir des valeurs non nulles afin de calculer les émissions du macro rassemblement.",
+      "otherZeroValues": "Veuillez saisir une valeur valide et non négative pour calculer les émissions."
+    },
+
+    "common": {
+      "eventLabel": "Événement",
+      "companyLabel": "Entreprise"
+    },
+
+    "sme": {
+      "title": "Calculateur de CO₂e mensuel/annuel pour les PME",
+      "companyName": "Nom de l'entreprise : *",
+      "companyPlaceholder": "Saisissez le nom de votre entreprise",
+      "contactName": "Nom du contact :",
+      "email": "E-mail :",
+      "phone": "Numéro de téléphone :",
+      "startDate": "Période de reporting (date de début) :",
+      "endDate": "Période de reporting (date de fin) :",
+      "industry": "Secteur d'activité / Industrie :",
+      "employees": "Nombre d'employés :",
+      "buildingArea": "Surface totale du bâtiment (m²) :",
+      "electricityKWh": "Consommation d'électricité (kWh) :",
+      "naturalGasM3": "Consommation de gaz naturel (m³) :",
+      "gasolineL": "Consommation d'essence (litres) :",
+      "dieselL": "Consommation de diesel (litres) :",
+      "calc": "Calculer le CO₂e des PME"
+    },
+
+    "micro": {
+      "title": "Micro rassemblements et événements",
+      "sub": "(Petits mariages, salons d'hôtel, églises, écoles, universités, théâtres, piscines)",
+      "eventName": "Nom de l'événement : *",
+      "eventPlaceholder": "Saisissez le nom de l'événement",
+      "contactName": "Nom du contact :",
+      "email": "E-mail :",
+      "phone": "Numéro de téléphone :",
+      "attendeesLT50": "Nombre de participants (<50) :",
+      "avgTravelKm": "Distance moyenne parcourue par participant (km aller-retour) :",
+      "mealsPerAttendee": "Repas servis par participant :",
+      "durationHrs": "Durée de l'événement (heures) :",
+      "calc": "Calculer le CO₂e du micro événement"
+    },
+
+    "macro": {
+      "title": "Macro rassemblements et événements",
+      "sub": "(Salles de mariage, salons d'hôtel, églises, écoles, universités, théâtres, piscines)",
+      "eventName": "Nom de l'événement : *",
+      "eventPlaceholder": "Saisissez le nom de l'événement",
+      "contactName": "Nom du contact :",
+      "email": "E-mail :",
+      "phone": "Numéro de téléphone :",
+      "attendeesGT50": "Nombre de participants (>50) :",
+      "avgAttendeeTravelKm": "Distance moyenne parcourue par participant (km aller-retour) :",
+      "mealsPerAttendeeMacro": "Repas servis par participant :",
+      "durationHrsMacro": "Durée de l'événement / du rassemblement (heures) :",
+      "electricityConsumed": "Électricité consommée (kWh) :",
+      "naturalGasConsumed": "Gaz naturel consommé (m³) :",
+      "waterLiters": "Eau consommée (litres) :",
+      "landfilledKg": "Déchets mis en décharge (kg) :",
+      "recycledKg": "Déchets recyclés (kg) :",
+      "compostedKg": "Déchets compostés (kg) :",
+      "calc": "Calculer le CO₂e du macro rassemblement"
+    },
+
+    "other": {
+      "flights": "VOL(S) :",
+      "recreationalAircraft": "Avion de loisirs",
+      "commercialAircraft": "Avion de ligne",
+      "amphibiousAircraft": "Hydravion",
+      "helicopter": "Hélicoptère",
+      "flightDistance": "Distance du vol (km) :",
+      "calcFlight": "Calculer le CO₂e du vol",
+
+      "vehicles": "VÉHICULES :",
+      "sedan": "Berline",
+      "van": "Fourgon",
+      "suv4x4": "SUV / 4x4",
+      "truck": "Camion",
+      "vehicleDistance": "Distance parcourue (km) :",
+      "calcVehicle": "Calculer le CO₂e du véhicule",
+
+      "vessels": "NAVIRES :",
+      "motorBoatGasoline": "Bateau à moteur (essence)",
+      "motorBoatDiesel": "Bateau à moteur (diesel)",
+      "electricSailBoat": "Voilier / bateau électrique",
+      "yachtGasoline": "Yacht (essence)",
+      "yachtDiesel": "Yacht (diesel)",
+      "yachtElectric": "Yacht (électrique)",
+      "vesselDistance": "Distance parcourue (km) :",
+      "calcVessel": "Calculer le CO₂e du navire",
+
+      "publicTransportKm": "Transports en commun (km) :",
+      "calcPublicTransport": "CO₂e des transports en commun",
+
+      "freightTonnes": "Poids du fret (tonnes) :",
+      "calcFreight": "Calculer le CO₂e du fret",
+
+      "waterConsumed": "Eau consommée (litres) :",
+      "calcWater": "Calculer le CO₂e de l'eau",
+
+      "totalWaste": "Déchets totaux (kg) :",
+      "calcWaste": "Calculer le CO₂e des déchets",
+
+      "commuteOneWayKm": "Trajet domicile-travail (aller simple, km) :",
+      "calcCommute": "CO₂e des trajets domicile-travail"
+    }
   }
 }

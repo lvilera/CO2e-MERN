@@ -518,5 +518,135 @@
       "premium_required_message": "Premium membership required to submit listings.",
       "login_required_message": "Please log in to submit a listing."
     }
+  },
+
+  "carbon": {
+    "appTitle": "Carbon Emissions Calculator",
+    "subtitle": "Sustainable Success through Carbon Emissions awareness and Climate impact in your organization...",
+    "print": "📄 Print Report / Save as PDF",
+    "totalLabel": "Total CO2e Emissions",
+    "resultPlaceholder": "Your CO2e calculation will appear here.",
+
+    "tabs": {
+      "sme": "SME's",
+      "micro": "Micro Gatherings",
+      "macro": "Macro Gatherings",
+      "other": "Other Calculators"
+    },
+
+    "errors": {
+      "smeCompanyNameRequired": "Please enter a company name.",
+      "smeZeroValues": "Please enter non-zero energy or fuel values to calculate SME emissions.",
+      "microEventNameRequired": "Please enter an event name for the Micro Gathering.",
+      "microInvalidInput": "Please enter valid non-negative numbers for all micro event inputs.",
+      "microZeroValues": "Please provide non-zero attendee/travel/meal values to calculate micro event emissions.",
+      "macroEventNameRequired": "Please enter an event name for the Macro Gathering.",
+      "macroInvalidInput": "Please enter valid non-negative numbers for all Macro Gathering inputs.",
+      "macroZeroValues": "Please provide non-zero values to calculate Macro Gathering emissions.",
+      "otherZeroValues": "Please enter a valid non-negative value to calculate emissions."
+    },
+
+    "common": {
+      "eventLabel": "Event",
+      "companyLabel": "Company"
+    },
+
+    "sme": {
+      "title": "SME Monthly/Annual CO2e Calculator",
+      "companyName": "Company Name: *",
+      "companyPlaceholder": "Enter your company name",
+      "contactName": "Contact Name:",
+      "email": "Email:",
+      "phone": "Phone Number:",
+      "startDate": "Reporting Period (Start Date):",
+      "endDate": "Reporting Period (End Date):",
+      "industry": "Business Industry/Sector:",
+      "employees": "Number of Employees:",
+      "buildingArea": "Total Building Area (sq meters):",
+      "electricityKWh": "Electricity Consumption (kWh):",
+      "naturalGasM3": "Natural Gas Consumption (m³):",
+      "gasolineL": "Gasoline Consumption (Liters):",
+      "dieselL": "Diesel Consumption (Liters):",
+      "calc": "Calculate SME CO2e"
+    },
+
+    "micro": {
+      "title": "Micro Gatherings & Events",
+      "sub": "(Small Weddings, Hotel Salons, Churches, Schools, Universities, Theaters, Pools)",
+      "eventName": "Event Name: *",
+      "eventPlaceholder": "Enter event name",
+      "contactName": "Contact Name:",
+      "email": "Email:",
+      "phone": "Phone Number:",
+      "attendeesLT50": "Number of Attendees (<50):",
+      "avgTravelKm": "Avg. Travel Distance per Attendee (km round trip):",
+      "mealsPerAttendee": "Meals Served per Attendee:",
+      "durationHrs": "Event Duration (hours):",
+      "calc": "Calculate Micro Event CO2e"
+    },
+
+    "macro": {
+      "title": "Macro Gatherings & Events",
+      "sub": "(Wedding Halls, Hotel Salons, Churches, Schools, Universities, Theaters, Pools)",
+      "eventName": "Event Name: *",
+      "eventPlaceholder": "Enter event name",
+      "contactName": "Contact Name:",
+      "email": "Email:",
+      "phone": "Phone Number:",
+      "attendeesGT50": "Number of Attendees (>50):",
+      "avgAttendeeTravelKm": "Avg. Attendee Travel Distance (km round trip):",
+      "mealsPerAttendeeMacro": "Meals Served per Attendee:",
+      "durationHrsMacro": "Event/Gathering Duration (hours):",
+      "electricityConsumed": "Electricity Consumed (kWh):",
+      "naturalGasConsumed": "Natural Gas Consumed (m³):",
+      "waterLiters": "Water Consumed (Liters):",
+      "landfilledKg": "Landfilled Waste (kg):",
+      "recycledKg": "Recycled Waste (kg):",
+      "compostedKg": "Composted Waste (kg):",
+      "calc": "Calculate Macro Gathering CO2e"
+    },
+
+    "other": {
+      "flights": "FLIGHTS:",
+      "recreationalAircraft": "Recreational Aircraft",
+      "commercialAircraft": "Commercial Aircraft",
+      "amphibiousAircraft": "Amphibious Aircraft",
+      "helicopter": "Helicopter",
+      "flightDistance": "Flight Distance (km):",
+      "calcFlight": "Calculate Flight CO2e",
+
+      "vehicles": "VEHICLES:",
+      "sedan": "Sedan",
+      "van": "Van",
+      "suv4x4": "SUV / 4x4",
+      "truck": "Truck",
+      "vehicleDistance": "Distance Traveled (km):",
+      "calcVehicle": "Calculate Vehicle CO2e",
+
+      "vessels": "VESSELS:",
+      "motorBoatGasoline": "Motor Boat (Gasoline)",
+      "motorBoatDiesel": "Motor Boat (Diesel)",
+      "electricSailBoat": "Electric/Sail Boat",
+      "yachtGasoline": "Yacht (Gasoline)",
+      "yachtDiesel": "Yacht (Diesel)",
+      "yachtElectric": "Yacht (Electric)",
+      "vesselDistance": "Distance Traveled (km):",
+      "calcVessel": "Calculate Vessel CO2e",
+
+      "publicTransportKm": "Public Transport (km):",
+      "calcPublicTransport": "Public Transport CO2e",
+
+      "freightTonnes": "Freight Weight (tonnes):",
+      "calcFreight": "Calculate Freight CO2e",
+
+      "waterConsumed": "Water Consumed (Liters):",
+      "calcWater": "Calculate Water CO2e",
+
+      "totalWaste": "Total Waste (kg):",
+      "calcWaste": "Calculate Waste CO2e",
+
+      "commuteOneWayKm": "Commute (one-way, km):",
+      "calcCommute": "Commuting Travel CO2e"
+    }
   }
 }
