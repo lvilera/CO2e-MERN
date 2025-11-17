@@ -800,6 +800,30 @@ body {
 
 .section-text {
   line-height: 2;
+  color: var(--eerie-black-2);
+}
+
+/* Ensure tab content is visible with proper contrast */
+.tab-content {
+  background-color: transparent;
+  color: var(--eerie-black-2);
+}
+
+.tab-content .section-text {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+  color: var(--eerie-black-2) !important;
+}
+
+.tab-content .tab-list {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.tab-content .tab-item {
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .img-cover {
@@ -1035,6 +1059,15 @@ body {
   margin-block-end: 30px;
 }
 
+/* Fix text visibility on dark hero background */
+.hero .h2,
+.hero h2,
+.hero .h3,
+.hero h3,
+.hero .section-text {
+  color: var(--white) !important;
+}
+
 /*-----------------------------------*\
   #FEATURES
 \*-----------------------------------*/
@@ -1073,6 +1106,15 @@ body {
   max-width: 25ch;
   color: var(--white_50);
   font-size: var(--fs-9);
+}
+
+/* Fix text visibility on dark features background */
+.features .h2,
+.features h2,
+.features .h3,
+.features h3,
+.features .section-text {
+  color: var(--white) !important;
 }
 
 /*-----------------------------------*\
@@ -1158,9 +1200,11 @@ body {
 }
 
 .tab-text {
-  color: var(--eerie-black-2);
+  color: var(--eerie-black-2) !important;
   font-size: var(--fs-8);
   font-weight: var(--fw-500);
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /*-----------------------------------*\
@@ -1378,6 +1422,15 @@ body {
   color: var(--white);
 }
 
+/* Fix text visibility on dark testimonials background */
+.testi .h2,
+.testi h2,
+.testi .h3,
+.testi h3,
+.testi .section-text {
+  color: var(--white) !important;
+}
+
 .testi-text,
 .testi-name {
   font-size: var(--fs-8);
@@ -1563,6 +1616,15 @@ body {
   color: var(--white);
   font-family: var(--ff-inter);
   padding-block: 40px;
+}
+
+/* Fix text visibility on dark footer background */
+.footer .h2,
+.footer h2,
+.footer .h3,
+.footer h3,
+.footer .section-text {
+  color: var(--white) !important;
 }
 
 .footer .container {

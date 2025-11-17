@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Header from './Home/Header';
 import Footer2 from './Home/Footer2';
 import { useApi } from './hooks/useApi';
@@ -12,6 +12,12 @@ const Courses = () => {
   const [loading, setLoading] = useState(true);
   const [hasCourse, setHasCourse] = useState(false);
   const { get } = useApi();
+
+  const fetchCourses = useCallback(async () => {
+    const data = await get(`${API_BASE}/api/courses`, 'Loading courses...');
+    setCourses(data);
+    setLoading(false);
+  }, [get]);
 
   useEffect(() => {
     // Check user access from backend
@@ -29,13 +35,7 @@ const Courses = () => {
         setHasCourse(false);
         setLoading(false);
       });
-  }, []);
-
-  const fetchCourses = async () => {
-    const data = await get(`${API_BASE}/api/courses`, 'Loading courses...');
-    setCourses(data);
-    setLoading(false);
-  };
+  }, [fetchCourses, get]);
 
   if (loading) {
     return <div style={{ padding: 100, textAlign: 'center' }}>Loading...</div>;
