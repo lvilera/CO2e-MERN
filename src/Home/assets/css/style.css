@@ -1242,8 +1242,8 @@ body {
   background-color: var(--baby-powder);
   background-repeat: no-repeat;
   background-position: center top;
-  margin-block-start: -200px;
-  padding-block-start: 200px;
+  /* margin-block-start: -200px;
+  padding-block-start: 200px; */
 }
 
 .service .section-title {

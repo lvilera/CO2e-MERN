@@ -1,24 +1,23 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
-  IoLeafOutline,
+  IoBoatOutline,
   IoEarthOutline,
   IoFlowerOutline,
-  IoBoatOutline,
+  IoLeafOutline,
 } from "react-icons/io5";
-import { useTranslation } from "react-i18next";
 
-import subtitleImage from "./assets/images/subtitle-img-green.png";
-import serviceBg from "./assets/images/service-map.png";
-import "./assets/css/style.css";
-import { 
-  scaleIn, 
+import {
   cardHoverAnimation,
   cardLeaveAnimation,
+  continuousCardFloat,
   iconHoverAnimation,
   iconLeaveAnimation,
-  continuousCardFloat,
+  scaleIn,
   scrollTriggerAnimation
 } from "../utils/gsapAnimations";
+import "./assets/css/style.css";
+import serviceBg from "./assets/images/service-map.png";
 
 const Service = () => {
   const { t, i18n } = useTranslation();
