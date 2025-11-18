@@ -1,20 +1,19 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   IoCheckmarkCircle,
   IoHeartOutline,
 } from "react-icons/io5";
 
-import subtitleImage from "./assets/images/subtitle-img-green.png";
-import decoImg from "./assets/images/deco-img.png";
-import "./assets/css/style.css";
 import {
-  slideInLeft,
-  slideInRight,
+  floatingAnimation,
   parallaxEffect,
-  staggerAnimation,
-  floatingAnimation
+  slideInRight,
+  staggerAnimation
 } from "../utils/gsapAnimations";
+import "./assets/css/style.css";
+import decoImg from "./assets/images/deco-img.png";
+import subtitleImage from "./assets/images/subtitle-img-green.png";
 
 const About = () => {
   const { t, i18n } = useTranslation();
@@ -157,7 +156,7 @@ const About = () => {
           </ul>
 
           {/* TAB CONTENT */}
-          <div className="tab-content" ref={tabContentRef}>
+          <div className="tab-content active" ref={tabContentRef}>
             <p className="section-text">{t(`about.tabs.${activeTab}.text`)}</p>
 
             <ul className="tab-list">

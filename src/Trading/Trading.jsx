@@ -279,7 +279,7 @@ const Trading = () => {
         <div id="calculator-democratizing-container">
           <div id="calculator-section">
             
-            <div id="calculator-container" ref={calculatorContainerRef}>
+            <div >
               {/* <iframe
                 style={{ height: '730px', width: '100%' }}
                 src="https://plugin.sustainabletravel.com/?api_key=STIKEY_687aad94750ee556806795&primary_color=%23008370&secondary_color=%23f7961f&light_primary_color=%2366e9d6&sort_order=Flight%2CHotel%2CCar%2CBoat"

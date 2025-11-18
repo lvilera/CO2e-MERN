@@ -329,6 +329,27 @@ hr {
   background-color: #7cb342;
 }
 
+/* Disabled state */
+.print-button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Simple circle spinner */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  border-top-color: rgba(255, 255, 255, 0.2);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 /* Hide print-value elements on screen */
 .print-value {
   display: none;
@@ -344,6 +365,7 @@ hr {
   body {
     background-color: white;
     padding: 0;
+    margin: 0;
   }
 
   /* Logo in print */
@@ -647,3 +669,7 @@ hr {
 .tab-content.active {
   animation: fadeIn 0.4s ease;
 }
+
+/* ========================
+   PRINT ONLY THIS SECTION
+   ======================== */

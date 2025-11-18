@@ -1,7 +1,8 @@
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./CarbonEmissionsCalculator.css";
-
 /* ================== SUGGESTIONS (CATEGORY-SPECIFIC) ================== */
 
 const FLIGHT_SUGGESTIONS = {
@@ -1040,7 +1041,56 @@ const CarbonEmissionsCalculator = () => {
         return key;
     }
   };
+const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
+const generatePDF = async () => {
+  const input = document.getElementById("printSection");
+  if (!input || isGeneratingPdf) return;
+
+  setIsGeneratingPdf(true);
+
+  try {
+    // ✅ Wait for all web fonts
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+
+    const pdf = new jsPDF("p", "pt", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    const canvas = await html2canvas(input, {
+      scale: 3,
+      useCORS: true,
+      scrollY: -window.scrollY,
+      windowWidth: input.scrollWidth,
+      windowHeight: input.scrollHeight,
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+    const imgWidth = pdfWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pdfHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
+    }
+
+    pdf.save("Carbon-Calculator-Report.pdf");
+  } catch (err) {
+    console.error("PDF generation failed:", err);
+  } finally {
+    setIsGeneratingPdf(false);
+  }
+};
   /* ================== RENDER ================== */
 
   return (
@@ -1050,6 +1100,7 @@ const CarbonEmissionsCalculator = () => {
         minHeight: "100vh",
         padding: 20,
       }}
+       id="printSection"
     >
       {/* Logo */}
       {/* <div style={{ textAlign: "center", marginBottom: 20 }}>
@@ -1091,14 +1142,19 @@ const CarbonEmissionsCalculator = () => {
           <option value="es">🇪🇸 Español</option>
         </select>
         <button
-          className="print-button"
-          onClick={() => window.print()}
-        >
-          {t(
-            "carbon.print",
-            "📄 Print Report / Save as PDF"
-          )}
-        </button>
+  className="print-button"
+  onClick={generatePDF}
+  disabled={isGeneratingPdf}
+>
+  {isGeneratingPdf ? (
+    <>
+      <span className="spinner" />
+      {t("carbon.generatingPdf", "Generating PDF...")}
+    </>
+  ) : (
+    t("carbon.print", "📄 Print Report / Save as PDF")
+  )}
+</button>
       </div>
 
       {/* Tabs */}
@@ -1124,6 +1180,7 @@ const CarbonEmissionsCalculator = () => {
         className={`tab-content ${
           activeTab === "sme" ? "active" : ""
         }`}
+        data-print-active={activeTab === "sme"}
       >
         <div className="calculator-container">
           <div
@@ -1417,6 +1474,7 @@ const CarbonEmissionsCalculator = () => {
         className={`tab-content ${
           activeTab === "micro" ? "active" : ""
         }`}
+        data-print-active={activeTab === "micro"}
       >
         <div className="calculator-container">
           <div
@@ -1627,6 +1685,7 @@ const CarbonEmissionsCalculator = () => {
         className={`tab-content ${
           activeTab === "macro" ? "active" : ""
         }`}
+        data-print-active={activeTab === "macro"}
       >
         <div className="calculator-container">
           <div
@@ -1953,6 +2012,7 @@ const CarbonEmissionsCalculator = () => {
         className={`tab-content ${
           activeTab === "other" ? "active" : ""
         }`}
+        data-print-active={activeTab === "other"}
       >
         <div className="calculator-container">
           <div className="calculation-section">
