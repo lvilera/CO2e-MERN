@@ -1,6 +1,6 @@
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./CarbonEmissionsCalculator.css";
 /* ================== SUGGESTIONS (CATEGORY-SPECIFIC) ================== */
@@ -1042,10 +1042,14 @@ const CarbonEmissionsCalculator = () => {
     }
   };
 const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-
+const printRef = useRef(null);
 const generatePDF = async () => {
+  const element = printRef.current;
   const input = document.getElementById("printSection");
-  if (!input || isGeneratingPdf) return;
+  
+  if (!input || isGeneratingPdf || !element) return;
+   
+      element.scrollIntoView({ behavior: 'instant' });
 
   setIsGeneratingPdf(true);
 
@@ -1054,6 +1058,7 @@ const generatePDF = async () => {
       await document.fonts.ready;
     }
 
+    
     const pdf = new jsPDF("p", "pt", "a5");
     const pdfWidth = pdf.internal.pageSize.getWidth();
     
@@ -1067,8 +1072,7 @@ const generatePDF = async () => {
       windowWidth: input.scrollWidth,
       windowHeight: input.scrollHeight,
        foreignObjectRendering: true,
-    });
-    console.log(window.scrollY);
+    }); 
 
     const imgData = canvas.toDataURL("image/png");
     const imgWidth = pdfWidth;
@@ -1100,10 +1104,10 @@ const generatePDF = async () => {
     <div
       style={{
         background: "#f7fcf8",
-        minHeight: "100vh",
-        padding: 20,
+        minHeight: "100vh", 
       }}
        id="printSection"
+       ref={printRef}
     >
       {/* Logo */}
       {/* <div style={{ textAlign: "center", marginBottom: 20 }}>
