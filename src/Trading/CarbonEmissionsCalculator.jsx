@@ -1049,23 +1049,26 @@ const generatePDF = async () => {
 
   setIsGeneratingPdf(true);
 
-  try {
-    // ✅ Wait for all web fonts
+  try { 
     if (document.fonts && document.fonts.ready) {
       await document.fonts.ready;
     }
 
-    const pdf = new jsPDF("p", "pt", "a4");
+    const pdf = new jsPDF("p", "pt", "a5");
     const pdfWidth = pdf.internal.pageSize.getWidth();
+    
+    
     const pdfHeight = pdf.internal.pageSize.getHeight();
 
     const canvas = await html2canvas(input, {
-      scale: 3,
+      scale: 1,
       useCORS: true,
       scrollY: -window.scrollY,
       windowWidth: input.scrollWidth,
       windowHeight: input.scrollHeight,
+       foreignObjectRendering: true,
     });
+    console.log(window.scrollY);
 
     const imgData = canvas.toDataURL("image/png");
     const imgWidth = pdfWidth;

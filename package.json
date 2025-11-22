@@ -10,6 +10,7 @@
     "axios": "^1.10.0",
     "gsap": "^3.13.0",
     "html2canvas": "^1.4.1",
+    "html2pdf.js": "^0.12.1",
     "i18next": "^22.4.9",
     "i18next-browser-languagedetector": "^6.1.5",
     "ionicons": "^7.2.2",
