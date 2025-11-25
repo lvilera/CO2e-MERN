@@ -1108,6 +1108,7 @@ const generatePDF = async () => {
       }}
        id="printSection"
        ref={printRef}
+       className="carbon-emissions-calculator"
     >
       {/* Logo */}
       {/* <div style={{ textAlign: "center", marginBottom: 20 }}>

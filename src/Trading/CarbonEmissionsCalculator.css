@@ -1,5 +1,4 @@
-/* Button Container - Language Selector + Print Button */
-.button-container {
+.carbon-emissions-calculator .button-container {
   max-width: 1190px;
   margin: 30px auto;
   display: flex;
@@ -9,7 +8,7 @@
   flex-wrap: wrap;
 }
 
-.language-select {
+.carbon-emissions-calculator .language-select {
   padding: 14px 30px;
   border: 2px solid #20b2aa;
   border-radius: 8px;
@@ -22,25 +21,25 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.language-select:hover {
+.carbon-emissions-calculator .language-select:hover {
   border-color: #1a8f88;
   background-color: #f0f9f8;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
-.language-select:focus {
+.carbon-emissions-calculator .language-select:focus {
   outline: none;
   border-color: #4a90e2;
   box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
 @media print {
-  .button-container {
+  .carbon-emissions-calculator .button-container {
     display: none !important;
   }
 }
 
-h1 {
+.carbon-emissions-calculator h1 {
   color: #1a1a1a;
   text-align: center;
   font-size: 2.5em;
@@ -48,20 +47,19 @@ h1 {
   font-weight: 600;
 }
 
-.subtitle {
+.carbon-emissions-calculator .subtitle {
   text-align: center;
   color: #666;
   font-size: 1.1em;
   margin-bottom: 40px;
 }
 
-/* Tab Navigation Styles */
-.tab-container {
+.carbon-emissions-calculator .tab-container {
   max-width: 1190px;
   margin: 0 auto 30px;
 }
 
-.tab-navigation {
+.carbon-emissions-calculator .tab-navigation {
   display: flex;
   gap: 10px;
   background-color: #ffffff;
@@ -73,7 +71,7 @@ h1 {
   flex-wrap: wrap;
 }
 
-.tab-button {
+.carbon-emissions-calculator .tab-button {
   flex: 1;
   min-width: 150px;
   padding: 15px 25px;
@@ -88,27 +86,27 @@ h1 {
   text-align: center;
 }
 
-.tab-button:hover {
+.carbon-emissions-calculator .tab-button:hover {
   background-color: #2a2a2a;
   color: #3dd4cc;
 }
 
-.tab-button.active {
+.carbon-emissions-calculator .tab-button.active {
   background-color: #20b2aa;
   color: #ffffff;
   border-color: #20b2aa;
 }
 
-.tab-content {
+.carbon-emissions-calculator .tab-content {
   display: none;
   animation: fadeIn 0.4s ease;
 }
 
-.tab-content.active {
+.carbon-emissions-calculator .tab-content.active {
   display: block;
 }
 
-.calculator-container {
+.carbon-emissions-calculator .calculator-container {
   background-color: transparent;
   max-width: 1190px;
   margin: 0 auto;
@@ -117,7 +115,7 @@ h1 {
   gap: 20px;
 }
 
-.calculation-section {
+.carbon-emissions-calculator .calculation-section {
   padding: 30px;
   border: 3px solid #8bc34a;
   border-radius: 12px;
@@ -129,37 +127,37 @@ h1 {
   transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
 
-.calculation-section:hover {
+.carbon-emissions-calculator .calculation-section:hover {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(139, 195, 74, 0.3);
   transform: translateY(-2px);
 }
 
-.calculation-section h1,
-.calculation-section h2 {
+.carbon-emissions-calculator .calculation-section h1,
+.carbon-emissions-calculator .calculation-section h2 {
   color: #1a1a1a;
   font-size: 1.4em;
   margin-bottom: 8px;
   font-weight: 600;
 }
 
-.calculation-section p {
+.carbon-emissions-calculator .calculation-section p {
   color: #666;
   font-size: 0.85em;
   margin-bottom: 15px;
   line-height: 1.4;
 }
 
-.calculation-section label {
+.carbon-emissions-calculator .calculation-section label {
   font-weight: 600;
   color: #333;
   margin-bottom: 5px;
   font-size: 0.9em;
 }
 
-.calculation-section input[type="number"],
-.calculation-section input[type="date"],
-.calculation-section input[type="text"],
-.calculation-section select {
+.carbon-emissions-calculator .calculation-section input[type="number"],
+.carbon-emissions-calculator .calculation-section input[type="date"],
+.carbon-emissions-calculator .calculation-section input[type="text"],
+.carbon-emissions-calculator .calculation-section select {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #d0d0d0;
@@ -170,25 +168,24 @@ h1 {
   color: #333;
 }
 
-.calculation-section input:focus,
-.calculation-section select:focus {
+.carbon-emissions-calculator .calculation-section input:focus,
+.carbon-emissions-calculator .calculation-section select:focus {
   outline: none;
   border-color: #4a90e2;
   box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
-.calculation-section input::placeholder {
+.carbon-emissions-calculator .calculation-section input::placeholder {
   color: #999;
 }
 
-/* Special styling for name fields */
-.name-field {
+.carbon-emissions-calculator .name-field {
   background-color: #fffbea !important;
   border: 2px solid #f4c542 !important;
   font-weight: 600;
 }
 
-.calc-button {
+.carbon-emissions-calculator .calc-button {
   background-color: #20b2aa;
   color: #ffffff;
   padding: 12px 20px;
@@ -203,16 +200,16 @@ h1 {
   margin-top: 10px;
 }
 
-.calc-button:hover {
+.carbon-emissions-calculator .calc-button:hover {
   background-color: #1a9891;
   transform: translateY(-1px);
 }
 
-.calc-button:active {
+.carbon-emissions-calculator .calc-button:active {
   transform: scale(0.98);
 }
 
-.result {
+.carbon-emissions-calculator .result {
   margin-top: 30px;
   padding: 25px;
   background-color: #ffffff;
@@ -224,13 +221,13 @@ h1 {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(139, 195, 74, 0.2);
 }
 
-.result.error {
+.carbon-emissions-calculator .result.error {
   border: 3px solid #e74c3c;
   background-color: #ffebee;
   color: #c0392b;
 }
 
-.result ul {
+.carbon-emissions-calculator .result ul {
   list-style-type: disc;
   margin-left: 20px;
   margin-top: 15px;
@@ -239,16 +236,16 @@ h1 {
   line-height: 1.8;
 }
 
-.result p {
+.carbon-emissions-calculator .result p {
   margin-bottom: 10px;
   line-height: 1.6;
 }
 
-.result strong {
+.carbon-emissions-calculator .result strong {
   color: #1a1a1a;
 }
 
-.event-comparison-container {
+.carbon-emissions-calculator .event-comparison-container {
   grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
@@ -256,63 +253,66 @@ h1 {
   justify-content: center;
 }
 
-.event-comparison-container > .calculation-section {
+.carbon-emissions-calculator
+  .event-comparison-container
+  > .calculation-section {
   flex: 1;
   min-width: 320px;
   max-width: 100%;
 }
 
-hr {
+.carbon-emissions-calculator hr {
   border: none;
   border-top: 2px solid #8bc34a;
   margin: 20px 0;
 }
 
 @media (max-width: 768px) {
-  h1 {
+  .carbon-emissions-calculator h1 {
     font-size: 1.8em;
   }
 
-  .tab-button {
+  .carbon-emissions-calculator .tab-button {
     min-width: 120px;
     padding: 12px 15px;
     font-size: 14px;
   }
 
-  .calculator-container {
+  .carbon-emissions-calculator .calculator-container {
     padding: 0;
     gap: 15px;
   }
 
-  .calculation-section {
+  .carbon-emissions-calculator .calculation-section {
     padding: 20px;
   }
 
-  .event-comparison-container > .calculation-section {
+  .carbon-emissions-calculator
+    .event-comparison-container
+    > .calculation-section {
     max-width: 100%;
   }
 
-  .button-container {
+  .carbon-emissions-calculator .button-container {
     flex-direction: column;
     gap: 10px;
   }
 
-  .language-select,
-  .print-button {
+  .carbon-emissions-calculator .language-select,
+  .carbon-emissions-calculator .print-button {
     width: 100%;
     max-width: 300px;
   }
 }
 
-/* Logo Styling */
-#companyLogo {
+.carbon-emissions-calculator #companyLogo {
   display: block;
   max-width: 250px;
   height: auto;
   margin: 0 auto 20px;
 }
 
-.print-button {
+.carbon-emissions-calculator .print-button {
   background-color: #8bc34a;
   color: #ffffff;
   padding: 14px 30px;
@@ -325,18 +325,16 @@ hr {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.print-button:hover {
+.carbon-emissions-calculator .print-button:hover {
   background-color: #7cb342;
 }
 
-/* Disabled state */
-.print-button[disabled] {
+.carbon-emissions-calculator .print-button[disabled] {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
-/* Simple circle spinner */
-.spinner {
+.carbon-emissions-calculator .spinner {
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -350,34 +348,30 @@ hr {
     transform: rotate(360deg);
   }
 }
-/* Hide print-value elements on screen */
-.print-value {
+
+.carbon-emissions-calculator .print-value {
   display: none;
 }
 
-/* Hide print-only elements on screen */
-.print-only {
+.carbon-emissions-calculator .print-only {
   display: none;
 }
 
-/* Print Styles */
 @media print {
-  body {
+  .carbon-emissions-calculator body {
     background-color: white;
     padding: 0;
     margin: 0;
   }
 
-  /* Logo in print */
-  #companyLogo {
+  .carbon-emissions-calculator #companyLogo {
     display: block !important;
     margin: 0 auto 15px;
     max-width: 200px;
     max-height: 100px;
   }
 
-  /* Show print-only elements */
-  .print-only {
+  .carbon-emissions-calculator .print-only {
     display: block !important;
     text-align: center;
     color: #666;
@@ -385,8 +379,7 @@ hr {
     margin-bottom: 15px;
   }
 
-  /* Add print date */
-  h1::after {
+  .carbon-emissions-calculator h1::after {
     content: "";
     display: block;
     font-size: 10pt;
@@ -395,29 +388,26 @@ hr {
     margin-top: 10px;
   }
 
-  /* Hide elements that shouldn't print */
-  .tab-navigation,
-  .tab-container,
-  .calc-button,
-  .button-container,
-  .subtitle {
+  .carbon-emissions-calculator .tab-navigation,
+  .carbon-emissions-calculator .tab-container,
+  .carbon-emissions-calculator .calc-button,
+  .carbon-emissions-calculator .button-container,
+  .carbon-emissions-calculator .subtitle {
     display: none !important;
   }
 
-  /* Show only the active tab in print */
-  .tab-content {
+  .carbon-emissions-calculator .tab-content {
     display: none !important;
   }
 
-  .tab-content[data-print-active="true"] {
+  .carbon-emissions-calculator .tab-content[data-print-active="true"] {
     display: block !important;
     page-break-before: auto;
     page-break-after: auto;
     page-break-inside: avoid;
   }
 
-  /* Add section titles for active tab only */
-  #tab-sme[data-print-active="true"]::before {
+  .carbon-emissions-calculator #tab-sme[data-print-active="true"]::before {
     content: "SME Calculator";
     display: block;
     font-size: 16pt;
@@ -430,7 +420,7 @@ hr {
     page-break-after: avoid;
   }
 
-  #tab-micro[data-print-active="true"]::before {
+  .carbon-emissions-calculator #tab-micro[data-print-active="true"]::before {
     content: "Micro Gatherings & Events";
     display: block;
     font-size: 16pt;
@@ -443,7 +433,7 @@ hr {
     page-break-after: avoid;
   }
 
-  #tab-macro[data-print-active="true"]::before {
+  .carbon-emissions-calculator #tab-macro[data-print-active="true"]::before {
     content: "Macro Gatherings & Events";
     display: block;
     font-size: 16pt;
@@ -456,7 +446,7 @@ hr {
     page-break-after: avoid;
   }
 
-  #tab-other[data-print-active="true"]::before {
+  .carbon-emissions-calculator #tab-other[data-print-active="true"]::before {
     content: "Other Calculators";
     display: block;
     font-size: 16pt;
@@ -469,8 +459,7 @@ hr {
     page-break-after: avoid;
   }
 
-  /* Optimize cards for print */
-  .calculation-section {
+  .carbon-emissions-calculator .calculation-section {
     border: 2px solid #8bc34a;
     box-shadow: none;
     padding: 15px;
@@ -478,67 +467,61 @@ hr {
     page-break-inside: avoid;
   }
 
-  /* Hide empty calculator sections */
-  .calculation-section[data-empty="true"] {
+  .carbon-emissions-calculator .calculation-section[data-empty="true"] {
     display: none !important;
   }
 
-  /* Section titles */
-  .calculation-section h1,
-  .calculation-section h2 {
+  .carbon-emissions-calculator .calculation-section h1,
+  .carbon-emissions-calculator .calculation-section h2 {
     font-size: 13pt;
     color: #1a1a1a;
     margin-bottom: 8px;
     page-break-after: avoid;
   }
 
-  .calculation-section p {
+  .carbon-emissions-calculator .calculation-section p {
     font-size: 9pt;
     color: #666;
     margin-bottom: 8px;
   }
 
-  .calculator-container {
+  .carbon-emissions-calculator .calculator-container {
     max-width: 100%;
     display: block;
   }
 
-  /* Hide calculator containers that only have empty sections */
-  .tab-content[data-empty-tab="true"] .calculator-container {
+  .carbon-emissions-calculator
+    .tab-content[data-empty-tab="true"]
+    .calculator-container {
     display: none !important;
   }
 
-  /* Hide ALL input fields and their labels by default */
-  .calculation-section input[type="number"],
-  .calculation-section input[type="date"],
-  .calculation-section input[type="text"],
-  .calculation-section select,
-  .calculation-section label {
+  .carbon-emissions-calculator .calculation-section input[type="number"],
+  .carbon-emissions-calculator .calculation-section input[type="date"],
+  .carbon-emissions-calculator .calculation-section input[type="text"],
+  .carbon-emissions-calculator .calculation-section select,
+  .carbon-emissions-calculator .calculation-section label {
     display: none !important;
   }
 
-  /* Show section titles */
-  .calculation-section h1,
-  .calculation-section h2,
-  .calculation-section p {
+  .carbon-emissions-calculator .calculation-section h1,
+  .carbon-emissions-calculator .calculation-section h2,
+  .carbon-emissions-calculator .calculation-section p {
     display: block !important;
   }
 
-  /* Show hr separators */
-  .calculation-section hr {
+  .carbon-emissions-calculator .calculation-section hr {
     display: block !important;
     border-top: 1px solid #8bc34a;
     margin: 10px 0;
     page-break-after: avoid;
   }
 
-  /* Hide sections with no data */
-  .calculation-section[data-empty="true"] {
+  .carbon-emissions-calculator .calculation-section[data-empty="true"] {
     display: none !important;
   }
 
-  /* Style for filled values - these will show with both label and value */
-  .print-value {
+  .carbon-emissions-calculator .print-value {
     display: block !important;
     padding: 8px 12px;
     background-color: #f9f9f9;
@@ -550,7 +533,7 @@ hr {
     page-break-inside: avoid;
   }
 
-  .print-value strong {
+  .carbon-emissions-calculator .print-value strong {
     color: #8bc34a;
     font-weight: bold;
     display: block;
@@ -558,13 +541,12 @@ hr {
     font-size: 9pt;
   }
 
-  .print-value span {
+  .carbon-emissions-calculator .print-value span {
     color: #333;
     font-size: 10pt;
   }
 
-  /* Result sections */
-  .result {
+  .carbon-emissions-calculator .result {
     border: 2px solid #8bc34a;
     box-shadow: none;
     page-break-inside: avoid;
@@ -573,33 +555,31 @@ hr {
     font-size: 10pt;
   }
 
-  /* Hide results that are marked as empty */
-  .result[data-empty="true"] {
+  .carbon-emissions-calculator .result[data-empty="true"] {
     display: none !important;
   }
 
-  .result ul {
+  .carbon-emissions-calculator .result ul {
     margin-top: 10px;
     line-height: 1.6;
     margin-left: 18px;
   }
 
-  .result li {
+  .carbon-emissions-calculator .result li {
     margin-bottom: 6px;
     font-size: 9pt;
   }
 
-  .result p {
+  .carbon-emissions-calculator .result p {
     font-size: 10pt;
     margin-bottom: 8px;
   }
 
-  .result strong {
+  .carbon-emissions-calculator .result strong {
     font-size: 11pt;
   }
 
-  /* Headers */
-  h1 {
+  .carbon-emissions-calculator h1 {
     color: #1a1a1a;
     font-size: 22pt;
     margin-bottom: 8px;
@@ -607,54 +587,47 @@ hr {
     page-break-after: avoid;
   }
 
-  h2 {
+  .carbon-emissions-calculator h2 {
     font-size: 16pt;
     color: #1a1a1a;
     margin-top: 15px;
     page-break-after: avoid;
   }
 
-  /* Remove hover effects */
-  .calculation-section:hover {
+  .carbon-emissions-calculator .calculation-section:hover {
     box-shadow: none;
     transform: none;
   }
 
-  /* Style horizontal rules */
-  hr {
+  .carbon-emissions-calculator hr {
     border-top: 1px solid #8bc34a;
     margin: 10px 0;
     page-break-after: avoid;
   }
 
-  /* Page size and margins for Letter (8.5 x 11 inches) */
   @page {
-    size: letter; /* 8.5 x 11 inches */
-    margin: 0.75in; /* Standard margins */
+    size: letter;
+    margin: 0.75in;
   }
 
-  /* Ensure content fits within printable area */
-  body {
+  .carbon-emissions-calculator body {
     width: 100%;
-    max-width: 7in; /* 8.5in - 1.5in margins */
+    max-width: 7in;
   }
 
-  /* Prevent orphans and widows */
-  p,
-  li {
+  .carbon-emissions-calculator p,
+  .carbon-emissions-calculator li {
     orphans: 3;
     widows: 3;
   }
 
-  /* Avoid page breaks after headings */
-  h1,
-  h2,
-  h3 {
+  .carbon-emissions-calculator h1,
+  .carbon-emissions-calculator h2,
+  .carbon-emissions-calculator h3 {
     page-break-after: avoid;
   }
 }
 
-/* Animation for page load */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -666,10 +639,6 @@ hr {
   }
 }
 
-.tab-content.active {
+.carbon-emissions-calculator .tab-content.active {
   animation: fadeIn 0.4s ease;
 }
-
-/* ========================
-   PRINT ONLY THIS SECTION
-   ======================== */
