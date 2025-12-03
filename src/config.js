@@ -1,5 +1,5 @@
 // API Configuration
-   export const API_BASE_URL = 'https://co-2e-mern-back-end.vercel.app';
+   export const API_BASE_URL = 'https://api.co2eportal.com';
 
   // export const API_BASE_URL = "http://localhost:5001";
 

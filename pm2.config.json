@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "co2ePortal-front",
+      "cwd": "/var/www/CO2e-MERN", 
+      "script": "npm",
+      "args": "run start",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": "5000"
+      }
+    }
+  ]
+}
