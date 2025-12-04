@@ -1219,7 +1219,7 @@ const Services = () => {
           </div>
 
           {/* Course Cards Section - Anchor for Corporate Training Courses navigation */}
-          <div id="utotalscard" ref={serviceCardsRef} style={{ position: 'relative' }}>
+          <div id="utotalscard"   style={{ position: 'relative' }}>
             {/* Anchor div for navbar navigation - ensures course cards appear from start */}
             <div id="fcourse-anchor" style={{ position: 'absolute', top: '-100px', visibility: 'hidden', height: '0', width: '0' }}></div>
             <div id="totalscard">
