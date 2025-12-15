@@ -1,0 +1,39 @@
+{
+  "name": "website-carbon-audit",
+  "version": "1.0.0",
+  "description": "Website carbon footprint and performance audit tool using CO2.js and Google Lighthouse",
+  "main": "carbon-audit-server.js",
+  "scripts": {
+    "start": "node carbon-audit-server.js",
+    "dev": "nodemon carbon-audit-server.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "carbon",
+    "lighthouse",
+    "performance",
+    "sustainability",
+    "web-performance",
+    "green-web"
+  ],
+  "author": "CO2e Portal",
+  "license": "MIT",
+  "dependencies": {
+    "@tgwf/co2": "^0.15.0",
+    "axios": "^1.6.0",
+    "chrome-launcher": "^1.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.0",
+    "helmet": "^7.1.0",
+    "lighthouse": "^11.4.0",
+    "puppeteer": "^21.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

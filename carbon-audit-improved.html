@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Carbon & Performance Audit</title>
+    <link rel="icon" type="image/png" href="/oleg3/assets/CO2e_PORTAL_4.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4caf50;
+            --secondary-color: #388e3c;
+            --bg-color: #f7f9fc;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --error-color: #f44336;
+            --warning-color: #ff9800;
+            --info-color: #2196f3;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        header {
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1rem;
+        }
+
+        .logo img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 50%;
+        }
+
+        h1 {
+            color: var(--secondary-color);
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        input[type="url"] {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="url"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        input[type="url"]:invalid {
+            border-color: var(--error-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            min-width: 120px;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button.cancel {
+            background-color: var(--error-color);
+        }
+
+        button.cancel:hover:not(:disabled) {
+            background-color: #d32f2f;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .spinner-container {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: var(--primary-color);
+            animation: spin 1s ease infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #results {
+            margin-top: 2rem;
+            text-align: left;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+        }
+
+        #results h2 {
+            color: var(--secondary-color);
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        #results h3 {
+            color: var(--secondary-color);
+            margin-top: 1.5rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        #results p {
+            margin: 0.5rem 0;
+        }
+
+        #results a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        #results a:hover {
+            text-decoration: underline;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric-card {
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .metric-card.good {
+            border-left-color: var(--primary-color);
+        }
+
+        .metric-card.average {
+            border-left-color: var(--warning-color);
+        }
+
+        .metric-card.poor {
+            border-left-color: var(--error-color);
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .metric-description {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 0.25rem;
+        }
+
+        .carbon-summary {
+            background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .carbon-summary h3 {
+            color: white;
+            border: none;
+            margin-top: 0;
+        }
+
+        .carbon-value {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+
+        .error-message {
+            margin-top: 2rem;
+            color: var(--error-color);
+            background-color: #ffebee;
+            border: 1px solid var(--error-color);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .report-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .report-link {
+            flex: 1;
+            min-width: 200px;
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .report-link:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        @media (max-width: 600px) {
+            .form-group {
+                flex-direction: column;
+            }
+
+            input[type="url"] {
+                min-width: 100%;
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="/oleg3/assets/CO2e_PORTAL_4.png" alt="CO2e PORTAL logo">
+            </div>
+            <h1>Website Carbon & Performance Audit</h1>
+            <p>Enter a URL to analyze its environmental impact and performance metrics.</p>
+        </header>
+
+        <form id="audit-form" aria-label="Website audit form">
+            <div class="form-group">
+                <input
+                    type="url"
+                    id="url-input"
+                    placeholder="https://example.com"
+                    required
+                    aria-label="Website URL to audit"
+                    pattern="https?://.+"
+                    title="Please enter a valid URL starting with http:// or https://"
+                >
+                <button type="submit" id="submit-btn">Run Audit</button>
+            </div>
+        </form>
+
+        <div id="loading" class="spinner-container hidden" role="status" aria-live="polite">
+            <div class="spinner" aria-hidden="true"></div>
+            <p id="loading-message">Running audit, please wait...</p>
+            <button type="button" id="cancel-btn" class="cancel hidden">Cancel</button>
+        </div>
+
+        <div id="results" class="hidden" role="region" aria-live="polite" aria-label="Audit results">
+        </div>
+
+        <div id="error-message" class="error-message hidden" role="alert" aria-live="assertive">
+        </div>
+    </div>
+
+    <script>
+        let abortController = null;
+        const AUDIT_TIMEOUT = 120000; // 120 seconds
+
+        const form = document.getElementById('audit-form');
+        const urlInput = document.getElementById('url-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const loadingDiv = document.getElementById('loading');
+        const loadingMessage = document.getElementById('loading-message');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const resultsDiv = document.getElementById('results');
+        const errorDiv = document.getElementById('error-message');
+
+        // Sanitize text to prevent XSS
+        function sanitizeText(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Format bytes to human readable
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Get rating class based on score
+        function getRatingClass(score) {
+            if (score >= 0.9) return 'good';
+            if (score >= 0.5) return 'average';
+            return 'poor';
+        }
+
+        // Create metric card
+        function createMetricCard(label, value, description, rating) {
+            return `
+                <div class="metric-card ${rating}">
+                    <div class="metric-label">${sanitizeText(label)}</div>
+                    <div class="metric-value">${sanitizeText(value)}</div>
+                    <div class="metric-description">${sanitizeText(description)}</div>
+                </div>
+            `;
+        }
+
+        // Display results
+        function displayResults(data) {
+            let html = '<h2>Audit Complete!</h2>';
+
+            // Carbon footprint section
+            if (data.carbon) {
+                const co2grams = data.carbon.co2PerPageview || 0;
+                const cleanerThan = data.carbon.cleanerThan || 0;
+
+                html += `
+                    <div class="carbon-summary">
+                        <h3>🌍 Carbon Footprint</h3>
+                        <div class="carbon-value">${co2grams.toFixed(2)}g CO₂</div>
+                        <p>Per page view</p>
+                        <p>This page is cleaner than ${Math.round(cleanerThan * 100)}% of pages tested</p>
+                        ${data.carbon.green ? '<p>✅ Hosted on green energy</p>' : '<p>⚠️ Not hosted on green energy</p>'}
+                    </div>
+                `;
+            }
+
+            // Lighthouse performance metrics
+            if (data.lighthouse) {
+                html += '<h3>⚡ Performance Metrics</h3>';
+                html += '<div class="metric-grid">';
+
+                const metrics = data.lighthouse.metrics || {};
+
+                if (metrics.performance !== undefined) {
+                    const score = metrics.performance;
+                    html += createMetricCard(
+                        'Performance',
+                        Math.round(score * 100),
+                        'Overall performance score',
+                        getRatingClass(score)
+                    );
+                }
+
+                if (metrics.accessibility !== undefined) {
+                    const score = metrics.accessibility;
+                    html += createMetricCard(
+                        'Accessibility',
+                        Math.round(score * 100),
+                        'Accessibility score',
+                        getRatingClass(score)
+                    );
+                }
+
+                if (metrics.bestPractices !== undefined) {
+                    const score = metrics.bestPractices;
+                    html += createMetricCard(
+                        'Best Practices',
+                        Math.round(score * 100),
+                        'Best practices score',
+                        getRatingClass(score)
+                    );
+                }
+
+                if (metrics.seo !== undefined) {
+                    const score = metrics.seo;
+                    html += createMetricCard(
+                        'SEO',
+                        Math.round(score * 100),
+                        'SEO score',
+                        getRatingClass(score)
+                    );
+                }
+
+                if (metrics.firstContentfulPaint) {
+                    html += createMetricCard(
+                        'First Contentful Paint',
+                        metrics.firstContentfulPaint + 's',
+                        'Time to first content',
+                        metrics.firstContentfulPaint < 1.8 ? 'good' : metrics.firstContentfulPaint < 3 ? 'average' : 'poor'
+                    );
+                }
+
+                if (metrics.speedIndex) {
+                    html += createMetricCard(
+                        'Speed Index',
+                        metrics.speedIndex + 's',
+                        'Visual completion speed',
+                        metrics.speedIndex < 3.4 ? 'good' : metrics.speedIndex < 5.8 ? 'average' : 'poor'
+                    );
+                }
+
+                if (metrics.largestContentfulPaint) {
+                    html += createMetricCard(
+                        'Largest Contentful Paint',
+                        metrics.largestContentfulPaint + 's',
+                        'Largest element render time',
+                        metrics.largestContentfulPaint < 2.5 ? 'good' : metrics.largestContentfulPaint < 4 ? 'average' : 'poor'
+                    );
+                }
+
+                if (metrics.totalBlockingTime) {
+                    html += createMetricCard(
+                        'Total Blocking Time',
+                        metrics.totalBlockingTime + 'ms',
+                        'Main thread blocking time',
+                        metrics.totalBlockingTime < 200 ? 'good' : metrics.totalBlockingTime < 600 ? 'average' : 'poor'
+                    );
+                }
+
+                if (metrics.cumulativeLayoutShift !== undefined) {
+                    html += createMetricCard(
+                        'Cumulative Layout Shift',
+                        metrics.cumulativeLayoutShift.toFixed(3),
+                        'Visual stability',
+                        metrics.cumulativeLayoutShift < 0.1 ? 'good' : metrics.cumulativeLayoutShift < 0.25 ? 'average' : 'poor'
+                    );
+                }
+
+                html += '</div>';
+            }
+
+            // Report download links
+            if (data.htmlPath || data.pdfPath) {
+                html += '<div class="report-links">';
+                if (data.htmlPath) {
+                    // Sanitize URL
+                    const htmlPath = sanitizeText(data.htmlPath);
+                    html += `<a href="${htmlPath}" target="_blank" rel="noopener noreferrer" class="report-link">📄 View HTML Report</a>`;
+                }
+                if (data.pdfPath) {
+                    const pdfPath = sanitizeText(data.pdfPath);
+                    html += `<a href="${pdfPath}" target="_blank" rel="noopener noreferrer" class="report-link">📥 Download PDF Report</a>`;
+                }
+                html += '</div>';
+            }
+
+            resultsDiv.innerHTML = html;
+        }
+
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const url = urlInput.value.trim();
+            if (!url) return;
+
+            // Prevent duplicate submissions
+            if (submitBtn.disabled) return;
+
+            // Reset UI
+            resultsDiv.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+            loadingDiv.classList.remove('hidden');
+            submitBtn.disabled = true;
+            loadingMessage.textContent = 'Running audit, please wait...';
+            cancelBtn.classList.remove('hidden');
+
+            // Create abort controller for timeout and cancellation
+            abortController = new AbortController();
+            const timeoutId = setTimeout(() => {
+                abortController.abort();
+            }, AUDIT_TIMEOUT);
+
+            try {
+                const response = await fetch('/audit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url }),
+                    signal: abortController.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    loadingDiv.classList.add('hidden');
+                    displayResults(data);
+                    resultsDiv.classList.remove('hidden');
+
+                    // Announce to screen readers
+                    resultsDiv.setAttribute('aria-label', 'Audit completed successfully');
+                } else {
+                    throw new Error(data.error || 'An unexpected error occurred during the audit.');
+                }
+            } catch (err) {
+                clearTimeout(timeoutId);
+                console.error('Audit failed:', err);
+
+                loadingDiv.classList.add('hidden');
+
+                let errorMessage = 'Failed to connect to the audit server. Please check your network and try again.';
+
+                if (err.name === 'AbortError') {
+                    errorMessage = 'The audit took too long and was cancelled. Please try again with a lighter website.';
+                } else if (err.message) {
+                    errorMessage = err.message;
+                }
+
+                errorDiv.textContent = errorMessage;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                cancelBtn.classList.add('hidden');
+                abortController = null;
+            }
+        });
+
+        // Handle cancel button
+        cancelBtn.addEventListener('click', () => {
+            if (abortController) {
+                abortController.abort();
+                loadingMessage.textContent = 'Cancelling audit...';
+            }
+        });
+
+        // Clear error when user starts typing
+        urlInput.addEventListener('input', () => {
+            errorDiv.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
