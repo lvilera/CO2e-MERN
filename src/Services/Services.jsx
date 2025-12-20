@@ -232,8 +232,8 @@ const Services = () => {
         // Extract unique industries and display categories from database
         const uniqueIndustries = [...new Set(listings.map(l => l.industry).filter(Boolean))];
         const uniqueDisplayCategories = [...new Set(listings.map(l => l.displayCategory).filter(Boolean))];
-        console.log('Unique industries from database:', uniqueIndustries);
-        console.log('Unique display categories from database:', uniqueDisplayCategories);
+        // console.log('Unique industries from database:', uniqueIndustries);
+        // console.log('Unique display categories from database:', uniqueDisplayCategories);
 
         // Create a mapping from database industries to display categories
         const industryToCategory = {
@@ -383,12 +383,12 @@ const Services = () => {
 
   // Determine filtered listings based on view mode
   const getFilteredListings = () => {
-    console.log('getFilteredListings called with:', {
-      viewMode,
-      selectedCategory,
-      totalListings: directoryListings.length,
-      sampleIndustries: directoryListings.slice(0, 5).map(l => l.industry)
-    });
+    // console.log('getFilteredListings called with:', {
+    //   viewMode,
+    //   selectedCategory,
+    //   totalListings: directoryListings.length,
+    //   sampleIndustries: directoryListings.slice(0, 5).map(l => l.industry)
+    // });
 
     if (viewMode === 'category') {
       if (selectedCategory) {
