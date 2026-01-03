@@ -582,7 +582,10 @@ html {
 
 /* Smooth transitions for all interactive elements */
 * {
-  transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease,
+  transition: 
+    color 0.3s ease, 
+    background-color 0.3s ease, 
+    transform 0.3s ease,
     box-shadow 0.3s ease;
 }
 
@@ -685,6 +688,7 @@ body {
   font-size: 1.6rem;
   line-height: 1.8;
   overflow-x: hidden;
+  padding-top: 180px !important; 
 }
 
 ::-webkit-scrollbar {
@@ -747,11 +751,14 @@ body {
   background-color: var(--btn-bg, var(--pistachio));
   color: var(--white);
   font-weight: var(--fw-600);
-  padding: 12px 32px;
+  padding: 18px 48px;  /* Increased from 12px */
   display: flex;
   align-items: center;
   gap: 10px;
   transition: var(--transition-2);
+  min-height: 55px;    /* ADD THIS */
+  font-size: 16px; /*1.4rem;   /* ADD THIS */
+  white-space: nowrap; /* ADD THIS - prevents text wrapping */
 }
 
 .btn ion-icon {
@@ -836,10 +843,28 @@ body {
   #HEADER
 \*-----------------------------------*/
 
-.lang-switch,
-.header-action {
+.lang-switch {
   display: none;
 }
+
+.header-action {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+/*-----------------------------------*\
+  #HEADER JOIN US BUTTON
+\*-----------------------------------*/
+
+.header-action .btn {
+  min-width: 180px;
+  white-space: nowrap;
+  justify-content: center;
+}
+
+
 
 .header {
   position: fixed;
@@ -847,7 +872,7 @@ body {
   left: 0;
   width: 100%;
   background-color: transparent;
-  padding-block: 10px;
+  padding-block: 8px;
   z-index: 4;
 }
 
@@ -872,8 +897,10 @@ body {
 }
 
 .header .container {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  /* --- display: flex; -  Replaced by LINE 882 --*/
+  /* --- justify-content: space-between; -- Replaced by LINE 883 -*/
   align-items: center;
   gap: 20px;
   width: 100%;
@@ -885,8 +912,9 @@ body {
 .logo {
   color: var(--white);
   font-family: var(--ff-oswald);
-  font-size: 3.2rem;
+  font-size: 40px;      /* -- 3.2rem; -- */
   text-transform: uppercase;
+  flex-shrink: 0;       /* Added this Line December 28 --*/
 }
 
 .nav-open-btn {
@@ -913,6 +941,7 @@ body {
   outline: 1px solid var(--white_10);
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;         /* -- Added this line December 28 --*/
   z-index: 1;
   visibility: hidden;
   transition: 0.25s var(--cubic-in);
@@ -937,7 +966,7 @@ body {
 }
 
 .navbar > .logo {
-  font-size: 4rem;
+  font-size: 50px; /*6rem;*/
   width: max-content;
   margin-inline: auto;
   margin-block-start: 50px;
@@ -960,7 +989,7 @@ body {
 
 .navbar-link {
   color: var(--white);
-  font-size: var(--fs-9);
+  font-size: 18px;    /* -  Change from var(--fs-9) --then to 6rem */
   font-weight: var(--fw-500);
   text-transform: uppercase;
   display: flex;
@@ -1033,10 +1062,11 @@ body {
 .hero {
   background-color: var(--eerie-black-1);
   color: var(--white);
-  min-height: 700px;
-  padding-block: 120px 60px;
+  min-height: 200px;
+  padding-block: 30px 20px;
   display: grid;
   align-items: center;
+  margin-top: 60px;
 }
 
 .hero .section-subtitle {
@@ -1175,7 +1205,7 @@ body {
   color: var(--granite-gray);
   font-size: var(--fs-8);
   font-weight: var(--fw-500);
-  padding: 10px 32px;
+  padding: 18px px;
 }
 
 .tab-btn.active {
@@ -1295,7 +1325,7 @@ body {
   align-items: center;
   gap: 5px;
   color: var(--silver-chalice);
-  font-size: var(--fs-8);
+  font-size: 16px;  /* BEFORE var(--fs-8); */
   font-weight: var(--fw-600);
   margin-block-start: 15px;
 }
@@ -2168,33 +2198,23 @@ body {
   height: 120px;
 }
 
-@media screen and (max-width: 967px) {
-  #one {
-    display: none;
+@media (max-width: 992px) {
+  #logoo {
+    width: 150px;
+    min-width: 150px;
+    height: auto;
   }
 }
-#logoo {
-  width: 75px !important; /* Increased further for a bigger logo */
-  height: auto !important;
+
+@media (max-width: 784px) {
+  #logoo {
+    width: 120px;
+    min-width: 120px;
+    height: auto;
+  }
 }
 
-@media screen and (max-width: 784px) {
-  /* #logoo{
-    height: 60px;
-  } */
-}
 
-@media screen and (max-width: 662px) {
-  /* #logoo{
-    height: 45px;
-  } */
-}
-
-@media screen and (max-width: 480px) {
-  /* #logoo{
-    height: 35px;
-  } */
-}
 
 @media screen and (max-width: 360px) {
   /* #logoo{

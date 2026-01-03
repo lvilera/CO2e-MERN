@@ -1,0 +1,33 @@
+/* Header.css */
+
+/* 1. Global Page Spacer - Pushes content down so nothing is hidden */
+body {
+    padding-top: 180px !important;  /* Match new header height */
+}
+
+/* 2. THE COLOR FIX: Force Green and Blur */
+header#hhw.header {
+    
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 60px !important;
+    z-index: 99999 !important; /* Extremely high z-index */
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}  
+
+/* 3. SCROLL FIX: Many templates switch to black on scroll. We block that here */
+/*header#hhw.header.active {
+    background-color: rgba(96, 171, 74, 0.95) !important;
+}
+
+/* 4. LOGO FIX */
+#logoo {
+    height: 45px !important;
+    width: auto !important;
+    margin-top: 0 !important;
+}

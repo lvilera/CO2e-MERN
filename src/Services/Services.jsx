@@ -849,15 +849,19 @@ const Services = () => {
                               };
                             }
 
-                            // Premium members: Same as Pro + images (handled separately)
-                            if (effectivePackage === 'premium') {
-                              style = {
-                                ...style,
-                                color: 'blue',
-                                fontWeight: 700,
-                                fontSize: '15px'
-                              };
-                            }
+                           // Premium and Enterprise members: High-Visibility "Featured" Styling
+                             // Around line 600 where you define styles
+if (effectivePackage === 'premium' || effectivePackage === 'enterprise') {
+  style = {
+    ...style,
+    color: 'blue',
+    fontWeight: 700,
+    fontSize: 'clamp(14px, 2.5vw, 20px)',
+    backgroundColor: '#f3fced',
+    padding: '24px 12px',
+    // REMOVE borderLeft from here!
+  };
+}
                             return (
                               <tr key={i}>
                                 {/* Image column - shows image only for premium users based on USER column data */}
@@ -918,43 +922,62 @@ const Services = () => {
                                   verticalAlign: 'middle',
                                   width: '150px',
                                   minWidth: '150px'
+
+                                
+
                                 }}>
-                                  {l.website || (l.socialType && l.socialLink) ? (
-                                    <div style={{
-                                      display: 'flex',
-                                      justifyContent: 'center',
-                                      alignItems: 'center',
-                                      width: '100%'
-                                    }}>
-                                      <a href={l.website ? normalizeUrl(l.website) : normalizeUrl(l.socialLink)} target="_blank" rel="noopener noreferrer" style={{
-                                        textDecoration: 'none'
-                                      }}>
-                                        <button id="" style={{
-                                          padding: '4px 6px',
-                                          borderRadius: '4px',
-                                          background: 'transparent',
-                                          color: style.color,
-                                          border: `1px solid ${style.color}`,
-                                          fontWeight: (l.package === 'pro' || l.package === 'premium') ? 'bold' : '500',
-                                          fontSize: 'clamp(8px, 2vw, 10px)',
-                                          cursor: 'pointer',
-                                          textTransform: 'capitalize',
-                                          opacity: 1,
-                                          height: '26px',
-                                          minWidth: '50px',
-                                          width: 'auto',
-                                          maxWidth: '80px',
-                                          display: 'block',
-                                          lineHeight: '1.2',
-                                          whiteSpace: 'nowrap',
-                                          overflow: 'hidden',
-                                          textOverflow: 'ellipsis',
-                                          marginRight: '8px',
-                                          boxSizing: 'border-box'
-                                        }}>{l.website ? "URL" : l.socialType}</button>
-                                      </a>
-                                    </div>
-                                  ) : ''}
+                                  {/* BEGINNING OF URL FILTERING FOR DIRECTORY LISTINGS */}
+
+                                {l.website || (l.socialType && l.socialLink) ? (
+                                  <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: '100%'
+                                  }}>
+                                    <a 
+                                      href={l.website ? normalizeUrl(l.website) : normalizeUrl(l.socialLink)} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer" 
+                                      style={{ textDecoration: 'none' }}
+                                      onClick={(e) => {
+                                      if (!l.package || l.package === 'free') {
+                                        e.preventDefault();
+                                        alert("Hyperlinks are only available for Pro, Premium and Enterprise members.");
+                                      }
+                                    }}
+                                    >
+                                      <button id="" style={{
+                                        padding: '4px 6px',
+                                        borderRadius: '4px',
+                                        background: 'transparent',
+                                        color: style.color,
+                                        border: `1px solid ${style.color}`,
+                                        // Now Enterprise also gets the bold styling
+                                        fontWeight: (['pro', 'premium', 'enterprise'].includes(l.package)) ? 'bold' : '500',
+                                        fontSize: 'clamp(8px, 2vw, 10px)',
+                                        cursor: (!l.package || l.package === 'free') ? 'not-allowed' : 'pointer', 
+                                        textTransform: 'capitalize',
+                                        opacity: (!l.package || l.package === 'free') ? 0.6 : 1, 
+                                        height: '26px',
+                                        minWidth: '50px',
+                                        width: 'auto',
+                                        maxWidth: '80px',
+                                        display: 'block',
+                                        lineHeight: '1.2',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        marginRight: '8px',
+                                        boxSizing: 'border-box'
+                                      }}>{l.website ? "URL" : l.socialType}</button>
+                                    </a>
+                                  </div>
+                                ) : ''}
+                                
+                                
+                                {/* END OF URL FILTERING FOR DIRECTORY LISTINGS */}
+                                
                                 </td>
                                 <td style={{
                                   ...style,
@@ -968,18 +991,46 @@ const Services = () => {
                                   width: '200px',
                                   minWidth: '200px'
                                 }}>{l.address}</td>
+
                                 <td style={{
-                                  ...style,
-                                  padding: '12px 8px',
-                                  border: 'none',
-                                  wordBreak: 'break-all',
-                                  textAlign: 'center',
-                                  verticalAlign: 'middle',
-                                  wordWrap: 'break-word',
-                                  whiteSpace: 'normal',
-                                  width: '180px',
-                                  minWidth: '180px'
-                                }}>{l.email}</td>
+                                    ...style,
+                                    padding: '12px 8px',
+                                    border: 'none',
+                                    wordBreak: 'break-all',
+                                    textAlign: 'center',
+                                    verticalAlign: 'middle',
+                                    wordWrap: 'break-word',
+                                    whiteSpace: 'normal',
+                                    width: '180px',
+                                    minWidth: '180px'
+                                  }}>
+                                    {l.email ? (
+                                      <a 
+                                        href={`mailto:${l.email}`} 
+                                        style={{ 
+                                          textDecoration: 'none', 
+                                          color: 'inherit',
+                                          // Only show pointer for paid members
+                                          cursor: (!l.package || l.package === 'free') ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        onClick={(e) => {
+                                          // Block the email client and show alert for Free tier
+                                          if (!l.package || l.package === 'free') {
+                                            e.preventDefault();
+                                            alert("Direct email contact is only available for Pro, Premium, and Enterprise members.");
+                                          }
+                                        }}
+                                      >
+                                        <span style={{ 
+                                          // Dims the text for Free members to indicate it's inactive
+                                          opacity: (!l.package || l.package === 'free') ? 0.6 : 1 
+                                        }}>
+                                          {l.email}
+                                        </span>
+                                      </a>
+                                    ) : '-'}
+                                  </td>
+
                                 <td style={{
                                   ...style,
                                   padding: '12px 8px',

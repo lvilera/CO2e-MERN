@@ -23,7 +23,7 @@
       "news": "Actualités",
       "blog": "Blog",
       "decarbxchange": "DecarbXchange",
-      "carbon_offsetting_guides": "Guides de compensation carbone",
+      "carbon_offsetting_guides": "Guides sur la Neutralité Carbone et le Développement Durable",
       "tools_resources": "Outils et ressources",
       "our_partners": "Nos partenaires",
       "bcourses": "BCours",
@@ -240,9 +240,10 @@
     "copyright": "Droits d’auteur@2025 | Portail CO2e",
     "nav_links": "ACCUEIL | SERVICE | ÉCHANGE | TARIFICATION | ACTUALITÉS"
   },
+
   "trading": {
     "coming_soon": "Bientôt disponible",
-    "carbon_guides_title": "Guides de compensation carbone",
+    "carbon_guides_title": "Guides sur la Neutralité Carbone et le Développement Durable",
     "untitled": "Sans titre",
     "no_description": "Aucune description disponible",
     "learn_more": "En savoir plus",
@@ -251,7 +252,10 @@
     "democratizing_text": "L'urgence de l'action climatique a déclenché une révolution mondiale des stratégies d'investissement, faisant passer la finance durable d'un créneau à une priorité centrale. Dans cette transformation, la propriété fractionnée émerge comme une innovation permettant une participation plus large au-delà des géants institutionnels et des plus aisés.",
     "partners_title": "Partenaires"
   },
+
   "plan": {
+
+
     "choose_membership_title": "💼 Choisissez votre forfait d'adhésion",
     "current": "ACTUEL",
     "free_plan": "Forfait Gratuit",
@@ -263,7 +267,12 @@
     "free_no_featured": "Pas de mise en avant (pas d'image ou de surbrillance)",
     "activating": "Activation...",
     "start_free": "Commencer gratuitement",
-    "pro_plan": "Forfait Pro",
+
+  
+    "pro_plan": "Profesional",
+    "pro_price": "C$29.99",
+    "pro_billing": "Mois",
+    "pro_yearly": "o C$299/an",
     "pro_desc": "Idéal pour les entreprises en croissance cherchant plus de visibilité et d'opportunités d'apprentissage",
     "pro_price_id": "price_1SCjGGBwwMNNzzzsBS34wg4g",
     "pro_listed_directory": "Répertorié dans l'annuaire avec :",
@@ -276,7 +285,11 @@
     "go_pro": "Passer Pro",
     "redirecting": "Redirection...",
     "upgrade_now": "Passer à Pro",
+
+ 
     "premium_plan": "Forfait Premium",
+    "premium_price": "C$49.99",
+    "premium_billing": "Mois",
     "premium_desc": "Maximisez votre visibilité, bénéficiez de réductions exclusives et d'un accès complet aux cours",
     "premium_price_id": "price_1SCjHOBwwMNNzzzspeMfSHfP",
     "premium_all_pro_features": "Toutes les fonctionnalités du forfait Pro plus :",
@@ -285,6 +298,44 @@
     "premium_access_courses": "Accès à tous les cours dirigés par un instructeur",
     "premium_listed_directory": "Répertorié dans l'annuaire avec :",
     "go_premium": "Passer Premium",
+
+    "premium_full_access": "▸ Accès complet",
+    "premium_rotating_featured": "▸ Image de l'entreprise mise en avant (rotation)",
+
+
+
+    "enterprise_plan": "Entreprise",
+    "enterprise_subtitle": "Pour les leaders du secteur",
+    "enterprise_price": "C$99.99",
+
+
+    "enterprise_billing": "Mois",
+
+
+    "enterprise_yearly": "or C$999/an",
+    "enterprise_desc": "Plateforme complète avec assistance dédiée et accès APIs",
+    "enterprise_price_id": "price_1SkXiBQqlrTjfVZHlgLTkrMe",
+    "enterprise_course_discount": "▸ Réduction de 25 % sur le cours (15 $/participant)",
+    "enterprise_audit_reports": "▸ Audits trimestriels + Rapport annuel sérialisé",
+    "enterprise_training_session": "▸ 1 séance de formation personnalisée par an",
+    "enterprise_hero_banner": "▸ bannière a la page Partenaires",
+    "enterprise_profile_page": "▸ Page de profil d'entreprise.",
+    "enterprise_team_members": "▸ Jusqu'à 15 utilisateurs",
+    "enterprise_account_manager": "▸ Gestionnaire de compte dédié",
+    "enterprise_api_access": "▸ Full API access",
+    "go_enterprise": "Construisez votre forêt",
+    "enterprise_benefit": "🚀 Des fonctionnalités d'entreprise qui évoluent avec votre activité !",
+
+    "enterprise_all_features_premium": "▸ Toutes les fonctionnalités de Premium",
+    "enterprise_partner_page": "▸ Promotion sur la page partenaire (des frais s'appliquent)",
+    
+    "see_all_features": "Voir toutes les fonctionnalités ▼",
+
+
+
+
+
+
     "blockchain_title": "Découvrez notre marché P2P sécurisé basé sur la blockchain",
     "blockchain_text": "Achetez et vendez facilement des crédits carbone vérifiés en toute transparence. Prenez le contrôle de votre impact climatique, que vous soyez une entreprise ou un particulier.",
     "investment_hub_title": "Hub d'investissement fractionné : Investissez dans la durabilité",
@@ -299,6 +350,8 @@
     "note": "Note",
     "courses_access_note": "Vous devez acheter un plan Pro ou Premium pour accéder à nos cours."
   },
+
+
   "signup": {
     "title": "S'inscrire",
     "first_name": "Prénom",

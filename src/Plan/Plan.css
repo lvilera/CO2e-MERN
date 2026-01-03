@@ -14,11 +14,11 @@
 
 #Cards{
     padding: 50px;
-border: 1px solid black;
-width: 400px;
-color: black;
-border-radius: 20px;
-margin: 40px;
+    border: 1px solid black;
+    width: 400px;
+    color: black;
+    border-radius: 20px;
+    margin: 40px;
 }
 
 #Cards button{
@@ -29,24 +29,24 @@ margin: 40px;
     color: white;
     border-radius: 10px;
     cursor: pointer;
-margin-top: 20px;
+    margin-top: 20px;
 }
 #Cards1{
     padding: 70px;
-border: 1px solid black;
-width: 400px;
-color: black;
-border-radius: 20px;
-margin: 40px;
+    border: 1px solid black;
+    width: 400px;
+    color: black;
+    border-radius: 20px;
+    margin: 40px;
 }
 
 #Cards3{
     padding: 60px;
-border: 1px solid black;
-width: 400px;
-color: black;
-border-radius: 20px;
-margin: 40px;
+    border: 1px solid black;
+    width: 400px;
+    color: black;
+    border-radius: 20px;
+    margin: 40px;
 }
 
 #Cards3 button{
@@ -57,7 +57,7 @@ margin: 40px;
     color: white;
     border-radius: 10px;
     cursor: pointer;
-margin-top: 20px;
+    margin-top: 20px;
 }
 #Cards1 button{
     padding: 10px;
@@ -77,6 +77,63 @@ margin-top: 20px;
 #inCard {
     width: 100%;
 }
+/* ---- ADDED CSS FOR PLAN CARDS FEATURES LISTINGS --- */
+/* CSS Variables */
+:root {
+  --eco-green: #7CB342;  /* Apple green */
+  --medium-gray: #999;
+  --popular-gold: #FFD700;
+  --dark-gray: #333;
+  --forest-green: #6b8e23;
+}
+
+.checkmark {
+  margin-right: 12px;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.checkmark.check {
+  background: var(--eco-green);
+  color: white;
+}
+
+.checkmark.check::before {
+  content: "✓";
+}
+
+.checkmark.cross {
+  background: #e0e0e0;
+  color: #999;
+}
+
+.checkmark.cross::before {
+  content: "✕";
+}
+
+.checkmark.dot {
+  background: #f0f0f0;
+  border: 2px solid var(--medium-gray);
+  color: var(--medium-gray);
+}
+
+.checkmark.dot::before {
+  content: "•";
+  font-size: 1rem;
+}
+
+.feature-item strong {
+  color: var(--forest-green);
+}
+/*  ---- END OF ADDING CHECKMARK FORMATTING FOR PLAN FEATURES LIST --- */
+
 #Listing {
     margin-top: 10px;
     margin-bottom: 10px;

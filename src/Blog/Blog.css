@@ -1,6 +1,6 @@
 #ttq{
-    height: 190px;
-    background-color: black;
+    height: 60px;
+    background-color: transparent;
 }
 #bloger{
     display: flex;
@@ -11,13 +11,13 @@
 }
 #totalr3{
     background-color: #90be55;
-    height: 100vh;
+    height: auto;  /* Let it size based on content */
 }
 #uut{
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 40px;
+    margin-bottom: 40px;
     flex-direction: column;
     border: 1px solid black;
     padding: 40px;
@@ -45,20 +45,15 @@ margin-bottom: 40px;
 
 
 @media screen and (max-width: 784px) {
-
     #ttq{
-
-        background-color: black;
-        height: 140px;
+        background-color: transparent;
+        height: 60px;
     }
-  }
-  
-  @media screen and (max-width: 662px) {
+}
 
+@media screen and (max-width: 662px) {
     #ttq{
-
-        background-color: black;
-        height: 120px;
+        background-color: transparent;
+        height: 60px;
     }
-  
-  }
+}

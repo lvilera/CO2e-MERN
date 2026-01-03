@@ -23,7 +23,7 @@
       "news": "Noticias",
       "blog": "Blog",
       "decarbxchange": "DecarbXchange",
-      "carbon_offsetting_guides": "Guías de compensación de carbono",
+      "carbon_offsetting_guides": "Guías de Sostenibilidad y Neutralidad de Carbono",
       "tools_resources": "Herramientas y recursos",
       "our_partners": "Nuestros socios",
       "bcourses": "BCursos",
@@ -241,7 +241,7 @@
   },
   "trading": {
     "coming_soon": "Próximamente",
-    "carbon_guides_title": "Guías de compensación de carbono",
+    "carbon_guides_title": "Guías de Sostenibilidad y Neutralidad de Carbono",
     "untitled": "Sin título",
     "no_description": "Sin descripción disponible",
     "learn_more": "Aprende más",
@@ -262,7 +262,11 @@
     "free_no_featured": "Sin listado destacado (sin imagen ni resaltado)",
     "activating": "Activando...",
     "start_free": "Comenzar gratis",
-    "pro_plan": "Plan Pro",
+
+    "pro_plan": "Profesional",
+    "pro_price": "C$29.99",
+    "pro_billing": "Mes",
+    "pro_yearly": "o C$299/Año",
     "pro_desc": "Ideal para empresas en crecimiento que buscan más exposición y oportunidades de aprendizaje",
     "pro_price_id": "price_1SCjGGBwwMNNzzzsBS34wg4g",
     "pro_listed_directory": "Listado en el directorio con:",
@@ -275,7 +279,11 @@
     "go_pro": "Hazte Pro",
     "redirecting": "Redirigiendo...",
     "upgrade_now": "Mejorar ahora",
+
     "premium_plan": "Plan Premium",
+    "premium_price": "C$49.99",
+    "premium_billing": "Mes",
+
     "premium_desc": "Obtén máxima visibilidad, descuentos exclusivos y acceso completo a cursos",
     "premium_price_id": "price_1SCjHOBwwMNNzzzspeMfSHfP",
     "premium_all_pro_features": "Todas las características del Plan Pro más:",
@@ -284,6 +292,37 @@
     "premium_access_courses": "Acceso a todos los cursos dirigidos por instructores",
     "premium_listed_directory": "Listado en el directorio con:",
     "go_premium": "Hazte Premium",
+
+    "premium_full_access": "▸ Accesso completo",
+    "premium_rotating_featured": "▸ Imagen destacada rotatoria de la empresae",
+
+
+  "enterprise_plan": "Enpresas",
+  "enterprise_subtitle": "Para lideres de Industrias",
+  "enterprise_price": "C$99.99",
+  "enterprise_billing": "Mes",
+  "enterprise_yearly": "or C$999/Año",
+  "enterprise_desc": "Plataforma completa con soporte dedicado y acceso a API",
+  "enterprise_price_id": "price_1SkXiBQqlrTjfVZHlgLTkrMe",
+  "enterprise_course_discount": "▸ 25% de descuento en cursos ($15/asistente)",
+  "enterprise_audit_reports": "▸ Auditorias trimestrales + Anuales + Reportes serializados",
+  "enterprise_training_session": "▸ 1 Sesion de entrenamiento personalizado/año",
+  "enterprise_hero_banner": "▸ Banner principal en la página de Socios",
+  "enterprise_profile_page": "▸ Pagina Bio de la Empresa",
+  "enterprise_team_members": "▸ Hasta 15 usuarios",
+  "enterprise_account_manager": "▸ Servicio de cuenta Dedicado",
+  "enterprise_api_access": "▸ Acceso API",
+  "go_enterprise": "Construye tu Bosque",
+  "enterprise_benefit": "🚀 ¡Funciones empresariales que escalan con su negocio!",
+
+  "enterprise_all_features_premium": "▸ Todas las funciones en Premium",
+  "enterprise_partner_page": "▸ Promoción en la página de socios (tarifas se aplican)",
+  
+  "see_all_features": "Ver todas las funciones ▼",
+
+
+
+
     "blockchain_title": "Descubre nuestro mercado P2P seguro basado en blockchain",
     "blockchain_text": "Compra y vende créditos de carbono verificados con total transparencia. Toma el control de tu impacto climático, seas empresa o particular.",
     "investment_hub_title": "Centro de Inversión Fraccionada: Invierte en Sostenibilidad",

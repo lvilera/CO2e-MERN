@@ -213,16 +213,16 @@ const Header = () => {
                     } else {
                       window.location.href = '/service#carbon-footprint-anchor';
                     }
-                  }} style={{ cursor: 'pointer' }}>{t("navbar.submenu.carbon_footprint_assessment")}</span></li>
-                  <li><span id="hos" style={{ cursor: 'pointer', fontWeight: 'bold', color: '#fff', textShadow: '0 0 2px #90be55' }}>{t("navbar.submenu.edu_ficelle")}</span></li>
-                  <li><span id="hos" onClick={() => {
+                  }} style={{ cursor: 'pointer' }}>Website CO2e Audits</span></li>
+                  {/*<li><span id="hos" style={{ cursor: 'pointer', fontWeight: 'bold', color: '#fff', textShadow: '0 0 2px #90be55' }}>{t("navbar.submenu.edu_ficelle")}</span></li>*/}
+                  {/*<li><span id="hos" onClick={() => {
                     setNavOpen(false);
                     if (location.pathname === '/service') {
                       scrollToAnchor('satellite-verified-anchor');
                     } else {
                       window.location.href = '/service#satellite-verified-anchor';
                     }
-                  }} style={{ cursor: 'pointer' }}>{t("navbar.submenu.satellite_verified_offset_project_explorer")} <span style={{ color: 'green' }}>{t("navbar.submenu.soon")}</span></span></li>
+                  }} style={{ cursor: 'pointer' }}>{t("navbar.submenu.satellite_verified_offset_project_explorer")} <span style={{ color: 'green' }}>{t("navbar.submenu.soon")}</span></span></li>*/}
                 </ul>
               </li>
               {/* Pricing Dropdown */}

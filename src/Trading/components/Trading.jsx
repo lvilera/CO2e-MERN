@@ -310,13 +310,13 @@ const Trading = () => {
               <img src="./pi1.webp" alt="Fragile Impact" />
             </div>
             <div className="partner-logo">
-              <img src="./pi2.webp" alt="BDC Bank" />
+              <img src="./pi2.webp" alt="PH-PLUS 500ml" />
             </div>
             <div className="partner-logo">
-              <img src="./pi3.webp" alt="Hostinger" />
+              <img src="./pi3.webp" alt="PH-PLUS Kids" />
             </div>
              <div className="partner-logo">
-              <img src="./pi4.webp" alt="MERN" />
+              <img src="./pi4.webp" alt="PH-PLUS Kids" />
             </div>
              <div className="partner-logo">
               <img src="./pi5.webp" alt="PH-PLUS Kids" />

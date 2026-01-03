@@ -1,7 +1,6 @@
 #hederArea {
-    background-color: black;
-    height: 190px;
-    /* test with a fixed height */
+    background-color: transparent;
+    height: 60px;
 }
 
 #uuq {
@@ -92,19 +91,16 @@
 
 @media screen and (max-width: 784px) {
     #hederArea {
-        background-color: black;
-        height: 140px;
-        /* test with a fixed height */
+        background-color: transparent;
+        height: 60px;
     }
 }
 
 @media screen and (max-width: 662px) {
     #hederArea {
-        background-color: black;
-        height: 120px;
-        /* test with a fixed height */
+        background-color: transparent;
+        height: 60px;
     }
-
 }
 
 /* Animation Enhancements */

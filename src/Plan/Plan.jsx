@@ -351,10 +351,10 @@ const Plan = () => {
                   <h1>{t("plan.free")}</h1>
                   <p>→ {t("plan.free_desc")}</p>
                   <div id="Listing">
-                    <p>✅ {t("plan.free_listed_directory")}</p>
-                    <p>❌ {t("plan.free_no_courses")}</p>
-                    <p>❌ {t("plan.free_no_discounts")}</p>
-                    <p>❌ {t("plan.free_no_featured")}</p>
+  <p><span class="checkmark check"></span> {t("plan.free_listed_directory")}</p>
+  <p>❌ {t("plan.free_no_courses")}</p>
+  <p>❌ {t("plan.free_no_featured")}</p>
+
                   </div>
                   {(subscriptionInfo && subscriptionInfo.status) &&
                     <button
@@ -390,17 +390,19 @@ const Plan = () => {
                 )}
                 <div id="inCard">
                   <h3>🔵 2. {t("plan.pro_plan")}</h3>
-                  <h1>C$29.99 / {t("plan.month")}</h1>
+                  <h1>C$29.99 / {t("plan.pro_billing")}</h1>
                   <p>→ {t("plan.pro_desc")}</p>
-                  <div id="Listing">
-                    <p>✅ {t("plan.pro_listed_directory")}</p>
-                    <p style={{ marginLeft: '20px' }}>• {t("plan.pro_bold_text")}</p>
-                    <p style={{ marginLeft: '20px' }}>• {t("plan.pro_color")}</p>
-                    <p style={{ marginLeft: '20px' }}>• {t("plan.pro_larger_font")}</p>
-                    <p>✅ {t("plan.pro_access_courses")}</p>
-                    <p>❌ {t("plan.pro_no_discounts")}</p>
+<div id="Listing">
+  <p><span class="checkmark check"></span> {t("plan.pro_enhanced_listing")}</p>
+                   
+
+  <p><span class="checkmark check"></span> {t("plan.pro_course_discount")}</p>
+  <p><span class="checkmark check"></span> {t("plan.pro_audit_reports")}</p>
+
+                   
                     <p>❌ {t("plan.pro_no_featured")}</p>
                   </div>
+
                   {subscriptionInfo?.priceId !== t("plan.pro_price_id") &&
                     <button
                       onClick={() => handleSubscribe(t("plan.pro_price_id"))}
@@ -435,17 +437,18 @@ const Plan = () => {
                 )}
                 <div id="inCard">
                   <h3>🟣 3. {t("plan.premium_plan")}</h3>
-                  <h1>C$49.99 / {t("plan.month")}</h1>
+                  <h1>C$49.99 / {t("plan.premium_billing")}</h1>
                   <p>→ {t("plan.premium_desc")}</p>
-                  <div id="Listing">
-                    <p>✅ {t("plan.premium_all_pro_features")}</p>
-                    <p>✅ {t("plan.premium_featured_homepage")}</p>
-                    <p>✅ {t("plan.premium_discounts_courses")}</p>
-                    <p>✅ {t("plan.premium_access_courses")}</p>
-                    <p>✅ {t("plan.premium_listed_directory")}</p>
-                    <p style={{ marginLeft: '20px' }}>• {t("plan.pro_bold_text")}</p>
-                    <p style={{ marginLeft: '20px' }}>• {t("plan.pro_color")}</p>
-                    <p style={{ marginLeft: '20px' }}>• {t("plan.pro_larger_font")}</p>
+                   
+                   
+                   <div id="Listing">
+  <p><span class="checkmark check"></span> {t("plan.premium_full_access")}</p>
+  <p><span class="checkmark check"></span> {t("plan.pro_enhanced_listing")}</p>
+  <p><span class="checkmark check"></span> {t("plan.premium_course_discount")}</p>
+  <p><span class="checkmark check"></span> {t("plan.premium_audit_reports")}</p>
+
+      
+                  
                   </div>
                   {subscriptionInfo?.priceId !== t("plan.premium_price_id") &&
                     <button
@@ -460,6 +463,60 @@ const Plan = () => {
                   }
                 </div>
               </div>
+
+
+{/*  ADDING  ENTERPRISE PLAN  */}
+{/* ENTERPRISE PLAN */}
+              <div id="Cards3" style={getCardStyle(t("plan.enterprise_price_id"))}>
+                {(subscriptionInfo?.priceId === t("plan.enterprise_price_id")) && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '-10px',
+                    right: '-10px',
+                    
+                    background: '#7CB342',  // Apple green
+                    padding: '10px 13px',
+                    borderRadius: '50%',  // Makes it a perfect circle
+                    color: 'white',
+                    padding: '5px 10px',
+                    borderRadius: '15px',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                    zIndex: 10,
+
+                  }}>
+                    {t("plan.current")}
+                  </div>
+                )}
+                <div id="inCard">
+                  <h3>🟣 4. {t("plan.enterprise_plan")}</h3>
+                  <h1>C$99.99 / {t("plan.enterprise_billing")}</h1>
+                  <p>→ {t("plan.enterprise_desc")}</p>
+                 
+<div id="Listing">
+  <p><span class="checkmark check"></span> {t("plan.enterprise_all_features_premium")}</p>
+  <p><span class="checkmark check"></span> {t("plan.enterprise_course_discount")}</p>
+  <p><span class="checkmark check"></span> {t("plan.enterprise_audit_reports")}</p>
+  
+
+  <p><span class="checkmark check"></span> {t("plan.enterprise_partner_page")}</p>
+  
+          
+                  </div>
+                  {subscriptionInfo?.priceId !== t("plan.enterprise_price_id") &&
+                    <button
+                      onClick={() => handleSubscribe(t("plan.enterprise_price_id"))}
+                      disabled={loading === t("plan.enterprise_price_id")}
+                      style={{
+                        opacity: loading === t("plan.enterprise_price_id") ? 0.7 : 1,
+                      }}
+                    >
+                      {loading === t("plan.enterprise_price_id") ? t("plan.redirecting") : t("plan.go_premium")}
+                    </button>
+                  }
+                </div>
+              </div>
+
             </div>
           </div>
 
