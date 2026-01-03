@@ -154,12 +154,6 @@
 .btn-secondary:hover {
   background: #374151;
 }
-.btn-export {
-  background: #10b981;
-}
-.btn-export:hover {
-  background: #059669;
-}
 .banner {
   max-width: 1200px;
   margin: 0 auto;
