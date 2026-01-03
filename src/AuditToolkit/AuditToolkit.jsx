@@ -894,8 +894,8 @@ const CO2ePortalAuditToolkit = () => {
         {/* Footer actions */}
         <div className="footerSec">
           <button className="btn btn-export" onClick={handleExportCSV}>
-            📥 {t("audit.btn_export") || "Export to CSV"}
-          </button>
+            📥 {t("audit.btn_export")}
+          </button> 
 
           <button className="btn" onClick={handleSave} id="btnSave" disabled={loading}>
             {loading ? `${saveLabel}...` : saveLabel}
