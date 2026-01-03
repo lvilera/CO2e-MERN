@@ -590,6 +590,7 @@
     "btn_cancel_edit": "Cancelar edición",
     "btn_edit": "Editar",
     "btn_delete": "Eliminar",
+    "btn_export": "Export to CSV",
 
     "list_title": "Auditorías guardadas",
     "col_org": "Organización",

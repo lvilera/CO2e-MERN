@@ -336,7 +336,7 @@ const Header = () => {
               </li>
 
               {/* Resources Dropdown (was Trade) */}
-             {isLoggedIn && (<li className="dropdown" style={{ whiteSpace: 'nowrap' }}>
+             {isLoggedIn && (userPackage === 'pro' || userPackage === 'premium') && (<li className="dropdown" style={{ whiteSpace: 'nowrap' }}>
                 <span className="navbar-link" onClick={() => { setNavOpen(false); window.location.href = '/audit-toolkit'; }} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                   <span id="hos" style={location.pathname === '/audit-toolkit' ? { borderBottom: '2px solid #90be55', display: 'inline-block' } : {}}>
                     {t("navbar.auditToolkit")}
@@ -345,6 +345,8 @@ const Header = () => {
                 </span>
                  
               </li>)}
+
+              
               {/* Show 'BCourses' for Pro/Premium users, never show 'Courses' */}
               {isLoggedIn && (userPackage === 'pro' || userPackage === 'premium') && (
                 <li>

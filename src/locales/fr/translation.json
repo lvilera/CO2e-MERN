@@ -591,6 +591,7 @@
     "btn_cancel_edit": "Annuler la modification",
     "btn_edit": "Modifier",
     "btn_delete": "Supprimer",
+    "btn_export": "Export to CSV",
 
     "list_title": "Audits enregistrés",
     "col_org": "Organisation",
