@@ -569,9 +569,7 @@ const DirectoryListing = () => {
                         console.log('Testing login process...');
                         console.log('API_BASE:', API_BASE);
                         console.log('Attempting to fetch user data...');
-                        fetch(`${API_BASE}/api/me`, {
-                          credentials: 'include'
-                        })
+                        get(`${API_BASE}/api/me`)
                         .then(res => res.json())
                         .then(data => {
                           console.log('API response:', data);

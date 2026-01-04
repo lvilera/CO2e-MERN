@@ -8,75 +8,95 @@ export const useApi = () => {
   const apiCall = useCallback(async (url, options = {}, loadingMessage = 'Loading...') => {
     try {
       startLoading(loadingMessage);
-      
-      // Skip iPhone detection for login endpoints to avoid interference
-      const isLoginEndpoint = url.includes('/login') || url.includes('/instructor-login');
-      
-      let requestOptions;
-      if (isLoginEndpoint) {
-        // Use standard request for login endpoints
-        requestOptions = {
-          credentials: 'include',
-          ...options,
-          headers: {
-            'Content-Type': 'application/json',
-            ...options.headers,
-          },
-        };
-      } else {
-        // Use iPhone-safe request for other endpoints
-        const { options: iphoneOptions } = createIPhoneSafeRequest(url, options);
-        requestOptions = iphoneOptions;
+
+      const isLoginEndpoint =
+        url.includes('/login') || url.includes('/instructor-login');
+
+      // ✅ Get token(s) from storage (whatever you save after login)
+      const fallbackToken =
+        localStorage.getItem('fallbackToken') || localStorage.getItem('token');
+
+      // ✅ Always build base headers
+      const baseHeaders = {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+      };
+
+      // ✅ Attach Authorization if we have a token and caller didn't override it
+      if (!isLoginEndpoint && fallbackToken && !baseHeaders.Authorization) {
+        baseHeaders.Authorization = `Bearer ${fallbackToken}`;
       }
-      
+
+      // ✅ Always include cookies (important for Safari / iPhone)
+      const baseOptions = {
+        credentials: 'include',
+        ...options,
+        headers: baseHeaders,
+      };
+
+      // Use iphone-safe request for non-login endpoints
+      const requestOptions = isLoginEndpoint
+        ? baseOptions
+        : (() => {
+            const { options: iphoneOptions } = createIPhoneSafeRequest(url, baseOptions);
+            // ensure our headers/credentials remain
+            return {
+              ...iphoneOptions,
+              credentials: 'include',
+              headers: baseHeaders,
+            };
+          })();
+
       const response = await fetch(url, requestOptions);
 
-      const data = await response.json();
-      
+      // ✅ handle endpoints that might return empty body
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
+
       if (!response.ok) {
         throw new Error(data.message || 'Something went wrong');
       }
-      
+
       return data;
     } catch (error) {
       console.error('API Error:', error);
-      
-      // Skip iPhone retry logic for login endpoints
-      const isLoginEndpoint = url.includes('/login') || url.includes('/instructor-login');
-      
+
+      const isLoginEndpoint =
+        url.includes('/login') || url.includes('/instructor-login');
+
+      // Retry logic (still OK)
       if (!isLoginEndpoint && handleIPhoneError(error)) {
-        // Retry with fallback token
         try {
-          const fallbackToken = localStorage.getItem('fallbackToken');
-          console.log(fallbackToken);
-          
+          const fallbackToken =
+            localStorage.getItem('fallbackToken') || localStorage.getItem('token');
+
           if (fallbackToken) {
             const retryOptions = {
               ...options,
-              headers: {
-                ...options.headers,
-                'Authorization': `Bearer ${fallbackToken}`,
-                'Content-Type': 'application/json',
-              }
-            };
-            
-            const retryResponse = await fetch(url, {
-              ...retryOptions,
               credentials: 'include',
-            });
-            
-            const retryData = await retryResponse.json();
+              headers: {
+                'Content-Type': 'application/json',
+                ...(options.headers || {}),
+                Authorization: `Bearer ${fallbackToken}`,
+              },
+            };
+
+            const retryResponse = await fetch(url, retryOptions);
+
+            const retryText = await retryResponse.text();
+            const retryData = retryText ? JSON.parse(retryText) : {};
+
             if (!retryResponse.ok) {
               throw new Error(retryData.message || 'Something went wrong');
             }
-            
+
             return retryData;
           }
         } catch (retryError) {
           console.error('Retry failed:', retryError);
         }
       }
-      
+
       throw error;
     } finally {
       stopLoading();
@@ -90,21 +110,21 @@ export const useApi = () => {
   const post = useCallback((url, body, loadingMessage = 'Saving...') => {
     return apiCall(url, {
       method: 'POST',
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     }, loadingMessage);
   }, [apiCall]);
 
   const put = useCallback((url, body, loadingMessage = 'Updating...') => {
     return apiCall(url, {
       method: 'PUT',
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     }, loadingMessage);
   }, [apiCall]);
 
   const patch = useCallback((url, body, loadingMessage = 'Updating...') => {
     return apiCall(url, {
       method: 'PATCH',
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     }, loadingMessage);
   }, [apiCall]);
 
@@ -112,8 +132,6 @@ export const useApi = () => {
     return apiCall(url, { method: 'DELETE' }, loadingMessage);
   }, [apiCall]);
 
-  // Return memoized API functions to prevent unnecessary re-renders
-  // and infinite loops when used as useEffect dependencies
   return useMemo(() => ({
     apiCall,
     get,
@@ -122,4 +140,4 @@ export const useApi = () => {
     patch,
     del,
   }), [apiCall, get, post, put, patch, del]);
-}; 
+};

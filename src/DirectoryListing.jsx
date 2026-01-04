@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import Header from './Home/Header';
-import Footer2 from './Home/Footer2';
-import { useApi } from './hooks/useApi';
-import { API_BASE } from './config';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { setupIPhoneDetection, isIPhoneSafari } from './utils/iphoneFix';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { API_BASE } from './config';
 import './DirectoryListing.css';
+import Footer2 from './Home/Footer2';
+import Header from './Home/Header';
+import { useApi } from './hooks/useApi';
+import { isIPhoneSafari, setupIPhoneDetection } from './utils/iphoneFix';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -19,6 +19,7 @@ const DirectoryListing = () => {
   // Refs for animations
   const titleRef = useRef(null);
   const formRef = useRef(null);
+  
   const submitButtonRef = useRef(null);
   const errorRef = useRef(null);
   const successRef = useRef(null);
@@ -586,9 +587,7 @@ const DirectoryListing = () => {
                         console.log('Testing login process...');
                         console.log('API_BASE:', API_BASE);
                         console.log('Attempting to fetch user data...');
-                        fetch(`${API_BASE}/api/me`, {
-                          credentials: 'include'
-                        })
+                         get(`${API_BASE}/api/me`,)
                           .then(res => res.json())
                           .then(data => {
                             console.log('API response:', data);

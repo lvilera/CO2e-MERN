@@ -8,6 +8,7 @@ import {
 } from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom";
 import { API_BASE } from '../config';
+import { useApi } from "../hooks/useApi";
 import "./assets/css/style.css";
 
 const COURSE_TITLE = "Net Zero Carbon Strategy for Business";
@@ -15,6 +16,7 @@ const COURSE_TITLE = "Net Zero Carbon Strategy for Business";
 const Header = () => {
   const { t, i18n } = useTranslation();
   const location = useLocation();
+  const { get } = useApi();
   const [navOpen, setNavOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
   const [hasCourse, setHasCourse] = useState(false);
@@ -64,20 +66,24 @@ const Header = () => {
   useEffect(() => {
     console.log("isLoggedIn: ", isLoggedIn);
     if (isLoggedIn && localStorage.getItem('isInstructor') !== 'true') {
-      fetch(`${API_BASE}/api/me`, {
-        credentials: 'include'
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (Array.isArray(data.courses) && data.courses.includes(COURSE_TITLE)) {
-            setHasCourse(true);
-          }
-          setUserPackage((data.package || '').toLowerCase().replace(' plan', '').trim());
-        })
-        .catch((err) => {
+      get(`${API_BASE}/api/me`, 'Loading user...')
+      .then((data) => {
+        console.log('ME:', data);
+
+        if (Array.isArray(data.courses) && data.courses.includes(COURSE_TITLE)) {
+          setHasCourse(true);
+        } else {
           setHasCourse(false);
-          setUserPackage('');
-        });
+        }
+
+        const pkg = (data.package || '').toLowerCase().replace('plan', '').trim();
+        setUserPackage(pkg);
+      })
+      .catch(() => {
+        setHasCourse(false);
+        setUserPackage('');
+      });
+
     } else {
       setHasCourse(false);
       setUserPackage('');
@@ -335,8 +341,7 @@ const Header = () => {
                 </ul>
               </li>
 
-              {/* Resources Dropdown (was Trade) */}
-             {isLoggedIn && (userPackage === 'pro' || userPackage === 'premium') && (<li className="dropdown" style={{ whiteSpace: 'nowrap' }}>
+              {isLoggedIn && (userPackage === 'pro' || userPackage === 'premium') && (<li className="dropdown" style={{ whiteSpace: 'nowrap' }}>
                 <span className="navbar-link" onClick={() => { setNavOpen(false); window.location.href = '/audit-toolkit'; }} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                   <span id="hos" style={location.pathname === '/audit-toolkit' ? { borderBottom: '2px solid #90be55', display: 'inline-block' } : {}}>
                     {t("navbar.auditToolkit")}
@@ -345,7 +350,6 @@ const Header = () => {
                 </span>
                  
               </li>)}
-
               
               {/* Show 'BCourses' for Pro/Premium users, never show 'Courses' */}
               {isLoggedIn && (userPackage === 'pro' || userPackage === 'premium') && (

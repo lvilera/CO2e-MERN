@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../config';
 import Footer2 from '../Home/Footer2';
 import Header from '../Home/Header';
+import { useApi } from '../hooks/useApi';
 import "./Plan.css";
 
 // Register GSAP plugins
@@ -14,6 +15,7 @@ gsap.registerPlugin(ScrollTrigger);
 const Plan = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { get } = useApi();
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
   const [loading, setLoading] = useState(null); // Track which button is loading
   const [subscriptionInfo, setSubscriptionInfo] = useState(null);
@@ -35,9 +37,7 @@ const Plan = () => {
 
   const fetchMe = async () => {
     if (isLoggedIn) {
-      fetch(`${API_BASE}/api/me`, {
-        credentials: 'include'
-      })
+      get(`${API_BASE}/api/me`, ) 
         .then(res => res.json())
         .then(data => {
           if (data.subscriptionInfo) {
